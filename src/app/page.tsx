@@ -41,7 +41,7 @@ export default function Home() {
                 <strong>TypeScript</strong> for type safety
               </li>
               <li>
-                <strong>Tailwind CSS v4</strong> for styling
+                <strong>Tailwind CSS</strong> for styling
               </li>
               <li>
                 <strong>Vitest</strong> for unit testing
