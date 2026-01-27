@@ -8,7 +8,3 @@ flowchart TD
   B --> C[FlowSpec JSON]
   C --> D[Mermaid Flow]
   D --> E[VS Code + GitHub Preview]
-
-
-4. Create a new file:
-   - `docs/specs/README.md`
