@@ -1,0 +1,536 @@
+{
+  "fileKey": "HYxtgE7EARWuvTskijY7xa",
+  "fileName": "BluePrints",
+  "extractedAt": "2026-01-27T02:15:29.691Z",
+  "nodeCount": 66,
+  "extracted": [
+    {
+      "id": "21:447",
+      "name": "P: Casual Listener — wants a fun, low-pressure way to sing along without needing talent",
+      "text": "P: Casual Listener — wants a fun, low-pressure way to sing along without needing talent\n",
+      "type": "STICKY",
+      "section": "PERSONAS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:385",
+      "name": "P: Karaoke Host — wants to start a session fast and invite friends with minimal setup",
+      "text": "P: Karaoke Host — wants to start a session fast and invite friends with minimal setup\n",
+      "type": "STICKY",
+      "section": "PERSONAS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:392",
+      "name": "P: Friend Participant — wants to join instantly from an invite link and know what to do next",
+      "text": "P: Friend Participant — wants to join instantly from an invite link and know what to do next\n",
+      "type": "STICKY",
+      "section": "PERSONAS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:396",
+      "name": "P: Competitive Singer — wants scoring, stats, and bragging rights (optional mode)",
+      "text": "P: Competitive Singer — wants scoring, stats, and bragging rights (optional mode)\n",
+      "type": "STICKY",
+      "section": "PERSONAS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:400",
+      "name": "P: Social Sharer — wants clips/screenshots/results to share after the session",
+      "text": "P: Social Sharer — wants clips/screenshots/results to share after the session\n",
+      "type": "STICKY",
+      "section": "PERSONAS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:404",
+      "name": "P: Privacy-Conscious User — wants control over microphone use and recording, with clear consent",
+      "text": "P: Privacy-Conscious User — wants control over microphone use and recording, with clear consent\n",
+      "type": "STICKY",
+      "section": "PERSONAS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "21:454",
+      "name": "G: Let users sing along with synchronized lyrics for any supported song",
+      "text": "G: Let users sing along with synchronized lyrics for any supported song\n",
+      "type": "STICKY",
+      "section": "GOALS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:408",
+      "name": "G: Support both Solo Karaoke and With Friends Karaoke",
+      "text": "G: Support both Solo Karaoke and With Friends Karaoke",
+      "type": "STICKY",
+      "section": "GOALS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:415",
+      "name": "G: Minimize time-to-first-lyric (fast entry from a song page)",
+      "text": "G: Minimize time-to-first-lyric (fast entry from a song page)\n",
+      "type": "STICKY",
+      "section": "GOALS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:419",
+      "name": "G: Make joining a friend session effortless via link",
+      "text": "G: Make joining a friend session effortless via link\n",
+      "type": "STICKY",
+      "section": "GOALS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:423",
+      "name": "G: Provide a delightful “session” feeling (lobby, ready states, shared experience)",
+      "text": "G: Provide a delightful “session” feeling (lobby, ready states, shared experience)\n",
+      "type": "STICKY",
+      "section": "GOALS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "22:427",
+      "name": "G: Keep the feature safe, respectful, and privacy-first",
+      "text": "G: Keep the feature safe, respectful, and privacy-first\n",
+      "type": "STICKY",
+      "section": "GOALS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "21:461",
+      "name": "R: Karaoke mode must display real-time synchronized lyrics with highlighting",
+      "text": "R: Karaoke mode must display real-time synchronized lyrics with highlighting\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:431",
+      "name": "R: Karaoke mode must support Solo mode",
+      "text": "R: Karaoke mode must support Solo mode\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:438",
+      "name": "R: Karaoke mode must support With Friends mode (real-time session)",
+      "text": "R: Karaoke mode must support With Friends mode (real-time session)",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:445",
+      "name": "R: Host can create a karaoke session from a song",
+      "text": "R: Host can create a karaoke session from a song\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:449",
+      "name": "R: Host can invite friends using a shareable link",
+      "text": "R: Host can invite friends using a shareable link\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:453",
+      "name": "R: Participant can join session from invite link",
+      "text": "R: Participant can join session from invite link\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:457",
+      "name": "R: Lobby must show who joined and who is ready",
+      "text": "R: Lobby must show who joined and who is ready\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:461",
+      "name": "R: Session must have a clear Start action controlled by the host",
+      "text": "R: Session must have a clear Start action controlled by the host\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:465",
+      "name": "R: Users can mute/unmute themselves during the session",
+      "text": "R: Users can mute/unmute themselves during the session\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:469",
+      "name": "R: Users can leave session at any time without breaking the session",
+      "text": "R: Users can leave session at any time without breaking the session\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:473",
+      "name": "R: App must request microphone permission only when needed and explain why",
+      "text": "R: App must request microphone permission only when needed and explain why\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "28:477",
+      "name": "R: Karaoke should be usable even if mic permission is denied (lyrics-only mode)",
+      "text": "R: Karaoke should be usable even if mic permission is denied (lyrics-only mode)\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:552",
+      "name": "R: App must handle network latency gracefully (allow slight desync + reconnection)",
+      "text": "R: App must handle network latency gracefully (allow slight desync + reconnection)\n\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:562",
+      "name": "R: App must show clear feedback for loading, syncing, and connection issues",
+      "text": "R: App must show clear feedback for loading, syncing, and connection issues\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:569",
+      "name": "R: Competitive scoring mode is optional and can be enabled per session",
+      "text": "R: Competitive scoring mode is optional and can be enabled per session\n\n",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "21:468",
+      "name": "S: User opens a song detail page",
+      "text": "S: User opens a song detail page\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:576",
+      "name": "S: User taps a new action called “Karaoke”",
+      "text": "S: User taps a new action called “Karaoke”\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:583",
+      "name": "S: App shows Karaoke setup screen with mode selection (Solo / With Friends)",
+      "text": "S: App shows Karaoke setup screen with mode selection (Solo / With Friends)\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:587",
+      "name": "S: If Solo, user starts immediately and sees lyrics sync with playback",
+      "text": "S: If Solo, user starts immediately and sees lyrics sync with playback\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:591",
+      "name": "S: If With Friends, user becomes Host and a lobby is created",
+      "text": "S: If With Friends, user becomes Host and a lobby is created\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:595",
+      "name": "S: Lobby shows session status and invite button",
+      "text": "S: Lobby shows session status and invite button\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:599",
+      "name": "S: Host sends invite link via share sheet",
+      "text": "S: Host sends invite link via share sheet\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:603",
+      "name": "S: Friend opens invite link and joins as Participant",
+      "text": "S: Friend opens invite link and joins as Participant\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:607",
+      "name": "S: Participants see lobby with song + readiness state",
+      "text": "S: Participants see lobby with song + readiness state\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:611",
+      "name": "S: Host taps Start to begin karaoke session",
+      "text": "S: Host taps Start to begin karaoke session\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:615",
+      "name": "S: During session, lyrics highlight and users can mute/unmute or leave",
+      "text": "S: During session, lyrics highlight and users can mute/unmute or leave\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:619",
+      "name": "S: At end, users see a summary screen with share / replay / new song options",
+      "text": "S: At end, users see a summary screen with share / replay / new song options\n",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "21:475",
+      "name": "E: User joins session late (mid-song) — should sync to current lyric position",
+      "text": "E: User joins session late (mid-song) — should sync to current lyric position\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:632",
+      "name": "E: Microphone permission denied — user can still continue in lyrics-only mode",
+      "text": "E: Microphone permission denied — user can still continue in lyrics-only mode\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:639",
+      "name": "E: Host disconnects — session should either pause, transfer host, or end gracefully",
+      "text": "E: Host disconnects — session should either pause, transfer host, or end gracefully\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:643",
+      "name": "E: Participant disconnects — they should be able to rejoin quickly",
+      "text": "E: Participant disconnects — they should be able to rejoin quickly\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:647",
+      "name": "E: Bad network causes lyric desync — show “resync” option and continue playback",
+      "text": "E: Bad network causes lyric desync — show “resync” option and continue playback\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:651",
+      "name": "E: Song unavailable in region — Karaoke entry should explain and offer alternatives",
+      "text": "E: Song unavailable in region — Karaoke entry should explain and offer alternatives\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:655",
+      "name": "E: Invite link expired or invalid — show friendly recovery path",
+      "text": "E: Invite link expired or invalid — show friendly recovery path\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:659",
+      "name": "E: Too many participants — enforce a session cap and communicate why",
+      "text": "E: Too many participants — enforce a session cap and communicate why\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:663",
+      "name": "E: User receives a call/audio interruption — resume experience smoothly",
+      "text": "E: User receives a call/audio interruption — resume experience smoothly\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:670",
+      "name": "E: Abusive participant — allow report + leave + block actions",
+      "text": "E: Abusive participant — allow report + leave + block actions\n",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "21:482",
+      "name": "Q: Do we record audio at all, or is it a purely live sing-along experience?",
+      "text": "Q: Do we record audio at all, or is it a purely live sing-along experience?\n",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:678",
+      "name": "Q: Is With Friends playback truly synchronized or “best-effort” with tolerance?",
+      "text": "Q: Is With Friends playback truly synchronized or “best-effort” with tolerance?\n",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:688",
+      "name": "Q: Do we need a host at all times, or can sessions be hostless?",
+      "text": "Q: Do we need a host at all times, or can sessions be hostless?\n",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:692",
+      "name": "Q: Do we support duets / rotating solo lines, or everyone sings everything?",
+      "text": "Q: Do we support duets / rotating solo lines, or everyone sings everything?\n",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:696",
+      "name": "Q: Should sessions support video, or audio-only, or lyrics-only?",
+      "text": "Q: Should sessions support video, or audio-only, or lyrics-only?\n",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:700",
+      "name": "Q: Do we support scoring in v1? If yes, what model and what feedback UI?",
+      "text": "Q: Do we support scoring in v1? If yes, what model and what feedback UI?\n",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:704",
+      "name": "Q: Where does Karaoke live in the Spotify IA (song page, now playing, search)?",
+      "text": "Q: Where does Karaoke live in the Spotify IA (song page, now playing, search)?\n",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:708",
+      "name": "Q: How do we handle explicit lyrics / content controls in group sessions?",
+      "text": "Q: How do we handle explicit lyrics / content controls in group sessions?\n",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "30:712",
+      "name": "Q: What is the max participant count for a good experience?",
+      "text": "Q: What is the max participant count for a good experience?\n",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "21:117",
+      "name": "CONTEXT: Project: Spotify Karaoke Client: Spotify OutputSlug: spotify_karaoke Version: v1 Date: 2026-01-26 Owner: Blue Platform: Mobile (iOS + Android) Goal: Sing along to songs solo or with friends Constraints: Privacy-first, low friction entry, works with imperfect network",
+      "text": "CONTEXT:\nProject: Spotify Karaoke\nClient: Spotify\nOutputSlug: spotify_karaoke\nVersion: v1\nDate: 2026-01-26\nOwner: Blue\nPlatform: Mobile (iOS + Android)\nGoal: Sing along to songs solo or with friends\nConstraints: Privacy-first, low friction entry, works with imperfect network\n",
+      "type": "STICKY",
+      "section": "CONTEXT",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:499",
+      "name": "Sticky",
+      "text": "Sticky",
+      "type": "STICKY",
+      "section": "PERSONAS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:501",
+      "name": "Sticky",
+      "text": "Sticky",
+      "type": "STICKY",
+      "section": "GOALS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:503",
+      "name": "Sticky",
+      "text": "Sticky",
+      "type": "STICKY",
+      "section": "REQUIREMENTS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:505",
+      "name": "Sticky",
+      "text": "Sticky",
+      "type": "STICKY",
+      "section": "USER FLOWNOTES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:507",
+      "name": "Sticky",
+      "text": "Sticky",
+      "type": "STICKY",
+      "section": "EDGE CASES",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:509",
+      "name": "Sticky",
+      "text": "Sticky",
+      "type": "STICKY",
+      "section": "OPEN QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "29:511",
+      "name": "Sticky",
+      "text": "Sticky",
+      "type": "STICKY",
+      "section": "CONTEXT",
+      "color": "#a8daff"
+    }
+  ]
+}

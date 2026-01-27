@@ -1,0 +1,16 @@
+{
+  "name": "blueprints",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BluePrints - Convert FigJam diagrams into structured documentation",
+  "type": "module",
+  "scripts": {
+    "extract:figma": "node scripts/figma-extract.mjs",
+    "flow:gen": "node scripts/blueprints/generateFlowFromExtract.mjs",
+    "flow:expand": "node scripts/blueprints/generateFlowGraph.mjs",
+    "dev": "cd blue-prints && npm run dev"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

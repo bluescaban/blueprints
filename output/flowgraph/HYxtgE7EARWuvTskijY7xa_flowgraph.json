@@ -1,0 +1,251 @@
+{
+  "meta": {
+    "project": "Spotify Karaoke",
+    "feature": "Sing along to songs solo or with friends",
+    "generatedAt": "2026-01-27T03:36:05.027Z",
+    "sourceFileKey": "HYxtgE7EARWuvTskijY7xa",
+    "specKitVersion": "1.0.0"
+  },
+  "lanes": [
+    "User",
+    "Host",
+    "Guest",
+    "System"
+  ],
+  "starts": [
+    "START_SOLO",
+    "START_HOST",
+    "START_JOIN"
+  ],
+  "ends": [
+    "END_SUCCESS",
+    "END_EXIT",
+    "END_ERROR"
+  ],
+  "nodes": [
+    {
+      "id": "START_SOLO",
+      "type": "start",
+      "lane": "User",
+      "label": "Start Solo Karaoke"
+    },
+    {
+      "id": "START_HOST",
+      "type": "start",
+      "lane": "Host",
+      "label": "Host With Friends"
+    },
+    {
+      "id": "START_JOIN",
+      "type": "start",
+      "lane": "Guest",
+      "label": "Join via Invite Link"
+    },
+    {
+      "id": "S1",
+      "type": "step",
+      "lane": "User",
+      "label": "User opens a song detail page"
+    },
+    {
+      "id": "S2",
+      "type": "step",
+      "lane": "User",
+      "label": "User taps a new action called “Karaoke”"
+    },
+    {
+      "id": "S3",
+      "type": "step",
+      "lane": "System",
+      "label": "Lobby shows session status and invite button"
+    },
+    {
+      "id": "S4",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host sends invite link via share sheet"
+    },
+    {
+      "id": "S5",
+      "type": "step",
+      "lane": "Guest",
+      "label": "Friend opens invite link and joins as Participant"
+    },
+    {
+      "id": "S6",
+      "type": "step",
+      "lane": "Guest",
+      "label": "Participants see lobby with song + readiness state"
+    },
+    {
+      "id": "S7",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host taps Start to begin karaoke session"
+    },
+    {
+      "id": "S8",
+      "type": "step",
+      "lane": "User",
+      "label": "At end, users see a summary screen with share / replay / new song options"
+    },
+    {
+      "id": "D1",
+      "type": "decision",
+      "lane": "Guest",
+      "label": "App shows Karaoke setup screen with mode selection (Solo / With Friends)"
+    },
+    {
+      "id": "D2",
+      "type": "decision",
+      "lane": "User",
+      "label": "Solo"
+    },
+    {
+      "id": "D3",
+      "type": "decision",
+      "lane": "Host",
+      "label": "With Friends"
+    },
+    {
+      "id": "D4",
+      "type": "decision",
+      "lane": "User",
+      "label": "choice"
+    },
+    {
+      "id": "SYS1",
+      "type": "system",
+      "lane": "System",
+      "label": "Sync Lyrics with Playback"
+    },
+    {
+      "id": "SYS2",
+      "type": "system",
+      "lane": "System",
+      "label": "Create Session Lobby"
+    },
+    {
+      "id": "SYS3",
+      "type": "system",
+      "lane": "System",
+      "label": "Request Microphone Permission"
+    },
+    {
+      "id": "END_SUCCESS",
+      "type": "end",
+      "lane": "System",
+      "label": "Session Complete"
+    },
+    {
+      "id": "END_EXIT",
+      "type": "end",
+      "lane": "User",
+      "label": "User Left"
+    },
+    {
+      "id": "END_ERROR",
+      "type": "end",
+      "lane": "System",
+      "label": "Error / Recovery"
+    },
+    {
+      "id": "EC1",
+      "type": "system",
+      "lane": "System",
+      "label": "Handle: User joins session late (mid-song) — ..."
+    },
+    {
+      "id": "EC2",
+      "type": "system",
+      "lane": "System",
+      "label": "Handle: Microphone permission denied — user c..."
+    },
+    {
+      "id": "EC3",
+      "type": "system",
+      "lane": "System",
+      "label": "Handle: Host disconnects — session should eit..."
+    },
+    {
+      "id": "EC4",
+      "type": "system",
+      "lane": "System",
+      "label": "Handle: Participant disconnects — they should..."
+    },
+    {
+      "id": "EC5",
+      "type": "system",
+      "lane": "System",
+      "label": "Handle: Bad network causes lyric desync — sho..."
+    }
+  ],
+  "edges": [
+    {
+      "from": "START_SOLO",
+      "to": "S1"
+    },
+    {
+      "from": "START_HOST",
+      "to": "S4"
+    },
+    {
+      "from": "START_JOIN",
+      "to": "S5"
+    },
+    {
+      "from": "S1",
+      "to": "S2"
+    },
+    {
+      "from": "S2",
+      "to": "S3"
+    },
+    {
+      "from": "S3",
+      "to": "S4"
+    },
+    {
+      "from": "S4",
+      "to": "S5"
+    },
+    {
+      "from": "S5",
+      "to": "S6"
+    },
+    {
+      "from": "S6",
+      "to": "S7"
+    },
+    {
+      "from": "S7",
+      "to": "S8"
+    },
+    {
+      "from": "S8",
+      "to": "END_SUCCESS"
+    }
+  ],
+  "assumptions": [
+    "Edge case handling: User joins session late (mid-song) — should sync to current lyric position",
+    "Edge case handling: Microphone permission denied — user can still continue in lyrics-only mode",
+    "Edge case handling: Host disconnects — session should either pause, transfer host, or end gracefully",
+    "Edge case handling: Participant disconnects — they should be able to rejoin quickly",
+    "Edge case handling: Bad network causes lyric desync — show “resync” option and continue playback",
+    "Sequential flow assumed where explicit edges not provided",
+    "Lane assignment inferred from step text keywords",
+    "3 entry point(s) identified from flow analysis"
+  ],
+  "openQuestions": [
+    "Do we record audio at all, or is it a purely live sing-along experience?",
+    "Is With Friends playback truly synchronized or “best-effort” with tolerance?",
+    "Do we need a host at all times, or can sessions be hostless?",
+    "Do we support duets / rotating solo lines, or everyone sings everything?",
+    "Should sessions support video, or audio-only, or lyrics-only?",
+    "Do we support scoring in v1? If yes, what model and what feedback UI?",
+    "Where does Karaoke live in the Spotify IA (song page, now playing, search)?",
+    "How do we handle explicit lyrics / content controls in group sessions?",
+    "What is the max participant count for a good experience?"
+  ],
+  "risks": []
+}

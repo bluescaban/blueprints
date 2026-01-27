@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Fetch FigJam (from .env)",
+      "type": "shell",
+      "command": "zsh",
+      "args": [
+        "-lc",
+        "set -a; [ -f .env ] && . .env; npm run fetch:figjam"
+      ],
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    }
+  ]
+}
