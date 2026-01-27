@@ -23,6 +23,8 @@ export type CardLabel =
   | 'S'     // Step
   | 'D'     // Decision
   | 'E'     // Edge
+  | 'F'     // Flow group / scenario
+  | 'A'     // Actor / lane declaration
   | 'UI'    // UI element
   | 'DATA'  // Data object
   | 'RULE'  // Business rule
@@ -193,4 +195,190 @@ export interface ExtractionInput {
   fileKey: string;
   /** Array of extracted nodes */
   extracted: ExtractedNode[];
+}
+
+// ============================================================================
+// FlowGraph Types (v2.0)
+// ============================================================================
+
+/**
+ * Node types in FlowGraph
+ */
+export type NodeType = 'step' | 'decision' | 'system' | 'start' | 'end';
+
+/**
+ * A node in the FlowGraph
+ */
+export interface FlowNode {
+  /** Unique node identifier */
+  id: string;
+  /** Node type */
+  type: NodeType;
+  /** Swimlane (actor) */
+  lane: string;
+  /** Human-readable label */
+  label: string;
+  /** Extended description */
+  description?: string;
+  /** Related requirement IDs */
+  requirements?: string[];
+  /** Whether this node was inferred by SpecKit */
+  inferred?: boolean;
+  /** Flow group this node belongs to */
+  flowGroup?: string;
+  /** Original text from FlowSpec */
+  sourceText?: string;
+  /** Mark as intentionally disconnected */
+  disconnected?: boolean;
+}
+
+/**
+ * An edge in the FlowGraph
+ */
+export interface FlowEdge {
+  /** Source node ID */
+  from: string;
+  /** Target node ID */
+  to: string;
+  /** Edge label (Yes/No/condition) */
+  label?: string;
+  /** Condition expression */
+  condition?: string;
+  /** Flow group this edge belongs to */
+  flowGroup?: string;
+}
+
+/**
+ * A flow group (scenario) output
+ */
+export interface FlowGroupOutput {
+  /** Flow group identifier */
+  id: string;
+  /** Flow group display name */
+  name: string;
+  /** Entry point node IDs for this flow */
+  starts: string[];
+  /** End state node IDs for this flow */
+  ends: string[];
+  /** Nodes in this flow */
+  nodes: FlowNode[];
+  /** Edges in this flow */
+  edges: FlowEdge[];
+}
+
+/**
+ * Metadata about the FlowGraph generation
+ */
+export interface FlowGraphMeta {
+  /** Project name */
+  project: string;
+  /** Feature name */
+  feature: string;
+  /** ISO timestamp of generation */
+  generatedAt: string;
+  /** Original FigJam file key */
+  sourceFileKey: string;
+  /** SpecKit version */
+  specKitVersion: string;
+}
+
+/**
+ * Complete FlowGraph structure
+ */
+export interface FlowGraph {
+  /** Metadata */
+  meta: FlowGraphMeta;
+  /** Individual flow groups */
+  flows: FlowGroupOutput[];
+  /** Swimlane names in order */
+  lanes: string[];
+  /** All entry point node IDs (combined) */
+  starts: string[];
+  /** All end state node IDs (combined) */
+  ends: string[];
+  /** All nodes (combined) */
+  nodes: FlowNode[];
+  /** All edges (combined) */
+  edges: FlowEdge[];
+  /** Assumptions made during expansion */
+  assumptions: string[];
+  /** Unresolved questions */
+  openQuestions: string[];
+  /** Identified risks */
+  risks: string[];
+}
+
+// ============================================================================
+// Validation Types (v1.0)
+// ============================================================================
+
+/**
+ * Validation issue severity
+ */
+export type ValidationSeverity = 'error' | 'warning';
+
+/**
+ * A single validation issue
+ */
+export interface ValidationIssue {
+  /** Issue severity */
+  severity: ValidationSeverity;
+  /** Unique error code */
+  code: string;
+  /** Human-readable message */
+  message: string;
+  /** Related node ID */
+  nodeId?: string;
+  /** Related edge ID (from->to) */
+  edgeId?: string;
+  /** Related flow group ID */
+  flowId?: string;
+  /** Actionable fix suggestion */
+  suggestion?: string;
+}
+
+/**
+ * Validation statistics
+ */
+export interface ValidationStats {
+  /** Total number of nodes */
+  totalNodes: number;
+  /** Total number of edges */
+  totalEdges: number;
+  /** Total number of flow groups */
+  totalFlows: number;
+  /** Nodes grouped by type */
+  nodesByType: Record<string, number>;
+  /** Nodes grouped by lane */
+  nodesByLane: Record<string, number>;
+  /** Number of errors */
+  errorCount: number;
+  /** Number of warnings */
+  warningCount: number;
+}
+
+/**
+ * Validation result
+ */
+export interface ValidationResult {
+  /** Whether validation passed */
+  valid: boolean;
+  /** Critical errors (fail generation) */
+  errors: ValidationIssue[];
+  /** Non-critical warnings */
+  warnings: ValidationIssue[];
+  /** Validation statistics */
+  stats: ValidationStats;
+}
+
+/**
+ * Validation options
+ */
+export interface ValidationOptions {
+  /** Fail on any error (default: true) */
+  strict?: boolean;
+  /** Allow disconnected nodes (default: false) */
+  allowDisconnected?: boolean;
+  /** Allow empty System lane (default: false) */
+  allowEmptySystem?: boolean;
 }

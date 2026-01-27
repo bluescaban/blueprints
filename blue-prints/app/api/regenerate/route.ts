@@ -1,0 +1,220 @@
+/**
+ * Regenerate API Route
+ *
+ * POST /api/regenerate
+ * Triggers the BluePrints pipeline to fetch from FigJam and regenerate the FlowGraph.
+ *
+ * Body: { fileKey: string, feature: string }
+ * Response: { ok: true, latestFlowGraphPath: string } | { ok: false, error: string }
+ */
+
+import { NextRequest, NextResponse } from 'next/server';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
+import { existsSync, writeFileSync, mkdirSync, readFileSync, readdirSync } from 'fs';
+import path from 'path';
+
+const execFileAsync = promisify(execFile);
+
+// ============================================================================
+// Validation
+// ============================================================================
+
+const SAFE_PATTERN = /^[a-zA-Z0-9_\-\s]+$/;
+const FILE_KEY_PATTERN = /^[a-zA-Z0-9_\-]+$/;
+
+function validateInputs(fileKey: string, feature: string): string | null {
+  if (!fileKey || typeof fileKey !== 'string') {
+    return 'fileKey is required';
+  }
+  if (!feature || typeof feature !== 'string') {
+    return 'feature is required';
+  }
+  if (!FILE_KEY_PATTERN.test(fileKey)) {
+    return 'fileKey contains invalid characters';
+  }
+  if (!SAFE_PATTERN.test(feature)) {
+    return 'feature contains invalid characters';
+  }
+  if (fileKey.length > 100 || feature.length > 100) {
+    return 'fileKey or feature is too long';
+  }
+  return null;
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+function sanitizeFeatureName(feature: string): string {
+  return feature
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .substring(0, 50) || 'unknown';
+}
+
+async function fetchFigmaFile(fileKey: string, token: string, outputPath: string): Promise<void> {
+  const url = `https://api.figma.com/v1/files/${fileKey}`;
+
+  const response = await fetch(url, {
+    headers: {
+      'X-Figma-Token': token,
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Figma API error ${response.status}: ${text}`);
+  }
+
+  const json = await response.json();
+  writeFileSync(outputPath, JSON.stringify(json, null, 2), 'utf8');
+}
+
+// ============================================================================
+// API Handler
+// ============================================================================
+
+export async function POST(request: NextRequest) {
+  const isDev = process.env.NODE_ENV === 'development';
+
+  try {
+    // Parse request body
+    const body = await request.json();
+    const { fileKey, feature } = body;
+
+    // Validate inputs
+    const validationError = validateInputs(fileKey, feature);
+    if (validationError) {
+      return NextResponse.json(
+        { ok: false, error: validationError },
+        { status: 400 }
+      );
+    }
+
+    // Check for FIGMA_TOKEN
+    const figmaToken = process.env.FIGMA_TOKEN;
+    if (!figmaToken) {
+      return NextResponse.json(
+        { ok: false, error: 'FIGMA_TOKEN not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Define paths
+    const projectRoot = path.resolve(process.cwd(), '..');
+    const scriptsDir = path.join(projectRoot, 'scripts');
+    const outputDir = path.join(projectRoot, 'output');
+
+    // Step 1: Fetch FigJam file from Figma API
+    console.log(`[Regenerate] Step 1: Fetching FigJam file ${fileKey}...`);
+
+    const flowspecDir = path.join(outputDir, 'flowspec');
+    mkdirSync(flowspecDir, { recursive: true });
+    const figmaJsonPath = path.join(flowspecDir, `${fileKey}.json`);
+
+    await fetchFigmaFile(fileKey, figmaToken, figmaJsonPath);
+    console.log(`[Regenerate] Saved Figma JSON to ${figmaJsonPath}`);
+
+    // Step 2: Extract text nodes
+    console.log(`[Regenerate] Step 2: Extracting text nodes...`);
+
+    const extractScript = path.join(scriptsDir, 'figma-extract.mjs');
+    await execFileAsync('node', [extractScript, figmaJsonPath], {
+      cwd: projectRoot,
+      timeout: 30000,
+    });
+
+    const extractedDir = path.join(outputDir, 'extracted');
+    const extractedPath = path.join(extractedDir, `${fileKey}_extracted.json`);
+
+    if (!existsSync(extractedPath)) {
+      throw new Error('Extraction failed: output file not found');
+    }
+    console.log(`[Regenerate] Extracted to ${extractedPath}`);
+
+    // Step 3: Generate FlowSpec
+    console.log(`[Regenerate] Step 3: Generating FlowSpec...`);
+
+    const genFlowScript = path.join(scriptsDir, 'blueprints', 'generateFlowFromExtract.mjs');
+    await execFileAsync('node', [genFlowScript, extractedPath], {
+      cwd: projectRoot,
+      timeout: 30000,
+    });
+
+    // Find the generated flowspec file (most recent)
+    const flowspecFiles = readdirSync(flowspecDir)
+      .filter(f => f.startsWith(fileKey) && f.endsWith('.json') && f !== `${fileKey}.json`)
+      .sort();
+
+    if (flowspecFiles.length === 0) {
+      throw new Error('FlowSpec generation failed: output file not found');
+    }
+
+    const latestFlowspec = flowspecFiles[flowspecFiles.length - 1];
+    const flowspecPath = path.join(flowspecDir, latestFlowspec);
+    console.log(`[Regenerate] Generated FlowSpec at ${flowspecPath}`);
+
+    // Step 4: Expand to FlowGraph using CLI
+    console.log(`[Regenerate] Step 4: Expanding to FlowGraph...`);
+
+    const flowgraphDir = path.join(outputDir, 'flowgraph');
+    mkdirSync(flowgraphDir, { recursive: true });
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const flowgraphFilename = `${fileKey}_${timestamp}_flowgraph.json`;
+    const flowgraphPath = path.join(flowgraphDir, flowgraphFilename);
+
+    // Run the CLI expand command
+    const cliScript = path.join(scriptsDir, 'blueprints', 'cli.mjs');
+    await execFileAsync('node', [
+      cliScript,
+      'expand',
+      '-i', flowspecPath,
+      '-f', feature,
+      '-o', flowgraphPath,
+    ], {
+      cwd: projectRoot,
+      timeout: 60000,
+    });
+
+    // Verify the file was created
+    if (!existsSync(flowgraphPath)) {
+      throw new Error('FlowGraph expansion failed: output file not found');
+    }
+
+    // Read the generated FlowGraph for response
+    const flowGraph = JSON.parse(readFileSync(flowgraphPath, 'utf8'));
+    console.log(`[Regenerate] Saved FlowGraph to ${flowgraphPath}`);
+
+    // Also save as latest for easy loading
+    const latestPath = path.join(flowgraphDir, `${fileKey}_latest_flowgraph.json`);
+    writeFileSync(latestPath, JSON.stringify(flowGraph, null, 2), 'utf8');
+
+    console.log(`[Regenerate] Pipeline complete!`);
+
+    return NextResponse.json({
+      ok: true,
+      latestFlowGraphPath: flowgraphPath,
+      stats: {
+        nodes: flowGraph.nodes.length,
+        edges: flowGraph.edges.length,
+        lanes: flowGraph.lanes,
+      },
+    });
+
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Regenerate] Error:', message);
+
+    return NextResponse.json(
+      {
+        ok: false,
+        error: isDev ? message : 'Pipeline failed',
+        ...(isDev && error instanceof Error && { stack: error.stack }),
+      },
+      { status: 500 }
+    );
+  }
+}

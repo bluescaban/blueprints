@@ -1,17 +1,19 @@
 'use client';
 
 /**
- * FlowViewer Component
+ * FlowViewer Component v2.0
  *
  * Renders a FlowGraph as an interactive React Flow diagram.
  * Supports:
+ * - Multiple flow groups with tab navigation
  * - Multiple swimlanes (horizontal grouping)
  * - Different node types with custom styling
  * - Edge labels
  * - Pan and zoom
+ * - Info panel for assumptions, questions, risks
  */
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   ReactFlow,
   Node,
@@ -27,24 +29,24 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-import { FlowGraph, FlowNode, FlowEdge, LANE_COLORS, NodeType, CANVAS_BG } from '@/lib/flowgraph-types';
+import { FlowGraph, FlowNode, FlowEdge, FlowGroupOutput, LANE_COLORS, CANVAS_BG } from '@/lib/flowgraph-types';
 import { nodeTypes } from './CustomNodes';
 
 // ============================================================================
 // Layout Configuration
 // ============================================================================
 
-const LANE_WIDTH = 340;
+const LANE_WIDTH = 380;
 const NODE_SPACING_Y = 200;
 const START_OFFSET_Y = 80;
 
 // Node widths for centering (must match CustomNodes)
 const NODE_WIDTHS: Record<string, number> = {
-  step: 280,
-  system: 280,
-  decision: 220,
-  start: 200,
-  end: 200,
+  step: 300,
+  system: 300,
+  decision: 260,
+  start: 220,
+  end: 220,
 };
 
 // ============================================================================
@@ -61,19 +63,16 @@ interface FlowViewerProps {
 
 /**
  * Calculate X position based on lane - center node in lane column.
- * Centers different node types based on their actual widths.
  */
 function getLaneX(lane: string, lanes: string[], nodeType: string): number {
   const index = lanes.indexOf(lane);
   if (index === -1) return 0;
   const nodeWidth = NODE_WIDTHS[nodeType] || 280;
-  // Center the node within the lane
   return index * LANE_WIDTH + (LANE_WIDTH - nodeWidth) / 2;
 }
 
 /**
  * Compute the depth (level) of each node using BFS from start nodes.
- * This ensures proper vertical ordering based on graph structure.
  */
 function computeNodeLevels(
   nodes: FlowNode[],
@@ -82,7 +81,6 @@ function computeNodeLevels(
   const levels = new Map<string, number>();
   const adjacency = new Map<string, string[]>();
 
-  // Build adjacency list
   for (const edge of edges) {
     if (!adjacency.has(edge.from)) {
       adjacency.set(edge.from, []);
@@ -90,7 +88,6 @@ function computeNodeLevels(
     adjacency.get(edge.from)!.push(edge.to);
   }
 
-  // Find start nodes and nodes with no incoming edges
   const hasIncoming = new Set<string>();
   for (const edge of edges) {
     hasIncoming.add(edge.to);
@@ -98,7 +95,6 @@ function computeNodeLevels(
 
   const startNodes = nodes.filter(n => n.type === 'start' || !hasIncoming.has(n.id));
 
-  // BFS to compute levels
   const queue: { id: string; level: number }[] = [];
   for (const node of startNodes) {
     queue.push({ id: node.id, level: 0 });
@@ -113,7 +109,6 @@ function computeNodeLevels(
       const currentLevel = levels.get(neighbor);
       const newLevel = level + 1;
 
-      // Only update if we found a longer path (ensures proper ordering)
       if (currentLevel === undefined || newLevel > currentLevel) {
         levels.set(neighbor, newLevel);
         queue.push({ id: neighbor, level: newLevel });
@@ -121,7 +116,6 @@ function computeNodeLevels(
     }
   }
 
-  // Handle any unvisited nodes (disconnected)
   for (const node of nodes) {
     if (!levels.has(node.id)) {
       levels.set(node.id, 0);
@@ -133,32 +127,11 @@ function computeNodeLevels(
 
 /**
  * Auto-layout nodes in swimlanes using graph-based level assignment.
- * Nodes are positioned vertically based on their depth in the flow graph,
- * and horizontally centered within their assigned lane.
  */
-function layoutNodes(flowGraph: FlowGraph): Node[] {
-  const { lanes, nodes, edges } = flowGraph;
+function layoutNodes(nodes: FlowNode[], edges: FlowEdge[], lanes: string[]): Node[] {
   const result: Node[] = [];
-
-  // Compute levels based on graph structure
   const nodeLevels = computeNodeLevels(nodes, edges);
 
-  // Create a map for quick node lookup
-  const nodeMap = new Map<string, FlowNode>();
-  for (const node of nodes) {
-    nodeMap.set(node.id, node);
-  }
-
-  // Build reverse adjacency (who points to me)
-  const incomingEdges = new Map<string, string[]>();
-  for (const edge of edges) {
-    if (!incomingEdges.has(edge.to)) {
-      incomingEdges.set(edge.to, []);
-    }
-    incomingEdges.get(edge.to)!.push(edge.from);
-  }
-
-  // Group nodes by level
   const nodesByLevel = new Map<number, FlowNode[]>();
   for (const node of nodes) {
     const level = nodeLevels.get(node.id) || 0;
@@ -168,47 +141,39 @@ function layoutNodes(flowGraph: FlowGraph): Node[] {
     nodesByLevel.get(level)!.push(node);
   }
 
-  // Sort levels
   const sortedLevels = Array.from(nodesByLevel.keys()).sort((a, b) => a - b);
 
-  // Track Y positions for each node (to be computed)
-  const nodePositions = new Map<string, { x: number; y: number }>();
-
-  // Track the next available Y position in each lane
   const laneNextY: Record<string, number> = {};
   lanes.forEach(lane => {
     laneNextY[lane] = START_OFFSET_Y;
   });
 
-  // Position nodes level by level
   for (const level of sortedLevels) {
     const levelNodes = nodesByLevel.get(level)!;
 
-    // Sort nodes within level by lane order for consistent layout
     levelNodes.sort((a, b) => {
       const laneA = a.type === 'system' ? 'System' : a.lane;
       const laneB = b.type === 'system' ? 'System' : b.lane;
       return lanes.indexOf(laneA) - lanes.indexOf(laneB);
     });
 
-    // Position each node
     for (const node of levelNodes) {
       const lane = node.type === 'system' ? 'System' : node.lane;
       const x = getLaneX(lane, lanes, node.type);
-
-      // Find the Y position: use next available slot in this lane
       const y = laneNextY[lane];
 
-      // Update lane's next Y
       laneNextY[lane] = y + NODE_SPACING_Y;
-
-      nodePositions.set(node.id, { x, y });
 
       result.push({
         id: node.id,
         type: node.type,
         position: { x, y },
-        data: { label: node.label, lane, nodeType: node.type },
+        data: {
+          label: node.label,
+          lane,
+          nodeType: node.type,
+          inferred: node.inferred,
+        },
       });
     }
   }
@@ -218,10 +183,8 @@ function layoutNodes(flowGraph: FlowGraph): Node[] {
 
 /**
  * Convert FlowGraph edges to React Flow edges.
- * Uses straight lines for same-lane connections, smoothstep for cross-lane.
  */
 function convertEdges(edges: FlowEdge[], nodes: FlowNode[]): Edge[] {
-  // Build a map of node lanes
   const nodeLanes = new Map<string, string>();
   for (const node of nodes) {
     nodeLanes.set(node.id, node.type === 'system' ? 'System' : node.lane);
@@ -237,7 +200,6 @@ function convertEdges(edges: FlowEdge[], nodes: FlowNode[]): Edge[] {
       source: edge.from,
       target: edge.to,
       label: edge.label,
-      // Use straight for same-lane (vertical), smoothstep for cross-lane
       type: isSameLane ? 'straight' : 'smoothstep',
       markerEnd: { type: MarkerType.ArrowClosed, color: '#ffffff' },
       style: { strokeWidth: 3, stroke: '#ffffff' },
@@ -251,40 +213,33 @@ function convertEdges(edges: FlowEdge[], nodes: FlowNode[]): Edge[] {
 }
 
 // ============================================================================
-// Lane Background Component
+// Flow Group Tabs Component
 // ============================================================================
 
-interface LaneBackgroundProps {
-  lanes: string[];
-  height: number;
+interface FlowGroupTabsProps {
+  flows: FlowGroupOutput[];
+  activeFlowId: string;
+  onSelectFlow: (flowId: string) => void;
 }
 
-function LaneBackground({ lanes, height }: LaneBackgroundProps) {
+function FlowGroupTabs({ flows, activeFlowId, onSelectFlow }: FlowGroupTabsProps) {
+  if (flows.length <= 1) return null;
+
   return (
-    <div className="absolute top-0 left-0 right-0 pointer-events-none" style={{ height }}>
-      {lanes.map((lane, index) => {
-        const colors = LANE_COLORS[lane] || LANE_COLORS.User;
-        return (
-          <div
-            key={lane}
-            className="absolute top-0 bottom-0"
-            style={{
-              left: index * LANE_WIDTH,
-              width: LANE_WIDTH,
-              backgroundColor: colors.bg,
-              opacity: 0.3,
-              borderRight: index < lanes.length - 1 ? '2px dashed #cbd5e1' : 'none',
-            }}
-          >
-            <div
-              className="text-center py-2 font-bold text-sm"
-              style={{ color: colors.text, backgroundColor: colors.bg }}
-            >
-              {lane}
-            </div>
-          </div>
-        );
-      })}
+    <div className="absolute top-16 left-4 z-20 flex gap-2 bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
+      {flows.map(flow => (
+        <button
+          key={flow.id}
+          onClick={() => onSelectFlow(flow.id)}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeFlowId === flow.id
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          {flow.name}
+        </button>
+      ))}
     </div>
   );
 }
@@ -294,16 +249,33 @@ function LaneBackground({ lanes, height }: LaneBackgroundProps) {
 // ============================================================================
 
 export default function FlowViewer({ flowGraph }: FlowViewerProps) {
+  // State for flow group selection
+  const flows = flowGraph.flows || [];
+  const [activeFlowId, setActiveFlowId] = useState<string>(flows[0]?.id || 'main');
+
+  // Get active flow's nodes and edges, or fall back to combined
+  const activeFlow = flows.find(f => f.id === activeFlowId);
+  const displayNodes = activeFlow?.nodes || flowGraph.nodes;
+  const displayEdges = activeFlow?.edges || flowGraph.edges;
+
   // Convert FlowGraph to React Flow format
-  const initialNodes = useMemo(() => layoutNodes(flowGraph), [flowGraph]);
-  const initialEdges = useMemo(() => convertEdges(flowGraph.edges, flowGraph.nodes), [flowGraph]);
+  const initialNodes = useMemo(
+    () => layoutNodes(displayNodes, displayEdges, flowGraph.lanes),
+    [displayNodes, displayEdges, flowGraph.lanes]
+  );
+  const initialEdges = useMemo(
+    () => convertEdges(displayEdges, displayNodes),
+    [displayEdges, displayNodes]
+  );
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  // Calculate diagram dimensions
-  const diagramWidth = flowGraph.lanes.length * LANE_WIDTH;
-  const diagramHeight = Math.max(800, nodes.length * NODE_SPACING_Y);
+  // Update nodes/edges when active flow changes
+  useMemo(() => {
+    setNodes(layoutNodes(displayNodes, displayEdges, flowGraph.lanes));
+    setEdges(convertEdges(displayEdges, displayNodes));
+  }, [activeFlowId, displayNodes, displayEdges, flowGraph.lanes, setNodes, setEdges]);
 
   return (
     <div className="w-full h-full relative" style={{ minHeight: '100vh' }}>
@@ -325,6 +297,13 @@ export default function FlowViewer({ flowGraph }: FlowViewerProps) {
           );
         })}
       </div>
+
+      {/* Flow Group Tabs */}
+      <FlowGroupTabs
+        flows={flows}
+        activeFlowId={activeFlowId}
+        onSelectFlow={setActiveFlowId}
+      />
 
       {/* React Flow Canvas */}
       <div className="pt-12" style={{ height: 'calc(100vh - 48px)' }}>

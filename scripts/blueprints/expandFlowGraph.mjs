@@ -1,19 +1,23 @@
 /**
  * expandFlowGraph.mjs
  *
- * SpecKit-style FlowGraph Expander
+ * SpecKit-style FlowGraph Expander v2.0
  *
  * Takes a FlowSpec JSON and expands it into a complete, render-ready
  * FlowGraph with:
- * - Multiple entry points
- * - Branching decisions
- * - Swimlanes (actors)
- * - System steps
- * - Explicit edges
- * - End states
+ * - Multiple flow groups (F: scenarios)
+ * - Multiple entry points per flow
+ * - Branching decisions with ≥2 outgoing edges
+ * - Swimlanes (actors) from A: declarations
+ * - Inferred system steps (marked as inferred: true)
+ * - Explicit edges when defined, auto-wiring otherwise
+ * - End states (SUCCESS, EXIT, ERROR)
+ * - Assumptions, open questions, risks tracking
  *
  * @module expandFlowGraph
  */
+
+import { hasExplicitEdges } from './parseCards.mjs';
 
 // ============================================================================
 // Type Definitions (JSDoc)
@@ -31,6 +35,9 @@
  * @property {string} label - Human-readable text
  * @property {string} [description] - Extended description
  * @property {string[]} [requirements] - Related requirement IDs
+ * @property {boolean} [inferred] - Whether this node was inferred by SpecKit
+ * @property {string} [flowGroup] - Flow group this node belongs to
+ * @property {string} [sourceText] - Original text from FlowSpec
  */
 
 /**
@@ -39,6 +46,17 @@
  * @property {string} to - Target node ID
  * @property {string} [label] - Edge label (Yes/No/condition)
  * @property {string} [condition] - Condition expression
+ * @property {string} [flowGroup] - Flow group this edge belongs to
+ */
+
+/**
+ * @typedef {Object} FlowGroupOutput
+ * @property {string} id - Flow group identifier
+ * @property {string} name - Flow group display name
+ * @property {string[]} starts - Entry point node IDs for this flow
+ * @property {string[]} ends - End state node IDs for this flow
+ * @property {FlowNode[]} nodes - Nodes in this flow
+ * @property {FlowEdge[]} edges - Edges in this flow
  */
 
 /**
@@ -53,11 +71,12 @@
 /**
  * @typedef {Object} FlowGraph
  * @property {FlowGraphMeta} meta - Metadata
+ * @property {FlowGroupOutput[]} flows - Individual flow groups
  * @property {string[]} lanes - Swimlane names in order
- * @property {string[]} starts - Entry point node IDs
- * @property {string[]} ends - End state node IDs
- * @property {FlowNode[]} nodes - All nodes
- * @property {FlowEdge[]} edges - All edges
+ * @property {string[]} starts - All entry point node IDs (combined)
+ * @property {string[]} ends - All end state node IDs (combined)
+ * @property {FlowNode[]} nodes - All nodes (combined)
+ * @property {FlowEdge[]} edges - All edges (combined)
  * @property {string[]} assumptions - Assumptions made during expansion
  * @property {string[]} openQuestions - Unresolved questions
  * @property {string[]} risks - Identified risks
@@ -67,12 +86,12 @@
 // Constants
 // ============================================================================
 
-export const SPECKIT_VERSION = '1.0.0';
+export const SPECKIT_VERSION = '2.0.0';
 
 // Default lanes if not inferable
 const DEFAULT_LANES = ['User', 'System'];
 
-// Keywords for lane inference
+// Keywords for lane inference (fallback only)
 const LANE_KEYWORDS = {
   'host': 'Host',
   'participant': 'Guest',
@@ -86,50 +105,79 @@ const LANE_KEYWORDS = {
   'session': 'System'
 };
 
+// System step inference patterns
+const SYSTEM_STEP_PATTERNS = [
+  { pattern: /permission|microphone|camera|location/i, label: 'Request Permission', priority: 1 },
+  { pattern: /lobby|room|session/i, label: 'Create Session', priority: 2 },
+  { pattern: /sync|synchronize|real-?time/i, label: 'Sync State', priority: 3 },
+  { pattern: /auth|login|authenticate/i, label: 'Authenticate User', priority: 1 },
+  { pattern: /save|persist|store/i, label: 'Save Data', priority: 4 },
+  { pattern: /load|fetch|retrieve/i, label: 'Load Data', priority: 1 },
+  { pattern: /notify|notification|alert/i, label: 'Send Notification', priority: 3 },
+  { pattern: /validate|verify|check/i, label: 'Validate Input', priority: 2 },
+  { pattern: /cleanup|teardown|disconnect/i, label: 'Cleanup Session', priority: 5 },
+];
+
 // ============================================================================
 // Helper Functions
 // ============================================================================
 
 /**
  * Generate a unique ID with prefix.
- *
- * @param {string} prefix - ID prefix
- * @param {number} index - Numeric index
- * @returns {string} Generated ID
+ * @param {string} prefix
+ * @param {number} index
+ * @returns {string}
  */
 function genId(prefix, index) {
   return `${prefix}${index}`;
 }
 
 /**
- * Infer lane from step text.
- *
- * @param {string} text - Step text
- * @param {string[]} personas - Available persona names
- * @returns {string} Inferred lane name
+ * Generate a flow-scoped ID.
+ * @param {string} flowId
+ * @param {string} prefix
+ * @param {number} index
+ * @returns {string}
  */
-function inferLane(text, personas) {
+function genFlowId(flowId, prefix, index) {
+  return flowId ? `${flowId}_${prefix}${index}` : genId(prefix, index);
+}
+
+/**
+ * Infer lane from step text (fallback when no explicit actor).
+ * @param {string} text
+ * @param {string[]} personas
+ * @param {string[]} declaredActors
+ * @returns {string}
+ */
+function inferLane(text, personas, declaredActors) {
   const lower = text.toLowerCase();
 
-  // Check for persona names first
+  // Check declared actors first
+  for (const actor of declaredActors) {
+    if (lower.includes(actor.toLowerCase())) {
+      return actor;
+    }
+  }
+
+  // Check persona names
   for (const persona of personas) {
     const personaLower = persona.toLowerCase();
     if (lower.includes(personaLower)) {
-      // Map common persona patterns to lanes
       if (personaLower.includes('host')) return 'Host';
       if (personaLower.includes('participant') || personaLower.includes('friend')) return 'Guest';
       if (personaLower.includes('listener') || personaLower.includes('user')) return 'User';
     }
   }
 
-  // Check for action keywords
+  // Keyword-based fallback
   for (const [keyword, lane] of Object.entries(LANE_KEYWORDS)) {
     if (lower.includes(keyword)) {
       return lane;
     }
   }
 
-  // Default based on sentence structure
+  // Sentence structure fallback
   if (lower.startsWith('user ') || lower.startsWith('users ')) return 'User';
   if (lower.startsWith('app ') || lower.startsWith('system ')) return 'System';
   if (lower.startsWith('host ')) return 'Host';
@@ -140,27 +188,27 @@ function inferLane(text, personas) {
 
 /**
  * Detect if step text implies a decision point.
- *
- * @param {string} text - Step text
- * @returns {boolean} True if this looks like a decision
+ * @param {string} text
+ * @returns {boolean}
  */
 function isDecisionText(text) {
   const lower = text.toLowerCase();
   return (
     lower.startsWith('if ') ||
     lower.includes('? ') ||
+    lower.endsWith('?') ||
     lower.includes(' or ') ||
     lower.includes('choose') ||
     lower.includes('select') ||
-    lower.includes('decision')
+    lower.includes('decision') ||
+    lower.includes('whether')
   );
 }
 
 /**
- * Parse decision branches from text like "If X, then Y"
- *
- * @param {string} text - Decision text
- * @returns {{condition: string, ifTrue: string, ifFalse: string}|null}
+ * Parse decision branches from text.
+ * @param {string} text
+ * @returns {{condition: string, ifTrue: string|null, ifFalse: string|null}|null}
  */
 function parseDecisionBranches(text) {
   // Pattern: "If X, Y"
@@ -183,36 +231,470 @@ function parseDecisionBranches(text) {
     };
   }
 
+  // Pattern: "X? (question)"
+  const questionMatch = text.match(/^(.+?)\?/);
+  if (questionMatch) {
+    return {
+      condition: questionMatch[1].trim(),
+      ifTrue: null,
+      ifFalse: null
+    };
+  }
+
   return null;
 }
 
 /**
- * Extract edge cases from notes.
- *
- * @param {string[]} notes - FlowSpec notes
- * @returns {{edgeCases: string[], context: Object}}
+ * Truncate text to max length.
+ * @param {string} text
+ * @param {number} max
+ * @returns {string}
  */
-function parseNotesForEdgeCases(notes) {
-  const edgeCases = [];
-  const context = {};
+function truncate(text, max) {
+  return text.length > max ? text.substring(0, max - 3) + '...' : text;
+}
 
-  for (const note of notes) {
-    // Parse edge cases
-    if (note.startsWith('[Unparsed E:]')) {
-      const caseText = note.replace('[Unparsed E:]', '').trim();
-      edgeCases.push(caseText);
+// ============================================================================
+// Lane Analysis
+// ============================================================================
+
+/**
+ * Determine lanes from actors, personas, and step content.
+ * @param {string[]} declaredActors - A: declarations
+ * @param {string[]} personaNames - P: names
+ * @param {Object[]} steps - Step objects
+ * @returns {string[]}
+ */
+function determineLanes(declaredActors, personaNames, steps) {
+  const lanes = new Set();
+
+  // Add declared actors first (they take priority)
+  for (const actor of declaredActors) {
+    lanes.add(actor);
+  }
+
+  // Add from personas
+  for (const name of personaNames) {
+    const lower = name.toLowerCase();
+    if (lower.includes('host')) lanes.add('Host');
+    else if (lower.includes('participant') || lower.includes('friend') || lower.includes('guest')) lanes.add('Guest');
+    else if (lower.includes('user') || lower.includes('listener')) lanes.add('User');
+  }
+
+  // Add from step lanes
+  for (const step of steps) {
+    if (step.lane) lanes.add(step.lane);
+  }
+
+  // Always include System
+  lanes.add('System');
+
+  // Ensure at least User lane
+  if (lanes.size === 1) {
+    lanes.add('User');
+  }
+
+  // Return in logical order
+  const order = ['User', 'Host', 'Guest', 'System'];
+  const orderedLanes = order.filter(l => lanes.has(l));
+
+  // Add any custom lanes not in the standard order
+  for (const lane of lanes) {
+    if (!orderedLanes.includes(lane)) {
+      orderedLanes.splice(orderedLanes.length - 1, 0, lane); // Insert before System
     }
-    // Parse context
-    else if (note.includes(':') && !note.startsWith('CONTEXT')) {
-      const [key, ...valueParts] = note.split(':');
-      const value = valueParts.join(':').trim();
-      if (key && value) {
-        context[key.trim().toLowerCase()] = value;
+  }
+
+  return orderedLanes;
+}
+
+// ============================================================================
+// Entry Point Detection
+// ============================================================================
+
+/**
+ * Identify entry points for a flow.
+ * @param {Object[]} steps
+ * @param {Object[]} decisions
+ * @param {Object} flowSpec
+ * @param {string} [flowGroupId]
+ * @param {string[]} lanes
+ * @returns {Object[]}
+ */
+function identifyEntryPoints(steps, decisions, flowSpec, flowGroupId, lanes) {
+  const entries = [];
+  const prefix = flowGroupId ? `${flowGroupId}_` : '';
+
+  // Check for mode selection patterns in decisions
+  const modeDecision = decisions.find(d =>
+    d.question?.toLowerCase().includes('solo') ||
+    d.question?.toLowerCase().includes('with friends') ||
+    d.question?.toLowerCase().includes('mode')
+  );
+
+  if (modeDecision) {
+    // Create separate entry points for each mode
+    entries.push({
+      id: `${prefix}START_SOLO`,
+      lane: 'User',
+      label: 'Solo Mode'
+    });
+
+    if (lanes.includes('Host')) {
+      entries.push({
+        id: `${prefix}START_HOST`,
+        lane: 'Host',
+        label: 'Host Session'
+      });
+    }
+
+    if (lanes.includes('Guest')) {
+      entries.push({
+        id: `${prefix}START_JOIN`,
+        lane: 'Guest',
+        label: 'Join Session'
+      });
+    }
+  } else if (steps.length > 0) {
+    // Single entry point based on first step
+    const firstStep = steps[0];
+    entries.push({
+      id: `${prefix}START`,
+      lane: firstStep.lane || 'User',
+      label: 'Start'
+    });
+  } else {
+    // Default entry
+    entries.push({
+      id: `${prefix}START`,
+      lane: 'User',
+      label: 'Start'
+    });
+  }
+
+  return entries;
+}
+
+// ============================================================================
+// End State Detection
+// ============================================================================
+
+/**
+ * Identify end states for a flow.
+ * @param {Object} flowSpec
+ * @param {Object[]} steps
+ * @param {string} [flowGroupId]
+ * @returns {Object[]}
+ */
+function identifyEndStates(flowSpec, steps, flowGroupId) {
+  const ends = [];
+  const prefix = flowGroupId ? `${flowGroupId}_` : '';
+
+  // Always add success end
+  ends.push({
+    id: `${prefix}END_SUCCESS`,
+    lane: 'System',
+    label: 'Complete'
+  });
+
+  // Add exit end
+  ends.push({
+    id: `${prefix}END_EXIT`,
+    lane: 'User',
+    label: 'User Exit'
+  });
+
+  // Check for error scenarios
+  const requirements = flowSpec.requirements?.functional || [];
+  const hasErrorHandling = requirements.some(r =>
+    r.toLowerCase().includes('error') ||
+    r.toLowerCase().includes('denied') ||
+    r.toLowerCase().includes('fail')
+  );
+
+  if (hasErrorHandling || flowSpec.risks?.length > 0) {
+    ends.push({
+      id: `${prefix}END_ERROR`,
+      lane: 'System',
+      label: 'Error'
+    });
+  }
+
+  return ends;
+}
+
+// ============================================================================
+// System Step Inference
+// ============================================================================
+
+/**
+ * Infer system steps that should exist based on requirements and step content.
+ * @param {Object} flowSpec
+ * @param {Object[]} steps
+ * @param {string} [flowGroupId]
+ * @returns {Object[]}
+ */
+function inferSystemSteps(flowSpec, steps, flowGroupId) {
+  const systemSteps = [];
+  const prefix = flowGroupId ? `${flowGroupId}_` : '';
+  const seen = new Set();
+
+  // Check requirements
+  const allText = [
+    ...(flowSpec.requirements?.functional || []),
+    ...(flowSpec.requirements?.nonFunctional || []),
+    ...steps.map(s => s.text)
+  ].join(' ');
+
+  for (const { pattern, label, priority } of SYSTEM_STEP_PATTERNS) {
+    if (pattern.test(allText) && !seen.has(label)) {
+      seen.add(label);
+      systemSteps.push({
+        id: `${prefix}SYS_${label.replace(/\s+/g, '_').toUpperCase()}`,
+        label: label,
+        priority: priority,
+        inferred: true
+      });
+    }
+  }
+
+  // Sort by priority
+  return systemSteps.sort((a, b) => a.priority - b.priority);
+}
+
+// ============================================================================
+// Edge Generation
+// ============================================================================
+
+/**
+ * Generate sequential edges when no explicit edges exist.
+ * @param {FlowNode[]} nodes
+ * @param {Object[]} entryPoints
+ * @param {Object[]} endStates
+ * @param {Object[]} decisions
+ * @returns {FlowEdge[]}
+ */
+function generateSequentialEdges(nodes, entryPoints, endStates, decisions) {
+  const edges = [];
+
+  // Get step and decision nodes in order
+  const stepNodes = nodes.filter(n => n.type === 'step');
+  const decisionNodes = nodes.filter(n => n.type === 'decision');
+  const systemNodes = nodes.filter(n => n.type === 'system');
+
+  if (stepNodes.length === 0) return edges;
+
+  // Connect entries to first step
+  for (const entry of entryPoints) {
+    const entryNode = nodes.find(n => n.id === entry.id);
+    if (entryNode) {
+      // Find first step in same lane or any step
+      const firstStep = stepNodes.find(s => s.lane === entry.lane) || stepNodes[0];
+      if (firstStep) {
+        edges.push({ from: entry.id, to: firstStep.id });
       }
     }
   }
 
-  return { edgeCases, context };
+  // Connect steps sequentially within each lane
+  const laneSteps = {};
+  for (const step of stepNodes) {
+    if (!laneSteps[step.lane]) laneSteps[step.lane] = [];
+    laneSteps[step.lane].push(step);
+  }
+
+  for (const [lane, steps] of Object.entries(laneSteps)) {
+    for (let i = 0; i < steps.length - 1; i++) {
+      edges.push({ from: steps[i].id, to: steps[i + 1].id });
+    }
+  }
+
+  // Connect last steps to end states
+  for (const [lane, steps] of Object.entries(laneSteps)) {
+    if (steps.length > 0) {
+      const lastStep = steps[steps.length - 1];
+      const successEnd = endStates.find(e => e.id.includes('SUCCESS'));
+      if (successEnd) {
+        edges.push({ from: lastStep.id, to: successEnd.id });
+      }
+    }
+  }
+
+  // Add decision branches (ensure ≥2 outgoing edges)
+  for (const decision of decisionNodes) {
+    const existingOutgoing = edges.filter(e => e.from === decision.id);
+    if (existingOutgoing.length < 2) {
+      // Find next steps to connect to
+      const idx = nodes.findIndex(n => n.id === decision.id);
+      const nextStep = stepNodes.find((s, i) => {
+        const sIdx = nodes.findIndex(n => n.id === s.id);
+        return sIdx > idx;
+      });
+
+      if (nextStep && existingOutgoing.length === 0) {
+        edges.push({ from: decision.id, to: nextStep.id, label: 'Yes' });
+      }
+
+      // Add No branch to exit or error
+      const errorEnd = endStates.find(e => e.id.includes('ERROR'));
+      const exitEnd = endStates.find(e => e.id.includes('EXIT'));
+      if (existingOutgoing.length < 2) {
+        edges.push({
+          from: decision.id,
+          to: errorEnd?.id || exitEnd?.id || endStates[0]?.id,
+          label: 'No'
+        });
+      }
+    }
+  }
+
+  return edges;
+}
+
+// ============================================================================
+// Flow Group Expansion
+// ============================================================================
+
+/**
+ * Expand a single flow group.
+ * @param {Object} flowSpec
+ * @param {Object} flowGroup
+ * @param {string[]} lanes
+ * @param {string[]} personaNames
+ * @param {string[]} declaredActors
+ * @returns {FlowGroupOutput}
+ */
+function expandFlowGroup(flowSpec, flowGroup, lanes, personaNames, declaredActors) {
+  const flowId = flowGroup?.id || '';
+  const flowName = flowGroup?.name || 'Main Flow';
+
+  // Filter steps and decisions for this flow group
+  const flowSteps = flowGroup
+    ? flowSpec.steps.filter(s => s.flowGroup === flowGroup.id)
+    : flowSpec.steps.filter(s => !s.flowGroup);
+
+  const flowDecisions = flowGroup
+    ? flowSpec.decisions.filter(d => d.flowGroup === flowGroup.id)
+    : flowSpec.decisions.filter(d => !d.flowGroup);
+
+  const flowEdges = flowGroup
+    ? flowSpec.edges.filter(e => e.flowGroup === flowGroup.id)
+    : flowSpec.edges.filter(e => !e.flowGroup);
+
+  const hasExplicit = flowEdges.length > 0;
+
+  // Build nodes
+  const nodes = [];
+  const nodeMap = new Map();
+
+  // Identify entry points
+  const entryPoints = identifyEntryPoints(flowSteps, flowDecisions, flowSpec, flowId, lanes);
+
+  // Add start nodes
+  for (const entry of entryPoints) {
+    const node = {
+      id: entry.id,
+      type: 'start',
+      lane: entry.lane,
+      label: entry.label,
+      flowGroup: flowId
+    };
+    nodes.push(node);
+    nodeMap.set(entry.id, node);
+  }
+
+  // Process steps
+  for (const step of flowSteps) {
+    const lane = step.lane || inferLane(step.text, personaNames, declaredActors);
+    const node = {
+      id: step.id,
+      type: 'step',
+      lane: lane,
+      label: step.text,
+      sourceText: step.text,
+      flowGroup: flowId
+    };
+    nodes.push(node);
+    nodeMap.set(step.id, node);
+  }
+
+  // Process decisions
+  for (const decision of flowDecisions) {
+    const lane = decision.lane || inferLane(decision.question, personaNames, declaredActors);
+    const node = {
+      id: decision.id,
+      type: 'decision',
+      lane: lane,
+      label: decision.question,
+      sourceText: decision.question,
+      flowGroup: flowId
+    };
+    nodes.push(node);
+    nodeMap.set(decision.id, node);
+
+    // Convert step text that looks like decisions
+    if (isDecisionText(decision.question)) {
+      node.branches = parseDecisionBranches(decision.question);
+    }
+  }
+
+  // Infer system steps
+  const systemSteps = inferSystemSteps(flowSpec, flowSteps, flowId);
+  for (const sys of systemSteps) {
+    const node = {
+      id: sys.id,
+      type: 'system',
+      lane: 'System',
+      label: sys.label,
+      inferred: true,
+      flowGroup: flowId
+    };
+    nodes.push(node);
+    nodeMap.set(sys.id, node);
+  }
+
+  // Identify end states
+  const endStates = identifyEndStates(flowSpec, flowSteps, flowId);
+
+  // Add end nodes
+  for (const end of endStates) {
+    const node = {
+      id: end.id,
+      type: 'end',
+      lane: end.lane,
+      label: end.label,
+      flowGroup: flowId
+    };
+    nodes.push(node);
+    nodeMap.set(end.id, node);
+  }
+
+  // Build edges
+  let edges = [];
+
+  if (hasExplicit) {
+    // Use explicit edges only
+    edges = flowEdges.map(e => ({
+      from: e.from,
+      to: e.to,
+      label: e.label,
+      condition: e.condition,
+      flowGroup: flowId
+    }));
+  } else {
+    // Auto-generate sequential edges
+    edges = generateSequentialEdges(nodes, entryPoints, endStates, flowDecisions);
+    edges = edges.map(e => ({ ...e, flowGroup: flowId }));
+  }
+
+  return {
+    id: flowId || 'main',
+    name: flowName,
+    starts: entryPoints.map(e => e.id),
+    ends: endStates.map(e => e.id),
+    nodes: nodes,
+    edges: edges
+  };
 }
 
 // ============================================================================
@@ -220,33 +702,32 @@ function parseNotesForEdgeCases(notes) {
 // ============================================================================
 
 /**
- * Expand a FlowSpec into a complete FlowGraph.
+ * Expand a FlowSpec into a complete FlowGraph with flow groups.
  *
  * @param {import('./parseCards.mjs').FlowSpec} flowSpec - Input FlowSpec
  * @param {Object} [options] - Expansion options
  * @param {string} [options.featureName] - Override feature name
  * @param {boolean} [options.addSystemSteps=true] - Add inferred system steps
- * @param {boolean} [options.addEdgeCases=true] - Include edge case handling
  * @returns {FlowGraph} Expanded FlowGraph
  */
 export function expandFlowGraph(flowSpec, options = {}) {
   const {
     featureName = 'Feature',
-    addSystemSteps = true,
-    addEdgeCases = true
+    addSystemSteps = true
   } = options;
 
-  // Extract context from notes
-  const { edgeCases, context } = parseNotesForEdgeCases(flowSpec.notes || []);
-  const projectName = context.project || 'BluePrints';
-  const feature = context.goal || featureName;
+  // Extract metadata
+  const projectName = flowSpec.context?.find(c => c.toLowerCase().includes('project'))?.split(':')[1]?.trim() || 'BluePrints';
+  const feature = flowSpec.goals?.[0] || featureName;
 
-  // Determine lanes from personas
+  // Get declared actors and persona names
+  const declaredActors = flowSpec.actors || [];
   const personaNames = (flowSpec.personas || []).map(p => p.name);
-  const lanes = inferLanesFromPersonas(personaNames);
+
+  // Determine lanes
+  const lanes = determineLanes(declaredActors, personaNames, flowSpec.steps || []);
 
   // Initialize FlowGraph
-  /** @type {FlowGraph} */
   const flowGraph = {
     meta: {
       project: projectName,
@@ -255,6 +736,7 @@ export function expandFlowGraph(flowSpec, options = {}) {
       sourceFileKey: flowSpec.meta?.fileKey || 'unknown',
       specKitVersion: SPECKIT_VERSION
     },
+    flows: [],
     lanes: lanes,
     starts: [],
     ends: [],
@@ -265,474 +747,77 @@ export function expandFlowGraph(flowSpec, options = {}) {
     risks: flowSpec.risks || []
   };
 
-  // Track node IDs
-  let stepCounter = 1;
-  let decisionCounter = 1;
-  let systemCounter = 1;
+  // Expand flow groups
+  const flowGroups = flowSpec.flowGroups || [];
 
-  // ---- Phase 1: Analyze steps and create decision points ----
+  if (flowGroups.length > 0) {
+    // Expand each named flow group
+    for (const group of flowGroups) {
+      const expandedFlow = expandFlowGroup(flowSpec, group, lanes, personaNames, declaredActors);
+      flowGraph.flows.push(expandedFlow);
 
-  const stepNodes = [];
-  const decisionPoints = [];
-
-  for (const step of flowSpec.steps || []) {
-    const text = step.text;
-    const lane = inferLane(text, personaNames);
-
-    // Check if this is actually a decision
-    if (isDecisionText(text)) {
-      const branches = parseDecisionBranches(text);
-
-      decisionPoints.push({
-        id: genId('D', decisionCounter++),
-        type: 'decision',
-        lane: lane,
-        label: branches?.condition || text.replace(/^if\s+/i, '').split(',')[0],
-        branches: branches,
-        originalText: text
-      });
-    } else {
-      stepNodes.push({
-        id: step.id || genId('S', stepCounter++),
-        type: 'step',
-        lane: lane,
-        label: text,
-        originalStep: step
-      });
+      // Aggregate to combined lists
+      flowGraph.starts.push(...expandedFlow.starts);
+      flowGraph.ends.push(...expandedFlow.ends);
+      flowGraph.nodes.push(...expandedFlow.nodes);
+      flowGraph.edges.push(...expandedFlow.edges);
     }
   }
 
-  // ---- Phase 2: Identify entry points ----
+  // Also expand "ungrouped" steps (those without a flow group)
+  const ungroupedSteps = flowSpec.steps?.filter(s => !s.flowGroup) || [];
+  const ungroupedDecisions = flowSpec.decisions?.filter(d => !d.flowGroup) || [];
 
-  // Look for multiple entry scenarios
-  const entryPoints = identifyEntryPoints(stepNodes, decisionPoints, flowSpec);
+  if (ungroupedSteps.length > 0 || ungroupedDecisions.length > 0 || flowGroups.length === 0) {
+    const mainFlow = expandFlowGroup(flowSpec, null, lanes, personaNames, declaredActors);
+    mainFlow.id = 'main';
+    mainFlow.name = 'Main Flow';
+    flowGraph.flows.push(mainFlow);
 
-  for (const entry of entryPoints) {
-    flowGraph.starts.push(entry.id);
-    flowGraph.nodes.push({
-      id: entry.id,
-      type: 'start',
-      lane: entry.lane,
-      label: entry.label
-    });
+    flowGraph.starts.push(...mainFlow.starts);
+    flowGraph.ends.push(...mainFlow.ends);
+    flowGraph.nodes.push(...mainFlow.nodes);
+    flowGraph.edges.push(...mainFlow.edges);
   }
 
-  // ---- Phase 3: Add main flow nodes ----
+  // Deduplicate nodes and edges
+  const seenNodes = new Set();
+  flowGraph.nodes = flowGraph.nodes.filter(n => {
+    if (seenNodes.has(n.id)) return false;
+    seenNodes.add(n.id);
+    return true;
+  });
 
-  // Add step nodes
-  for (const step of stepNodes) {
-    flowGraph.nodes.push({
-      id: step.id,
-      type: 'step',
-      lane: step.lane,
-      label: step.label
-    });
+  const seenEdges = new Set();
+  flowGraph.edges = flowGraph.edges.filter(e => {
+    const key = `${e.from}->${e.to}`;
+    if (seenEdges.has(key)) return false;
+    seenEdges.add(key);
+    return true;
+  });
+
+  // Add assumptions
+  flowGraph.assumptions = [
+    `SpecKit v${SPECKIT_VERSION} expansion`,
+    `${flowGraph.flows.length} flow group(s) identified`,
+    `${lanes.length} swimlanes: ${lanes.join(', ')}`,
+    `${flowGraph.starts.length} entry point(s)`,
+    `${flowGraph.ends.length} end state(s)`,
+    hasExplicitEdges(flowSpec) ? 'Explicit edges used' : 'Sequential edges auto-generated',
+    addSystemSteps ? 'System steps inferred from requirements' : 'System step inference disabled'
+  ];
+
+  // Add inferred system step assumption
+  const inferredCount = flowGraph.nodes.filter(n => n.inferred).length;
+  if (inferredCount > 0) {
+    flowGraph.assumptions.push(`${inferredCount} system step(s) inferred`);
   }
-
-  // Add decision nodes
-  for (const decision of decisionPoints) {
-    flowGraph.nodes.push({
-      id: decision.id,
-      type: 'decision',
-      lane: decision.lane,
-      label: decision.label
-    });
-  }
-
-  // ---- Phase 4: Add system steps ----
-
-  if (addSystemSteps) {
-    const systemSteps = inferSystemSteps(flowSpec, stepNodes);
-
-    for (const sys of systemSteps) {
-      const sysId = genId('SYS', systemCounter++);
-      flowGraph.nodes.push({
-        id: sysId,
-        type: 'system',
-        lane: 'System',
-        label: sys.label
-      });
-
-      // Add edge from trigger to system step
-      if (sys.after) {
-        flowGraph.edges.push({
-          from: sys.after,
-          to: sysId
-        });
-      }
-
-      // Add edge from system step to next
-      if (sys.before) {
-        flowGraph.edges.push({
-          from: sysId,
-          to: sys.before
-        });
-      }
-    }
-  }
-
-  // ---- Phase 5: Add end states ----
-
-  const endStates = identifyEndStates(flowSpec, stepNodes);
-
-  for (const end of endStates) {
-    flowGraph.ends.push(end.id);
-    flowGraph.nodes.push({
-      id: end.id,
-      type: 'end',
-      lane: end.lane || 'System',
-      label: end.label
-    });
-  }
-
-  // ---- Phase 6: Build edge connections ----
-
-  // Use explicit edges from FlowSpec if available
-  if (flowSpec.edges && flowSpec.edges.length > 0) {
-    for (const edge of flowSpec.edges) {
-      flowGraph.edges.push({
-        from: edge.from,
-        to: edge.to,
-        label: edge.label,
-        condition: edge.condition
-      });
-    }
-  } else {
-    // Auto-generate sequential edges
-    flowGraph.edges.push(...generateSequentialEdges(flowGraph, entryPoints, endStates, decisionPoints));
-  }
-
-  // ---- Phase 7: Add decision branches ----
-
-  for (const decision of decisionPoints) {
-    if (decision.branches) {
-      // Find or create target nodes for branches
-      const yesTarget = findOrCreateBranchTarget(decision.branches.ifTrue, flowGraph, stepNodes);
-      const noTarget = decision.branches.ifFalse
-        ? findOrCreateBranchTarget(decision.branches.ifFalse, flowGraph, stepNodes)
-        : null;
-
-      if (yesTarget) {
-        flowGraph.edges.push({
-          from: decision.id,
-          to: yesTarget,
-          label: 'Yes'
-        });
-      }
-
-      if (noTarget) {
-        flowGraph.edges.push({
-          from: decision.id,
-          to: noTarget,
-          label: 'No'
-        });
-      }
-    }
-  }
-
-  // ---- Phase 8: Add edge case handling nodes (optional) ----
-
-  if (addEdgeCases && edgeCases.length > 0) {
-    let edgeCaseCounter = 1;
-
-    for (const caseText of edgeCases.slice(0, 5)) { // Limit to avoid clutter
-      const ecId = genId('EC', edgeCaseCounter++);
-      flowGraph.nodes.push({
-        id: ecId,
-        type: 'system',
-        lane: 'System',
-        label: `Handle: ${truncate(caseText, 40)}`
-      });
-
-      // Add to assumptions
-      flowGraph.assumptions.push(`Edge case handling: ${caseText}`);
-    }
-  }
-
-  // ---- Phase 9: Add assumptions ----
-
-  flowGraph.assumptions.push(
-    'Sequential flow assumed where explicit edges not provided',
-    'Lane assignment inferred from step text keywords',
-    `${entryPoints.length} entry point(s) identified from flow analysis`
-  );
 
   return flowGraph;
 }
 
 // ============================================================================
-// Analysis Functions
-// ============================================================================
-
-/**
- * Infer lanes from persona names.
- *
- * @param {string[]} personaNames
- * @returns {string[]}
- */
-function inferLanesFromPersonas(personaNames) {
-  const lanes = new Set(['System']); // Always include System
-
-  for (const name of personaNames) {
-    const lower = name.toLowerCase();
-
-    if (lower.includes('host')) {
-      lanes.add('Host');
-    } else if (lower.includes('participant') || lower.includes('friend') || lower.includes('guest')) {
-      lanes.add('Guest');
-    } else if (lower.includes('user') || lower.includes('listener')) {
-      lanes.add('User');
-    }
-  }
-
-  // Ensure we have at least User lane
-  if (lanes.size === 1) {
-    lanes.add('User');
-  }
-
-  // Return in logical order
-  const order = ['User', 'Host', 'Guest', 'System'];
-  return order.filter(l => lanes.has(l));
-}
-
-/**
- * Identify entry points from flow analysis.
- *
- * @param {Object[]} stepNodes
- * @param {Object[]} decisionPoints
- * @param {Object} flowSpec
- * @returns {Object[]}
- */
-function identifyEntryPoints(stepNodes, decisionPoints, flowSpec) {
-  const entries = [];
-
-  // Look for mode selection decision
-  const modeDecision = decisionPoints.find(d =>
-    d.originalText?.toLowerCase().includes('solo') ||
-    d.originalText?.toLowerCase().includes('with friends')
-  );
-
-  if (modeDecision) {
-    // Create separate entry points for each mode
-    entries.push({
-      id: 'START_SOLO',
-      lane: 'User',
-      label: 'Start Solo Karaoke'
-    });
-    entries.push({
-      id: 'START_HOST',
-      lane: 'Host',
-      label: 'Host With Friends'
-    });
-    entries.push({
-      id: 'START_JOIN',
-      lane: 'Guest',
-      label: 'Join via Invite Link'
-    });
-  } else if (stepNodes.length > 0) {
-    // Default: first step is entry
-    entries.push({
-      id: 'START',
-      lane: stepNodes[0].lane,
-      label: 'Start'
-    });
-  }
-
-  return entries;
-}
-
-/**
- * Identify end states from flow analysis.
- *
- * @param {Object} flowSpec
- * @param {Object[]} stepNodes
- * @returns {Object[]}
- */
-function identifyEndStates(flowSpec, stepNodes) {
-  const ends = [];
-
-  // Always add success end
-  ends.push({
-    id: 'END_SUCCESS',
-    lane: 'System',
-    label: 'Session Complete'
-  });
-
-  // Add exit end (user can leave anytime)
-  ends.push({
-    id: 'END_EXIT',
-    lane: 'User',
-    label: 'User Left'
-  });
-
-  // Check for error scenarios in requirements
-  const hasErrorHandling = (flowSpec.requirements?.functional || []).some(r =>
-    r.toLowerCase().includes('error') ||
-    r.toLowerCase().includes('denied') ||
-    r.toLowerCase().includes('fail')
-  );
-
-  if (hasErrorHandling) {
-    ends.push({
-      id: 'END_ERROR',
-      lane: 'System',
-      label: 'Error / Recovery'
-    });
-  }
-
-  return ends;
-}
-
-/**
- * Infer system steps that should exist.
- *
- * @param {Object} flowSpec
- * @param {Object[]} stepNodes
- * @returns {Object[]}
- */
-function inferSystemSteps(flowSpec, stepNodes) {
-  const systemSteps = [];
-
-  // Look for requirements that imply system steps
-  const requirements = flowSpec.requirements?.functional || [];
-
-  for (const req of requirements) {
-    const lower = req.toLowerCase();
-
-    if (lower.includes('permission') && !systemSteps.find(s => s.label.includes('Permission'))) {
-      systemSteps.push({
-        label: 'Request Microphone Permission',
-        after: null,
-        before: null
-      });
-    }
-
-    if (lower.includes('lobby') && !systemSteps.find(s => s.label.includes('Lobby'))) {
-      systemSteps.push({
-        label: 'Create Session Lobby',
-        after: null,
-        before: null
-      });
-    }
-
-    if (lower.includes('sync') && !systemSteps.find(s => s.label.includes('Sync'))) {
-      systemSteps.push({
-        label: 'Sync Lyrics with Playback',
-        after: null,
-        before: null
-      });
-    }
-  }
-
-  return systemSteps;
-}
-
-/**
- * Generate sequential edges when none are explicit.
- *
- * @param {FlowGraph} flowGraph
- * @param {Object[]} entryPoints
- * @param {Object[]} endStates
- * @param {Object[]} decisionPoints
- * @returns {FlowEdge[]}
- */
-function generateSequentialEdges(flowGraph, entryPoints, endStates, decisionPoints) {
-  const edges = [];
-
-  // Get step nodes in order
-  const stepNodes = flowGraph.nodes.filter(n => n.type === 'step');
-
-  if (stepNodes.length === 0) return edges;
-
-  // Connect first entry to first step
-  if (entryPoints.length > 0) {
-    edges.push({
-      from: entryPoints[0].id,
-      to: stepNodes[0].id
-    });
-
-    // If multiple entries, connect them appropriately
-    if (entryPoints.length > 1) {
-      // Find steps that match entry context
-      for (let i = 1; i < entryPoints.length; i++) {
-        const entry = entryPoints[i];
-        const matchingStep = stepNodes.find(s =>
-          s.label.toLowerCase().includes(entry.label.toLowerCase().split(' ')[0])
-        );
-        if (matchingStep) {
-          edges.push({ from: entry.id, to: matchingStep.id });
-        } else {
-          edges.push({ from: entry.id, to: stepNodes[0].id });
-        }
-      }
-    }
-  }
-
-  // Connect steps sequentially
-  for (let i = 0; i < stepNodes.length - 1; i++) {
-    edges.push({
-      from: stepNodes[i].id,
-      to: stepNodes[i + 1].id
-    });
-  }
-
-  // Connect last step to success end
-  if (stepNodes.length > 0 && endStates.length > 0) {
-    const successEnd = endStates.find(e => e.id.includes('SUCCESS'));
-    if (successEnd) {
-      edges.push({
-        from: stepNodes[stepNodes.length - 1].id,
-        to: successEnd.id
-      });
-    }
-  }
-
-  return edges;
-}
-
-/**
- * Find or create a node for a branch target.
- *
- * @param {string} targetText
- * @param {FlowGraph} flowGraph
- * @param {Object[]} stepNodes
- * @returns {string|null}
- */
-function findOrCreateBranchTarget(targetText, flowGraph, stepNodes) {
-  if (!targetText) return null;
-
-  const lower = targetText.toLowerCase();
-
-  // Look for existing node that matches
-  for (const node of flowGraph.nodes) {
-    if (node.label.toLowerCase().includes(lower.substring(0, 20))) {
-      return node.id;
-    }
-  }
-
-  // Look in step nodes
-  for (const step of stepNodes) {
-    if (step.label.toLowerCase().includes(lower.substring(0, 20))) {
-      return step.id;
-    }
-  }
-
-  return null;
-}
-
-/**
- * Truncate text.
- *
- * @param {string} text
- * @param {number} max
- * @returns {string}
- */
-function truncate(text, max) {
-  return text.length > max ? text.substring(0, max - 3) + '...' : text;
-}
-
-// ============================================================================
-// Export for CLI
+// Export
 // ============================================================================
 
 export default expandFlowGraph;

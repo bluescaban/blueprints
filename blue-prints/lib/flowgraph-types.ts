@@ -1,7 +1,7 @@
 /**
  * FlowGraph Types
  *
- * TypeScript types for the SpecKit FlowGraph structure.
+ * TypeScript types for the SpecKit FlowGraph structure (v2.0).
  */
 
 export type NodeType = 'step' | 'decision' | 'system' | 'start' | 'end';
@@ -13,6 +13,12 @@ export interface FlowNode {
   label: string;
   description?: string;
   requirements?: string[];
+  /** Whether this node was inferred by SpecKit */
+  inferred?: boolean;
+  /** Flow group this node belongs to */
+  flowGroup?: string;
+  /** Original text from FlowSpec */
+  sourceText?: string;
 }
 
 export interface FlowEdge {
@@ -20,6 +26,26 @@ export interface FlowEdge {
   to: string;
   label?: string;
   condition?: string;
+  /** Flow group this edge belongs to */
+  flowGroup?: string;
+}
+
+/**
+ * A flow group (scenario) output
+ */
+export interface FlowGroupOutput {
+  /** Flow group identifier */
+  id: string;
+  /** Flow group display name */
+  name: string;
+  /** Entry point node IDs for this flow */
+  starts: string[];
+  /** End state node IDs for this flow */
+  ends: string[];
+  /** Nodes in this flow */
+  nodes: FlowNode[];
+  /** Edges in this flow */
+  edges: FlowEdge[];
 }
 
 export interface FlowGraphMeta {
@@ -30,9 +56,21 @@ export interface FlowGraphMeta {
   specKitVersion: string;
 }
 
+/**
+ * A persona definition
+ */
+export interface Persona {
+  name: string;
+  details?: string;
+}
+
 export interface FlowGraph {
   meta: FlowGraphMeta;
+  /** Individual flow groups (v2.0) */
+  flows?: FlowGroupOutput[];
   lanes: string[];
+  /** Personas involved in the flow */
+  personas?: Persona[];
   starts: string[];
   ends: string[];
   nodes: FlowNode[];

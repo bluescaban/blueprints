@@ -36,9 +36,10 @@ export const StepNode = memo(function StepNode({ data }: NodeProps) {
 
   return (
     <div
-      className="px-5 py-4 rounded-2xl border-[3px]"
+      className="px-6 py-5 rounded-2xl border-[3px]"
       style={{
-        width: 280,
+        width: 300,
+        minHeight: 90,
         background: `linear-gradient(135deg, ${colors.bg}ee, ${colors.bg}cc)`,
         borderColor: '#ffffff',
         backdropFilter: 'blur(12px)',
@@ -57,7 +58,7 @@ export const StepNode = memo(function StepNode({ data }: NodeProps) {
       </div>
       <p
         className="mt-3 text-sm font-medium leading-relaxed break-words"
-        style={{ color: colors.text, wordWrap: 'break-word' }}
+        style={{ color: colors.text, wordWrap: 'break-word', maxWidth: 260 }}
       >
         {nodeData.label}
       </p>
@@ -75,7 +76,7 @@ export const DecisionNode = memo(function DecisionNode({ data }: NodeProps) {
   const colors = LANE_COLORS[nodeData.lane] || LANE_COLORS.User;
 
   return (
-    <div className="relative" style={{ width: 220, height: 140 }}>
+    <div className="relative" style={{ width: 260, height: 180 }}>
       {/* Diamond shape container */}
       <div
         className="w-full h-full flex items-center justify-center"
@@ -83,8 +84,8 @@ export const DecisionNode = memo(function DecisionNode({ data }: NodeProps) {
         <div
           className="border-[3px] flex items-center justify-center"
           style={{
-            width: 180,
-            height: 120,
+            width: 220,
+            height: 160,
             background: `linear-gradient(135deg, ${colors.bg}ee, ${colors.bg}cc)`,
             borderColor: '#ffffff',
             clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
@@ -92,8 +93,8 @@ export const DecisionNode = memo(function DecisionNode({ data }: NodeProps) {
           }}
         >
           <p
-            className="text-xs font-semibold text-center px-4 leading-relaxed break-words"
-            style={{ color: colors.text, maxWidth: 120, wordWrap: 'break-word' }}
+            className="text-sm font-semibold text-center px-6 py-2 leading-snug break-words"
+            style={{ color: colors.text, maxWidth: 160, wordWrap: 'break-word' }}
           >
             {nodeData.label}
           </p>
@@ -133,9 +134,10 @@ export const SystemNode = memo(function SystemNode({ data }: NodeProps) {
 
   return (
     <div
-      className="px-5 py-4 rounded-2xl border-[3px] border-dashed"
+      className="px-6 py-5 rounded-2xl border-[3px] border-dashed"
       style={{
-        width: 280,
+        width: 300,
+        minHeight: 90,
         background: `linear-gradient(135deg, ${colors.bg}ee, ${colors.bg}cc)`,
         borderColor: '#ffffff',
         backdropFilter: 'blur(12px)',
@@ -155,7 +157,7 @@ export const SystemNode = memo(function SystemNode({ data }: NodeProps) {
       </div>
       <p
         className="mt-3 text-sm font-medium leading-relaxed break-words"
-        style={{ color: colors.text, wordWrap: 'break-word' }}
+        style={{ color: colors.text, wordWrap: 'break-word', maxWidth: 260 }}
       >
         {nodeData.label}
       </p>
@@ -174,9 +176,10 @@ export const StartNode = memo(function StartNode({ data }: NodeProps) {
 
   return (
     <div
-      className="px-6 py-4 rounded-full flex items-center justify-center border-[3px]"
+      className="px-8 py-5 rounded-full flex items-center justify-center border-[3px]"
       style={{
-        width: 200,
+        width: 220,
+        minHeight: 70,
         background: `linear-gradient(135deg, ${colors.bg}ee, ${colors.bg}cc)`,
         borderColor: '#ffffff',
         backdropFilter: 'blur(12px)',
@@ -184,11 +187,11 @@ export const StartNode = memo(function StartNode({ data }: NodeProps) {
         boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
       }}
     >
-      <div className="flex items-center gap-2">
-        <span style={{ color: colors.accent }} className="text-lg">▶</span>
+      <div className="flex items-center gap-3">
+        <span style={{ color: colors.accent }} className="text-lg flex-shrink-0">▶</span>
         <p
-          className="text-sm font-bold text-center leading-relaxed break-words"
-          style={{ color: colors.text, wordWrap: 'break-word' }}
+          className="text-sm font-bold text-center leading-snug break-words"
+          style={{ color: colors.text, wordWrap: 'break-word', maxWidth: 150 }}
         >
           {nodeData.label}
         </p>
@@ -225,9 +228,10 @@ export const EndNode = memo(function EndNode({ data }: NodeProps) {
 
   return (
     <div
-      className="px-6 py-4 rounded-full flex items-center justify-center border-[3px]"
+      className="px-8 py-5 rounded-full flex items-center justify-center border-[3px]"
       style={{
-        width: 200,
+        width: 220,
+        minHeight: 70,
         background: `linear-gradient(135deg, ${bgColor}ee, ${bgColor}cc)`,
         borderColor: '#ffffff',
         backdropFilter: 'blur(12px)',
@@ -236,11 +240,11 @@ export const EndNode = memo(function EndNode({ data }: NodeProps) {
       }}
     >
       <Handle type="target" position={Position.Top} className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
-      <div className="flex items-center gap-2">
-        <span className="text-lg" style={{ color: accentColor }}>{icon}</span>
+      <div className="flex items-center gap-3">
+        <span className="text-lg flex-shrink-0" style={{ color: accentColor }}>{icon}</span>
         <p
-          className="text-sm font-bold text-center leading-relaxed break-words"
-          style={{ color: textColor, wordWrap: 'break-word' }}
+          className="text-sm font-bold text-center leading-snug break-words"
+          style={{ color: textColor, wordWrap: 'break-word', maxWidth: 150 }}
         >
           {nodeData.label}
         </p>

@@ -1,13 +1,19 @@
 {
   "name": "blue-prints",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "fetch:figjam": "node ./scripts/fetch_figjam.js",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "fetch:figjam": "node ./scripts/fetch_figjam.js",
+    "bp:parse": "node ../scripts/blueprints/cli.mjs parse",
+    "bp:expand": "node ../scripts/blueprints/cli.mjs expand",
+    "bp:validate": "node ../scripts/blueprints/cli.mjs validate",
+    "bp:pipeline": "node ../scripts/blueprints/cli.mjs pipeline",
+    "bp:help": "node ../scripts/blueprints/cli.mjs help",
+    "bp:version": "node ../scripts/blueprints/cli.mjs version"
   },
   "dependencies": {
     "@xyflow/react": "^12.10.0",

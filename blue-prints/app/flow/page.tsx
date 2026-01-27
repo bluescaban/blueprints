@@ -11,6 +11,7 @@ import path from 'path';
 
 import FlowViewer from './components/FlowViewer';
 import InfoPanel from './components/InfoPanel';
+import RegenerateButton from './components/RegenerateButton';
 import { FlowGraph } from '@/lib/flowgraph-types';
 
 // ============================================================================
@@ -52,22 +53,47 @@ export default async function FlowPage() {
 
   if (!flowGraph) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">No FlowGraph Found</h1>
-          <p className="text-gray-600 mb-6">
-            Generate a FlowGraph first by running:
+      <div
+        className="min-h-screen flex items-center justify-center p-8"
+        style={{
+          backgroundColor: '#4A85C8',
+          backgroundImage: 'radial-gradient(rgba(255,255,255,0.25) 1px, transparent 1px)',
+          backgroundSize: '20px 20px',
+        }}
+      >
+        <div
+          className="text-center p-10 rounded-3xl border-2 border-white/40 max-w-lg w-full"
+          style={{
+            background: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
+          }}
+        >
+          {/* Logo */}
+          <div className="text-6xl font-bold text-white drop-shadow-lg mb-4">青</div>
+          <h1 className="text-2xl font-bold text-white mb-2">BluePrints</h1>
+          <p className="text-white/70 mb-8">
+            No FlowGraph found. Generate one from your FigJam file.
           </p>
-          <pre className="bg-gray-900 text-green-400 p-4 rounded text-left text-sm overflow-x-auto">
-{`# Step 1: Extract from Figma
-npm run extract:figma <figma.json>
 
-# Step 2: Generate FlowSpec
-npm run flow:gen <extracted.json>
+          {/* Regenerate Button */}
+          <div className="mb-8">
+            <RegenerateButton />
+          </div>
 
-# Step 3: Generate FlowGraph
-node scripts/blueprints/generateFlowGraph.mjs <flowspec.json>`}
-          </pre>
+          <div className="w-full h-px bg-white/20 mb-6" />
+
+          <div className="text-left">
+            <p className="text-xs text-white/60 uppercase tracking-wide mb-3">Or run manually:</p>
+            <div
+              className="p-4 rounded-xl text-sm font-mono overflow-x-auto border border-white/10"
+              style={{ background: 'rgba(0, 0, 0, 0.2)' }}
+            >
+              <div className="text-white/50"># Run the pipeline</div>
+              <div className="text-white">npm run bp:pipeline -- -i extract.json -f &quot;Feature&quot;</div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -75,20 +101,64 @@ node scripts/blueprints/generateFlowGraph.mjs <flowspec.json>`}
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#4A85C8' }}>
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-white/50 px-6 py-3 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-gray-800">
-            {flowGraph.meta.project}: {flowGraph.meta.feature}
-          </h1>
-          <p className="text-sm text-gray-500">
-            SpecKit v{flowGraph.meta.specKitVersion} • {flowGraph.nodes.length} nodes • {flowGraph.edges.length} edges
-          </p>
-        </div>
+      {/* Header - Glassmorphism */}
+      <header
+        className="sticky top-0 z-30 px-6 py-3 flex items-center justify-between border-b border-white/30"
+        style={{
+          background: 'rgba(255, 255, 255, 0.15)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <div className="flex items-center gap-4">
-          <span className="text-xs text-gray-400">
-            Generated: {new Date(flowGraph.meta.generatedAt).toLocaleString()}
-          </span>
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <span className="text-3xl font-bold text-white drop-shadow-lg">青</span>
+            <div className="h-8 w-px bg-white/30" />
+          </div>
+
+          {/* Title */}
+          <div>
+            <h1 className="text-lg font-bold text-white drop-shadow-sm flex items-center gap-2">
+              <span className="text-white/70 font-normal">BluePrints</span>
+              <span className="text-white/50">/</span>
+              <span>{flowGraph.meta.feature}</span>
+            </h1>
+            <div className="flex items-center gap-3 mt-0.5">
+              <span className="text-xs text-white/70 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                v{flowGraph.meta.specKitVersion}
+              </span>
+              <span className="text-xs text-white/60">
+                {flowGraph.nodes.length} nodes
+              </span>
+              <span className="text-xs text-white/60">
+                {flowGraph.edges.length} edges
+              </span>
+              <span className="text-xs text-white/60">
+                {flowGraph.lanes.length} lanes
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Timestamp */}
+          <div
+            className="px-3 py-1.5 rounded-lg text-xs text-white/80 border border-white/20"
+            style={{
+              background: 'rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            {new Date(flowGraph.meta.generatedAt).toLocaleString()}
+          </div>
+
+          {/* Regenerate Button */}
+          <RegenerateButton
+            defaultFileKey={flowGraph.meta.sourceFileKey}
+            defaultFeature={flowGraph.meta.feature}
+          />
         </div>
       </header>
 
@@ -109,10 +179,11 @@ node scripts/blueprints/generateFlowGraph.mjs <flowspec.json>`}
 
 function LoadingState() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#4A85C8' }}>
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
-        <p className="text-gray-600">Loading FlowGraph...</p>
+        <div className="text-5xl font-bold text-white drop-shadow-lg mb-4 animate-pulse">青</div>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-white/30 border-t-white mx-auto mb-4" />
+        <p className="text-white/70 text-sm">Loading FlowGraph...</p>
       </div>
     </div>
   );
