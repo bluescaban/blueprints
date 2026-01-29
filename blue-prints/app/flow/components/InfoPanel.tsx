@@ -8,19 +8,25 @@
  * - Personas
  * - Open questions
  * - Assumptions
+ * - Acceptance Criteria
  * - Risks
  */
 
 import { useState } from 'react';
-import { FlowGraph, LANE_COLORS } from '@/lib/flowgraph-types';
+import { FlowGraph, LANE_COLORS, AcceptanceCriteria } from '@/lib/flowgraph-types';
 
 interface InfoPanelProps {
   flowGraph: FlowGraph;
 }
 
+type TabType = 'info' | 'personas' | 'questions' | 'assumptions' | 'ac';
+
 export default function InfoPanel({ flowGraph }: InfoPanelProps) {
   const [isOpen, setIsOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState<'info' | 'personas' | 'questions' | 'assumptions'>('info');
+  const [activeTab, setActiveTab] = useState<TabType>('info');
+
+  // Get acceptance criteria
+  const acceptanceCriteria: AcceptanceCriteria[] = flowGraph.acceptanceCriteria || [];
 
   // Derive personas from lanes (excluding System)
   const personas = flowGraph.personas || flowGraph.lanes
@@ -105,6 +111,13 @@ export default function InfoPanel({ flowGraph }: InfoPanelProps) {
           badge={flowGraph.assumptions.length}
         >
           Notes
+        </TabButton>
+        <TabButton
+          active={activeTab === 'ac'}
+          onClick={() => setActiveTab('ac')}
+          badge={acceptanceCriteria.length}
+        >
+          AC
         </TabButton>
       </div>
 
@@ -207,9 +220,67 @@ export default function InfoPanel({ flowGraph }: InfoPanelProps) {
               <p className="text-sm text-gray-500 italic">No assumptions recorded</p>
             ) : (
               flowGraph.assumptions.map((a, i) => (
-                <div key={i} className="flex items-start gap-2 text-sm p-3 bg-blue-50 rounded-xl border border-blue-100">
-                  <span className="text-blue-500 mt-0.5">*</span>
-                  <span className="text-gray-700">{a}</span>
+                <div key={i} className={`flex items-start gap-2 text-sm p-3 rounded-xl border ${
+                  a === '---' ? 'bg-gray-100 border-gray-200' : 'bg-blue-50 border-blue-100'
+                }`}>
+                  {a === '---' ? (
+                    <span className="text-gray-400 text-xs w-full text-center">SpecKit Expansion Notes</span>
+                  ) : (
+                    <>
+                      <span className="text-blue-500 mt-0.5">*</span>
+                      <span className="text-gray-700">{a}</span>
+                    </>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === 'ac' && (
+          <div className="space-y-2">
+            {acceptanceCriteria.length === 0 ? (
+              <div className="text-center py-4">
+                <p className="text-sm text-gray-500 italic mb-2">No acceptance criteria defined</p>
+                <p className="text-xs text-gray-400">
+                  Add AC: cards to your FigJam to define testable expectations
+                </p>
+              </div>
+            ) : (
+              acceptanceCriteria.map((ac, i) => (
+                <div
+                  key={i}
+                  className={`text-sm p-3 rounded-xl border ${
+                    ac.suggested
+                      ? 'bg-gray-50 border-gray-200'
+                      : 'bg-emerald-50 border-emerald-100'
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <span className={`mt-0.5 ${ac.suggested ? 'text-gray-400' : 'text-emerald-500'}`}>
+                      {ac.suggested ? '?' : '✓'}
+                    </span>
+                    <div className="flex-1">
+                      <p className={ac.suggested ? 'text-gray-600' : 'text-gray-700'}>
+                        {ac.condition}
+                      </p>
+                      {ac.expectedResult && (
+                        <p className="text-xs text-emerald-600 mt-1">
+                          → {ac.expectedResult}
+                        </p>
+                      )}
+                      {ac.attachedTo && (
+                        <p className="text-xs text-gray-400 mt-1">
+                          Attached to: {ac.attachedTo}
+                        </p>
+                      )}
+                      {ac.suggested && (
+                        <span className="inline-block text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded mt-1">
+                          Suggested
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))
             )}

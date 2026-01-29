@@ -24,7 +24,7 @@ import { hasExplicitEdges } from './parseCards.mjs';
 // ============================================================================
 
 /**
- * @typedef {'step'|'decision'|'system'|'start'|'end'} NodeType
+ * @typedef {'step'|'decision'|'system'|'start'|'end'|'exit'} NodeType
  */
 
 /**
@@ -463,87 +463,457 @@ function inferSystemSteps(flowSpec, steps, flowGroupId) {
 }
 
 // ============================================================================
-// Edge Generation
+// Edge Generation - Intelligent Inference
 // ============================================================================
 
 /**
- * Generate sequential edges when no explicit edges exist.
+ * Build a map of which nodes have incoming/outgoing edges.
+ * @param {FlowEdge[]} edges
+ * @returns {{incoming: Map<string, string[]>, outgoing: Map<string, string[]>}}
+ */
+function buildEdgeMap(edges) {
+  const incoming = new Map();
+  const outgoing = new Map();
+
+  for (const edge of edges) {
+    if (!outgoing.has(edge.from)) outgoing.set(edge.from, []);
+    outgoing.get(edge.from).push(edge.to);
+
+    if (!incoming.has(edge.to)) incoming.set(edge.to, []);
+    incoming.get(edge.to).push(edge.from);
+  }
+
+  return { incoming, outgoing };
+}
+
+/**
+ * Find the next logical node after a given node based on document order.
+ * Considers node types and lanes for smart routing.
+ * @param {FlowNode[]} nodes - All nodes in order
+ * @param {number} currentIdx - Current node index
+ * @param {FlowNode} currentNode - Current node
+ * @param {Set<string>} connected - Already connected node IDs
+ * @returns {FlowNode|null}
+ */
+function findNextLogicalNode(nodes, currentIdx, currentNode, connected) {
+  // Look for the next node in document order
+  for (let i = currentIdx + 1; i < nodes.length; i++) {
+    const candidate = nodes[i];
+
+    // Skip already fully connected nodes
+    if (connected.has(candidate.id)) continue;
+
+    // Skip start nodes (they're entry points, not targets)
+    if (candidate.type === 'start') continue;
+
+    // Skip end/exit nodes unless we're at the end of a flow
+    if (candidate.type === 'end' || candidate.type === 'exit') continue;
+
+    // Prefer same lane, but accept cross-lane if it's a system step
+    if (candidate.lane === currentNode.lane || candidate.type === 'system') {
+      return candidate;
+    }
+
+    // For system steps, any next step is valid
+    if (currentNode.type === 'system') {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Find suitable end nodes for connecting final steps.
  * @param {FlowNode[]} nodes
- * @param {Object[]} entryPoints
- * @param {Object[]} endStates
- * @param {Object[]} decisions
+ * @param {FlowNode} lastStep
+ * @returns {FlowNode[]}
+ */
+function findEndNodesForStep(nodes, lastStep) {
+  const endNodes = nodes.filter(n => n.type === 'end' || n.type === 'exit');
+
+  // Prefer success end for normal steps
+  const successEnd = endNodes.find(n =>
+    n.label?.toLowerCase().includes('success') ||
+    n.label?.toLowerCase().includes('complete') ||
+    n.id.includes('SUCCESS')
+  );
+
+  if (successEnd) return [successEnd];
+
+  // Otherwise, find any end node, preferring same lane
+  const sameLaneEnd = endNodes.find(n => n.lane === lastStep.lane);
+  if (sameLaneEnd) return [sameLaneEnd];
+
+  return endNodes.slice(0, 1);
+}
+
+/**
+ * Generate intelligent edges that connect all nodes in a logical flow.
+ * Principles:
+ * 1. Every node (except end/exit) must have at least one outgoing edge
+ * 2. Every node (except start) must have at least one incoming edge
+ * 3. Decisions must have at least 2 outgoing edges (Yes/No branches)
+ * 4. Nodes flow in document order within lanes
+ * 5. System steps interleave between user steps
+ * 6. Cross-lane transitions are explicit handoffs
+ * 7. Never create cycles (edges only go forward in the flow)
+ *
+ * @param {FlowNode[]} nodes - All nodes in document order
+ * @param {Object[]} entryPoints - Start node info
+ * @param {Object[]} endStates - End node info
+ * @param {Object[]} decisions - Decision info with branches
+ * @param {string} flowId - Flow group ID
  * @returns {FlowEdge[]}
  */
-function generateSequentialEdges(nodes, entryPoints, endStates, decisions) {
+function generateIntelligentEdges(nodes, entryPoints, endStates, decisions, flowId) {
   const edges = [];
+  const edgeSet = new Set(); // Track unique edges
 
-  // Get step and decision nodes in order
+  // Build adjacency list for cycle detection
+  const adjacency = new Map();
+
+  const addEdge = (from, to, label) => {
+    if (!from || !to) return false;
+    if (from === to) return false; // No self-loops
+    const key = `${from}->${to}`;
+    if (edgeSet.has(key)) return false;
+
+    // Check if this would create a cycle
+    if (wouldCreateCycle(from, to, adjacency)) {
+      return false; // Skip this edge
+    }
+
+    edgeSet.add(key);
+    const edge = { from, to, flowGroup: flowId };
+    if (label) edge.label = label;
+    edges.push(edge);
+
+    // Update adjacency list
+    if (!adjacency.has(from)) adjacency.set(from, []);
+    adjacency.get(from).push(to);
+    return true;
+  };
+
+  // Categorize nodes by type
+  const startNodes = nodes.filter(n => n.type === 'start');
   const stepNodes = nodes.filter(n => n.type === 'step');
-  const decisionNodes = nodes.filter(n => n.type === 'decision');
   const systemNodes = nodes.filter(n => n.type === 'system');
+  const decisionNodes = nodes.filter(n => n.type === 'decision');
+  const endNodes = nodes.filter(n => n.type === 'end' || n.type === 'exit');
 
-  if (stepNodes.length === 0) return edges;
+  // Build ordered list of "action" nodes (steps, system, decisions)
+  const actionNodes = nodes.filter(n =>
+    n.type === 'step' || n.type === 'system' || n.type === 'decision'
+  );
 
-  // Connect entries to first step
-  for (const entry of entryPoints) {
-    const entryNode = nodes.find(n => n.id === entry.id);
-    if (entryNode) {
-      // Find first step in same lane or any step
-      const firstStep = stepNodes.find(s => s.lane === entry.lane) || stepNodes[0];
-      if (firstStep) {
-        edges.push({ from: entry.id, to: firstStep.id });
+  if (actionNodes.length === 0) {
+    // No actions, just connect start to end
+    for (const start of startNodes) {
+      const end = endNodes[0];
+      if (end) addEdge(start.id, end.id);
+    }
+    return edges;
+  }
+
+  // === RULE 1: Connect START nodes to first action in their lane ===
+  for (const start of startNodes) {
+    // Find first action node in same lane
+    let firstAction = actionNodes.find(n => n.lane === start.lane);
+
+    // If no same-lane action, connect to the very first action
+    if (!firstAction) {
+      firstAction = actionNodes[0];
+    }
+
+    if (firstAction) {
+      addEdge(start.id, firstAction.id);
+    }
+  }
+
+  // === RULE 2: Connect action nodes sequentially ===
+  // This creates the main flow backbone
+  for (let i = 0; i < actionNodes.length - 1; i++) {
+    const current = actionNodes[i];
+    const next = actionNodes[i + 1];
+
+    // Don't auto-connect FROM decisions (they need explicit branches)
+    if (current.type === 'decision') continue;
+
+    addEdge(current.id, next.id);
+  }
+
+  // === RULE 3: Handle decisions with proper branching ===
+  for (let i = 0; i < actionNodes.length; i++) {
+    const node = actionNodes[i];
+    if (node.type !== 'decision') continue;
+
+    // Find what comes after this decision
+    const afterDecision = actionNodes.slice(i + 1);
+
+    // Check if this decision has parsed branches
+    const decisionInfo = decisions.find(d => d.id === node.id);
+
+    // Find Yes target (next step in happy path)
+    let yesTarget = afterDecision[0]; // Default: next action
+
+    // Find No target (exit, error, or alternative path)
+    let noTarget = null;
+
+    // Look for exit/error nodes
+    const exitNode = endNodes.find(n =>
+      n.type === 'exit' ||
+      n.label?.toLowerCase().includes('exit') ||
+      n.label?.toLowerCase().includes('error') ||
+      n.label?.toLowerCase().includes('fail')
+    );
+
+    // Look for alternative paths (different steps after Yes target)
+    const altTarget = afterDecision.length > 1 ? afterDecision[1] : null;
+
+    noTarget = exitNode || altTarget || endNodes[0];
+
+    // Add Yes branch
+    if (yesTarget) {
+      addEdge(node.id, yesTarget.id, 'Yes');
+    }
+
+    // Add No branch
+    if (noTarget) {
+      addEdge(node.id, noTarget.id, 'No');
+    }
+  }
+
+  // === RULE 4: Connect final steps to END nodes ===
+  // Find steps that have no outgoing edges
+  const { outgoing } = buildEdgeMap(edges);
+
+  for (const step of [...stepNodes, ...systemNodes]) {
+    if (!outgoing.has(step.id) || outgoing.get(step.id).length === 0) {
+      // This step has no outgoing edge - connect to an end node
+      const targetEnds = findEndNodesForStep(nodes, step);
+      for (const end of targetEnds) {
+        addEdge(step.id, end.id);
       }
     }
   }
 
-  // Connect steps sequentially within each lane
-  const laneSteps = {};
-  for (const step of stepNodes) {
-    if (!laneSteps[step.lane]) laneSteps[step.lane] = [];
-    laneSteps[step.lane].push(step);
-  }
+  // === RULE 5: Ensure all END nodes have incoming edges ===
+  const { incoming } = buildEdgeMap(edges);
 
-  for (const [lane, steps] of Object.entries(laneSteps)) {
-    for (let i = 0; i < steps.length - 1; i++) {
-      edges.push({ from: steps[i].id, to: steps[i + 1].id });
-    }
-  }
-
-  // Connect last steps to end states
-  for (const [lane, steps] of Object.entries(laneSteps)) {
-    if (steps.length > 0) {
-      const lastStep = steps[steps.length - 1];
-      const successEnd = endStates.find(e => e.id.includes('SUCCESS'));
-      if (successEnd) {
-        edges.push({ from: lastStep.id, to: successEnd.id });
+  for (const end of endNodes) {
+    if (!incoming.has(end.id) || incoming.get(end.id).length === 0) {
+      // Find the last step to connect to this end
+      const lastStep = stepNodes[stepNodes.length - 1] ||
+                       systemNodes[systemNodes.length - 1];
+      if (lastStep) {
+        // Check if it's an exit node - connect from decision No branches
+        if (end.type === 'exit' || end.label?.toLowerCase().includes('exit')) {
+          // Already handled by decision logic, but ensure at least one connection
+          if (!incoming.has(end.id)) {
+            addEdge(lastStep.id, end.id);
+          }
+        } else {
+          addEdge(lastStep.id, end.id);
+        }
       }
     }
   }
 
-  // Add decision branches (ensure ≥2 outgoing edges)
-  for (const decision of decisionNodes) {
-    const existingOutgoing = edges.filter(e => e.from === decision.id);
-    if (existingOutgoing.length < 2) {
-      // Find next steps to connect to
-      const idx = nodes.findIndex(n => n.id === decision.id);
-      const nextStep = stepNodes.find((s, i) => {
-        const sIdx = nodes.findIndex(n => n.id === s.id);
-        return sIdx > idx;
-      });
+  // === RULE 6: Fill in any orphaned nodes ===
+  const finalEdgeMap = buildEdgeMap(edges);
 
-      if (nextStep && existingOutgoing.length === 0) {
-        edges.push({ from: decision.id, to: nextStep.id, label: 'Yes' });
+  for (const node of actionNodes) {
+    // Check for nodes with no incoming edges (except first action)
+    if (node !== actionNodes[0] &&
+        (!finalEdgeMap.incoming.has(node.id) || finalEdgeMap.incoming.get(node.id).length === 0)) {
+      // Find previous node to connect from
+      const idx = actionNodes.indexOf(node);
+      if (idx > 0) {
+        const prev = actionNodes[idx - 1];
+        if (prev.type !== 'decision') { // Decisions already handled
+          addEdge(prev.id, node.id);
+        }
       }
+    }
 
-      // Add No branch to exit or error
-      const errorEnd = endStates.find(e => e.id.includes('ERROR'));
-      const exitEnd = endStates.find(e => e.id.includes('EXIT'));
-      if (existingOutgoing.length < 2) {
-        edges.push({
-          from: decision.id,
-          to: errorEnd?.id || exitEnd?.id || endStates[0]?.id,
-          label: 'No'
-        });
+    // Check for nodes with no outgoing edges (except last action before end)
+    if (!finalEdgeMap.outgoing.has(node.id) || finalEdgeMap.outgoing.get(node.id).length === 0) {
+      const idx = actionNodes.indexOf(node);
+      if (idx < actionNodes.length - 1) {
+        const next = actionNodes[idx + 1];
+        addEdge(node.id, next.id);
+      } else {
+        // Last action - connect to end
+        const end = endNodes.find(n => n.type === 'end') || endNodes[0];
+        if (end) addEdge(node.id, end.id);
+      }
+    }
+  }
+
+  return edges;
+}
+
+/**
+ * Check if adding an edge would create a cycle using DFS.
+ * @param {string} from - Source node ID
+ * @param {string} to - Target node ID
+ * @param {Map<string, string[]>} adjacency - Current adjacency list
+ * @returns {boolean} True if the edge would create a cycle
+ */
+function wouldCreateCycle(from, to, adjacency) {
+  // If adding edge from->to, check if there's already a path from to->from
+  const visited = new Set();
+  const stack = [to];
+
+  while (stack.length > 0) {
+    const current = stack.pop();
+    if (current === from) return true; // Found path back to 'from'
+    if (visited.has(current)) continue;
+    visited.add(current);
+
+    const neighbors = adjacency.get(current) || [];
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        stack.push(neighbor);
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Fill in missing edges when explicit edges exist but are incomplete.
+ * Ensures every node is connected while respecting explicit definitions.
+ * Prevents creating cycles by checking before adding edges.
+ * @param {FlowEdge[]} explicitEdges - Edges defined with E:
+ * @param {FlowNode[]} nodes - All nodes
+ * @param {string} flowId - Flow group ID
+ * @returns {FlowEdge[]}
+ */
+function fillMissingEdges(explicitEdges, nodes, flowId) {
+  const edges = [...explicitEdges];
+  const edgeSet = new Set(explicitEdges.map(e => `${e.from}->${e.to}`));
+
+  // Build adjacency list for cycle detection
+  const adjacency = new Map();
+  for (const edge of edges) {
+    if (!adjacency.has(edge.from)) adjacency.set(edge.from, []);
+    adjacency.get(edge.from).push(edge.to);
+  }
+
+  const addEdge = (from, to, label) => {
+    if (!from || !to) return false;
+    if (from === to) return false; // No self-loops
+    const key = `${from}->${to}`;
+    if (edgeSet.has(key)) return false;
+
+    // Check if this would create a cycle
+    if (wouldCreateCycle(from, to, adjacency)) {
+      return false; // Skip this edge
+    }
+
+    edgeSet.add(key);
+    const edge = { from, to, flowGroup: flowId, inferred: true };
+    if (label) edge.label = label;
+    edges.push(edge);
+
+    // Update adjacency list
+    if (!adjacency.has(from)) adjacency.set(from, []);
+    adjacency.get(from).push(to);
+    return true;
+  };
+
+  const { incoming, outgoing } = buildEdgeMap(edges);
+
+  const startNodes = nodes.filter(n => n.type === 'start');
+  const endNodes = nodes.filter(n => n.type === 'end' || n.type === 'exit');
+  const actionNodes = nodes.filter(n =>
+    n.type === 'step' || n.type === 'system' || n.type === 'decision'
+  );
+
+  // Ensure start nodes have outgoing edges
+  for (const start of startNodes) {
+    if (!outgoing.has(start.id)) {
+      const firstAction = actionNodes[0];
+      if (firstAction) addEdge(start.id, firstAction.id);
+    }
+  }
+
+  // Ensure end nodes have incoming edges
+  for (const end of endNodes) {
+    if (!incoming.has(end.id)) {
+      const lastAction = actionNodes[actionNodes.length - 1];
+      if (lastAction) addEdge(lastAction.id, end.id);
+    }
+  }
+
+  // Ensure action nodes are connected - but only forward in the flow
+  for (let i = 0; i < actionNodes.length; i++) {
+    const node = actionNodes[i];
+
+    // Skip decisions for outgoing (handled separately)
+    if (node.type !== 'decision') {
+      const currentOutgoing = buildEdgeMap(edges).outgoing;
+      if (!currentOutgoing.has(node.id) || currentOutgoing.get(node.id).length === 0) {
+        // No outgoing - find the next unconnected action or end node
+        let connected = false;
+        for (let j = i + 1; j < actionNodes.length && !connected; j++) {
+          const next = actionNodes[j];
+          connected = addEdge(node.id, next.id);
+        }
+        if (!connected) {
+          // Connect to end node
+          const end = endNodes.find(n => n.type === 'end') || endNodes[0];
+          if (end) addEdge(node.id, end.id);
+        }
+      }
+    }
+
+    // Ensure incoming edges (except for first node)
+    const currentIncoming = buildEdgeMap(edges).incoming;
+    if (i > 0 && (!currentIncoming.has(node.id) || currentIncoming.get(node.id).length === 0)) {
+      // Find a predecessor that can connect to us
+      for (let j = i - 1; j >= 0; j--) {
+        const prev = actionNodes[j];
+        if (prev.type !== 'decision') {
+          if (addEdge(prev.id, node.id)) break;
+        }
+      }
+    }
+  }
+
+  // Ensure decisions have at least 2 outgoing edges
+  for (const node of actionNodes.filter(n => n.type === 'decision')) {
+    const currentEdgeMap = buildEdgeMap(edges);
+    const outs = currentEdgeMap.outgoing.get(node.id) || [];
+    if (outs.length < 2) {
+      const idx = actionNodes.indexOf(node);
+      const afterDecision = actionNodes.slice(idx + 1);
+
+      if (outs.length === 0) {
+        // Add both Yes and No
+        const yesTarget = afterDecision[0];
+        const noTarget = endNodes.find(n => n.type === 'exit') || endNodes[0];
+        if (yesTarget) addEdge(node.id, yesTarget.id, 'Yes');
+        if (noTarget) addEdge(node.id, noTarget.id, 'No');
+      } else if (outs.length === 1) {
+        // Add missing branch
+        const existingTarget = outs[0];
+        const hasYes = edges.some(e => e.from === node.id && e.label?.toLowerCase() === 'yes');
+        const hasNo = edges.some(e => e.from === node.id && e.label?.toLowerCase() === 'no');
+
+        if (!hasNo) {
+          const noTarget = endNodes.find(n => n.type === 'exit') ||
+                          afterDecision.find(a => a.id !== existingTarget) ||
+                          endNodes[0];
+          if (noTarget) addEdge(node.id, noTarget.id, 'No');
+        } else if (!hasYes) {
+          const yesTarget = afterDecision.find(a => a.id !== existingTarget) ||
+                           afterDecision[0];
+          if (yesTarget) addEdge(node.id, yesTarget.id, 'Yes');
+        }
       }
     }
   }
@@ -557,6 +927,9 @@ function generateSequentialEdges(nodes, entryPoints, endStates, decisions) {
 
 /**
  * Expand a single flow group.
+ * Uses explicit START/END/EXIT/SYS nodes from DSL when available.
+ * Falls back to inference only when explicit definitions are missing.
+ *
  * @param {Object} flowSpec
  * @param {Object} flowGroup
  * @param {string[]} lanes
@@ -568,42 +941,69 @@ function expandFlowGroup(flowSpec, flowGroup, lanes, personaNames, declaredActor
   const flowId = flowGroup?.id || '';
   const flowName = flowGroup?.name || 'Main Flow';
 
-  // Filter steps and decisions for this flow group
-  const flowSteps = flowGroup
-    ? flowSpec.steps.filter(s => s.flowGroup === flowGroup.id)
-    : flowSpec.steps.filter(s => !s.flowGroup);
+  // Filter elements for this flow group
+  const filterByFlow = (arr, field = 'flowGroup') => {
+    if (!arr) return [];
+    return flowGroup
+      ? arr.filter(item => item[field] === flowGroup.id)
+      : arr.filter(item => !item[field]);
+  };
 
-  const flowDecisions = flowGroup
-    ? flowSpec.decisions.filter(d => d.flowGroup === flowGroup.id)
-    : flowSpec.decisions.filter(d => !d.flowGroup);
+  const flowSteps = filterByFlow(flowSpec.steps);
+  const flowDecisions = filterByFlow(flowSpec.decisions);
+  const flowEdges = filterByFlow(flowSpec.edges);
+  const flowStartNodes = filterByFlow(flowSpec.startNodes);
+  const flowEndNodes = filterByFlow(flowSpec.endNodes);
+  const flowExitNodes = filterByFlow(flowSpec.exitNodes);
+  const flowSystemSteps = filterByFlow(flowSpec.systemSteps);
+  const flowChoices = filterByFlow(flowSpec.choices);
 
-  const flowEdges = flowGroup
-    ? flowSpec.edges.filter(e => e.flowGroup === flowGroup.id)
-    : flowSpec.edges.filter(e => !e.flowGroup);
-
-  const hasExplicit = flowEdges.length > 0;
+  const hasExplicitEdges = flowEdges.length > 0;
+  const hasExplicitStarts = flowStartNodes.length > 0;
+  const hasExplicitEnds = flowEndNodes.length > 0 || flowExitNodes.length > 0;
+  const hasExplicitSystem = flowSystemSteps.length > 0;
 
   // Build nodes
   const nodes = [];
   const nodeMap = new Map();
+  const entryPoints = [];
+  const endStates = [];
 
-  // Identify entry points
-  const entryPoints = identifyEntryPoints(flowSteps, flowDecisions, flowSpec, flowId, lanes);
-
-  // Add start nodes
-  for (const entry of entryPoints) {
-    const node = {
-      id: entry.id,
-      type: 'start',
-      lane: entry.lane,
-      label: entry.label,
-      flowGroup: flowId
-    };
-    nodes.push(node);
-    nodeMap.set(entry.id, node);
+  // === START NODES ===
+  if (hasExplicitStarts) {
+    // Use explicit START: nodes
+    for (const start of flowStartNodes) {
+      const lane = start.lane || 'User';
+      const node = {
+        id: start.id,
+        type: 'start',
+        lane: lane,
+        label: start.label,
+        flowGroup: flowId
+      };
+      nodes.push(node);
+      nodeMap.set(start.id, node);
+      entryPoints.push({ id: start.id, lane, label: start.label });
+    }
+  } else {
+    // Fall back to inference
+    const inferred = identifyEntryPoints(flowSteps, flowDecisions, flowSpec, flowId, lanes);
+    for (const entry of inferred) {
+      const node = {
+        id: entry.id,
+        type: 'start',
+        lane: entry.lane,
+        label: entry.label,
+        flowGroup: flowId,
+        inferred: true
+      };
+      nodes.push(node);
+      nodeMap.set(entry.id, node);
+      entryPoints.push(entry);
+    }
   }
 
-  // Process steps
+  // === USER STEPS (S:) ===
   for (const step of flowSteps) {
     const lane = step.lane || inferLane(step.text, personaNames, declaredActors);
     const node = {
@@ -618,7 +1018,42 @@ function expandFlowGroup(flowSpec, flowGroup, lanes, personaNames, declaredActor
     nodeMap.set(step.id, node);
   }
 
-  // Process decisions
+  // === SYSTEM STEPS (SYS:) ===
+  if (hasExplicitSystem) {
+    // Use explicit SYS: nodes
+    for (const sys of flowSystemSteps) {
+      const node = {
+        id: sys.id,
+        type: 'system',
+        lane: 'System',
+        label: sys.text,
+        sourceText: sys.text,
+        flowGroup: flowId,
+        inferred: false
+      };
+      nodes.push(node);
+      nodeMap.set(sys.id, node);
+    }
+  } else {
+    // Fall back to inference (only if no explicit edges either)
+    if (!hasExplicitEdges) {
+      const inferredSys = inferSystemSteps(flowSpec, flowSteps, flowId);
+      for (const sys of inferredSys) {
+        const node = {
+          id: sys.id,
+          type: 'system',
+          lane: 'System',
+          label: sys.label,
+          inferred: true,
+          flowGroup: flowId
+        };
+        nodes.push(node);
+        nodeMap.set(sys.id, node);
+      }
+    }
+  }
+
+  // === DECISIONS (D:) ===
   for (const decision of flowDecisions) {
     const lane = decision.lane || inferLane(decision.question, personaNames, declaredActors);
     const node = {
@@ -632,59 +1067,96 @@ function expandFlowGroup(flowSpec, flowGroup, lanes, personaNames, declaredActor
     nodes.push(node);
     nodeMap.set(decision.id, node);
 
-    // Convert step text that looks like decisions
     if (isDecisionText(decision.question)) {
       node.branches = parseDecisionBranches(decision.question);
     }
   }
 
-  // Infer system steps
-  const systemSteps = inferSystemSteps(flowSpec, flowSteps, flowId);
-  for (const sys of systemSteps) {
+  // === CHOICES (CHOICE:) - treat as multi-option decisions ===
+  for (const choice of flowChoices) {
+    const lane = choice.lane || inferLane(choice.question, personaNames, declaredActors);
     const node = {
-      id: sys.id,
-      type: 'system',
-      lane: 'System',
-      label: sys.label,
-      inferred: true,
-      flowGroup: flowId
+      id: choice.id,
+      type: 'decision',
+      lane: lane,
+      label: choice.question,
+      sourceText: choice.question,
+      flowGroup: flowId,
+      options: choice.options
     };
     nodes.push(node);
-    nodeMap.set(sys.id, node);
+    nodeMap.set(choice.id, node);
   }
 
-  // Identify end states
-  const endStates = identifyEndStates(flowSpec, flowSteps, flowId);
+  // === END NODES (END:) ===
+  if (hasExplicitEnds) {
+    // Use explicit END: nodes
+    for (const end of flowEndNodes) {
+      const lane = end.lane || 'System';
+      const node = {
+        id: end.id,
+        type: 'end',
+        lane: lane,
+        label: end.label,
+        flowGroup: flowId,
+        isExit: false
+      };
+      nodes.push(node);
+      nodeMap.set(end.id, node);
+      endStates.push({ id: end.id, lane, label: end.label });
+    }
 
-  // Add end nodes
-  for (const end of endStates) {
-    const node = {
-      id: end.id,
-      type: 'end',
-      lane: end.lane,
-      label: end.label,
-      flowGroup: flowId
-    };
-    nodes.push(node);
-    nodeMap.set(end.id, node);
+    // Use explicit EXIT: nodes
+    for (const exit of flowExitNodes) {
+      const lane = exit.lane || 'User';
+      const node = {
+        id: exit.id,
+        type: 'exit',
+        lane: lane,
+        label: exit.label,
+        flowGroup: flowId,
+        isExit: true
+      };
+      nodes.push(node);
+      nodeMap.set(exit.id, node);
+      endStates.push({ id: exit.id, lane, label: exit.label });
+    }
+  } else {
+    // Fall back to inference
+    const inferred = identifyEndStates(flowSpec, flowSteps, flowId);
+    for (const end of inferred) {
+      const node = {
+        id: end.id,
+        type: 'end',
+        lane: end.lane,
+        label: end.label,
+        flowGroup: flowId,
+        inferred: true
+      };
+      nodes.push(node);
+      nodeMap.set(end.id, node);
+      endStates.push(end);
+    }
   }
 
-  // Build edges
+  // === EDGES ===
   let edges = [];
 
-  if (hasExplicit) {
-    // Use explicit edges only
-    edges = flowEdges.map(e => ({
+  if (hasExplicitEdges) {
+    // Start with explicit edges
+    const explicitEdges = flowEdges.map(e => ({
       from: e.from,
       to: e.to,
       label: e.label,
       condition: e.condition,
       flowGroup: flowId
     }));
+
+    // Fill in missing connections to ensure all nodes are connected
+    edges = fillMissingEdges(explicitEdges, nodes, flowId);
   } else {
-    // Auto-generate sequential edges
-    edges = generateSequentialEdges(nodes, entryPoints, endStates, flowDecisions);
-    edges = edges.map(e => ({ ...e, flowGroup: flowId }));
+    // Generate intelligent edges that connect all nodes logically
+    edges = generateIntelligentEdges(nodes, entryPoints, endStates, flowDecisions, flowId);
   }
 
   return {
@@ -738,13 +1210,15 @@ export function expandFlowGraph(flowSpec, options = {}) {
     },
     flows: [],
     lanes: lanes,
+    personas: flowSpec.personas || [],
     starts: [],
     ends: [],
     nodes: [],
     edges: [],
-    assumptions: [],
+    assumptions: flowSpec.assumptions || [],
     openQuestions: flowSpec.questions || [],
-    risks: flowSpec.risks || []
+    risks: flowSpec.risks || [],
+    acceptanceCriteria: flowSpec.acceptanceCriteria || []
   };
 
   // Expand flow groups
@@ -796,22 +1270,54 @@ export function expandFlowGraph(flowSpec, options = {}) {
     return true;
   });
 
-  // Add assumptions
-  flowGraph.assumptions = [
+  // Track expansion metadata (separate from author assumptions)
+  const expansionNotes = [
     `SpecKit v${SPECKIT_VERSION} expansion`,
     `${flowGraph.flows.length} flow group(s) identified`,
     `${lanes.length} swimlanes: ${lanes.join(', ')}`,
     `${flowGraph.starts.length} entry point(s)`,
-    `${flowGraph.ends.length} end state(s)`,
-    hasExplicitEdges(flowSpec) ? 'Explicit edges used' : 'Sequential edges auto-generated',
-    addSystemSteps ? 'System steps inferred from requirements' : 'System step inference disabled'
+    `${flowGraph.ends.length} end state(s)`
   ];
 
-  // Add inferred system step assumption
+  // Track what was explicit vs inferred
+  const hasExplicitStartNodes = (flowSpec.startNodes?.length || 0) > 0;
+  const hasExplicitEndNodes = (flowSpec.endNodes?.length || 0) > 0 || (flowSpec.exitNodes?.length || 0) > 0;
+  const hasExplicitSystemSteps = (flowSpec.systemSteps?.length || 0) > 0;
+
+  if (hasExplicitEdges(flowSpec)) {
+    expansionNotes.push('Explicit edges used (E:)');
+  } else {
+    expansionNotes.push('Sequential edges auto-generated');
+  }
+
+  if (hasExplicitStartNodes) {
+    expansionNotes.push('Explicit start nodes used (START:)');
+  } else {
+    expansionNotes.push('Entry points inferred');
+  }
+
+  if (hasExplicitEndNodes) {
+    expansionNotes.push('Explicit end/exit nodes used (END:/EXIT:)');
+  } else {
+    expansionNotes.push('End states inferred');
+  }
+
+  if (hasExplicitSystemSteps) {
+    expansionNotes.push('Explicit system steps used (SYS:)');
+  }
+
+  // Count inferred nodes
   const inferredCount = flowGraph.nodes.filter(n => n.inferred).length;
   if (inferredCount > 0) {
-    flowGraph.assumptions.push(`${inferredCount} system step(s) inferred`);
+    expansionNotes.push(`${inferredCount} node(s) inferred by SpecKit`);
   }
+
+  // Combine author assumptions with expansion notes
+  flowGraph.assumptions = [
+    ...(flowSpec.assumptions || []),
+    '---',  // Separator
+    ...expansionNotes
+  ];
 
   return flowGraph;
 }

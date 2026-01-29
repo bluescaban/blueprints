@@ -2,9 +2,10 @@
  * FlowGraph Types
  *
  * TypeScript types for the SpecKit FlowGraph structure (v2.0).
+ * Based on BluePrints DSL v2.0 specification.
  */
 
-export type NodeType = 'step' | 'decision' | 'system' | 'start' | 'end';
+export type NodeType = 'step' | 'decision' | 'system' | 'start' | 'end' | 'exit';
 
 export interface FlowNode {
   id: string;
@@ -19,6 +20,24 @@ export interface FlowNode {
   flowGroup?: string;
   /** Original text from FlowSpec */
   sourceText?: string;
+  /** Whether this is an early exit/interruption (for end nodes) */
+  isExit?: boolean;
+  /** Acceptance criteria attached to this node */
+  acceptanceCriteria?: AcceptanceCriteria[];
+}
+
+/**
+ * Acceptance Criteria - testable expectation tied to a node or edge
+ */
+export interface AcceptanceCriteria {
+  /** The condition to test */
+  condition: string;
+  /** Expected result when condition is met */
+  expectedResult?: string;
+  /** Node or edge ID this AC is attached to */
+  attachedTo?: string;
+  /** Whether this was suggested by SpecKit (not explicit in FigJam) */
+  suggested?: boolean;
 }
 
 export interface FlowEdge {
@@ -78,6 +97,8 @@ export interface FlowGraph {
   assumptions: string[];
   openQuestions: string[];
   risks: string[];
+  /** Acceptance criteria for the entire flow */
+  acceptanceCriteria?: AcceptanceCriteria[];
 }
 
 // Lane color mapping - higher contrast with white borders
@@ -95,6 +116,7 @@ export const CANVAS_BG = '#4A85C8'; // rich blue
 export const NODE_STYLES: Record<NodeType, { shape: string; icon: string }> = {
   start: { shape: 'circle', icon: '▶' },
   end: { shape: 'circle', icon: '⬤' },
+  exit: { shape: 'circle', icon: '↩' },
   step: { shape: 'rectangle', icon: '' },
   decision: { shape: 'diamond', icon: '◇' },
   system: { shape: 'rectangle', icon: '⚙' },

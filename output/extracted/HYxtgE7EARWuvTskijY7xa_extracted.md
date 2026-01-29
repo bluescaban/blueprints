@@ -1,8 +1,8 @@
 # Extracted Nodes from BluePrints
 
 > File Key: `HYxtgE7EARWuvTskijY7xa`
-> Extracted: 2026-01-27T02:15:29.691Z
-> Node Count: 66
+> Extracted: 2026-01-27T21:52:29.701Z
+> Node Count: 74
 
 ---
 
@@ -12,15 +12,15 @@
 > Color: #a8daff
 
 ```
-P: Casual Listener — wants a fun, low-pressure way to sing along without needing talent
-
+P: Casual Listener - wants a low-pressure, no-judgment karaoke experience
 ```
 
 ### STICKY: 22:385
 > Color: #a8daff
 
 ```
-P: Karaoke Host — wants to start a session fast and invite friends with minimal setup
+P: Karaoke Host - wants to start a session fast and invite friends easily
+
 
 ```
 
@@ -28,7 +28,8 @@ P: Karaoke Host — wants to start a session fast and invite friends with minima
 > Color: #a8daff
 
 ```
-P: Friend Participant — wants to join instantly from an invite link and know what to do next
+P: Friend Participant - wants to join instantly and understand what to do next
+
 
 ```
 
@@ -36,7 +37,8 @@ P: Friend Participant — wants to join instantly from an invite link and know w
 > Color: #a8daff
 
 ```
-P: Competitive Singer — wants scoring, stats, and bragging rights (optional mode)
+P: Competitive Singer - wants scoring and performance feedback (optional)
+
 
 ```
 
@@ -44,7 +46,8 @@ P: Competitive Singer — wants scoring, stats, and bragging rights (optional mo
 > Color: #a8daff
 
 ```
-P: Social Sharer — wants clips/screenshots/results to share after the session
+P: Social Sharer - wants results or clips to share after a session
+
 
 ```
 
@@ -52,7 +55,8 @@ P: Social Sharer — wants clips/screenshots/results to share after the session
 > Color: #a8daff
 
 ```
-P: Privacy-Conscious User — wants control over microphone use and recording, with clear consent
+P: Privacy-Conscious User - wants control over mic usage and recording
+
 
 ```
 
@@ -249,7 +253,7 @@ R: Competitive scoring mode is optional and can be enabled per session
 Sticky
 ```
 
-## USER FLOWNOTES
+## USER FLOW NOTES
 
 ### STICKY: 21:468
 > Color: #a8daff
@@ -347,20 +351,14 @@ S: At end, users see a summary screen with share / replay / new song options
 
 ```
 
-### STICKY: 29:505
-> Color: #a8daff
-
-```
-Sticky
-```
-
 ## EDGE CASES
 
 ### STICKY: 21:475
 > Color: #a8daff
 
 ```
-E: User joins session late (mid-song) — should sync to current lyric position
+EXIT: User joins session mid-song
+SYS: Sync lyrics to current playback position
 
 ```
 
@@ -368,7 +366,8 @@ E: User joins session late (mid-song) — should sync to current lyric position
 > Color: #a8daff
 
 ```
-E: Microphone permission denied — user can still continue in lyrics-only mode
+EXIT: Network interruption
+SYS: Attempt resync and show connection status
 
 ```
 
@@ -376,7 +375,8 @@ E: Microphone permission denied — user can still continue in lyrics-only mode
 > Color: #a8daff
 
 ```
-E: Host disconnects — session should either pause, transfer host, or end gracefully
+EXIT: Host disconnects
+SYS: Pause session or transfer host
 
 ```
 
@@ -384,7 +384,8 @@ E: Host disconnects — session should either pause, transfer host, or end grace
 > Color: #a8daff
 
 ```
-E: Participant disconnects — they should be able to rejoin quickly
+EXIT: Participant disconnects
+SYS: Allow quick rejoin
 
 ```
 
@@ -392,7 +393,8 @@ E: Participant disconnects — they should be able to rejoin quickly
 > Color: #a8daff
 
 ```
-E: Bad network causes lyric desync — show “resync” option and continue playback
+EXIT: Invite link expired
+SYS: Show recovery message and exit
 
 ```
 
@@ -400,7 +402,8 @@ E: Bad network causes lyric desync — show “resync” option and continue pla
 > Color: #a8daff
 
 ```
-E: Song unavailable in region — Karaoke entry should explain and offer alternatives
+EXIT: Song unavailable in region
+SYS: Explain limitation and suggest alternatives
 
 ```
 
@@ -408,7 +411,7 @@ E: Song unavailable in region — Karaoke entry should explain and offer alterna
 > Color: #a8daff
 
 ```
-E: Invite link expired or invalid — show friendly recovery path
+EXIT: Invite link expired or invalid SYS: Show friendly recovery path
 
 ```
 
@@ -416,7 +419,8 @@ E: Invite link expired or invalid — show friendly recovery path
 > Color: #a8daff
 
 ```
-E: Too many participants — enforce a session cap and communicate why
+EXIT: Too many participants — 
+SYS: Enforce a session cap and communicate why
 
 ```
 
@@ -424,7 +428,8 @@ E: Too many participants — enforce a session cap and communicate why
 > Color: #a8daff
 
 ```
-E: User receives a call/audio interruption — resume experience smoothly
+EXIT: User receives a call/audio interruption
+SYS: resume experience smoothly
 
 ```
 
@@ -432,7 +437,8 @@ E: User receives a call/audio interruption — resume experience smoothly
 > Color: #a8daff
 
 ```
-E: Abusive participant — allow report + leave + block actions
+EXIT: Abusive participant 
+SYS: Allow report + leave + block actions
 
 ```
 
@@ -443,13 +449,13 @@ E: Abusive participant — allow report + leave + block actions
 Sticky
 ```
 
-## OPEN QUESTIONS
+## ASSUMPTIONS
 
 ### STICKY: 21:482
 > Color: #a8daff
 
 ```
-Q: Do we record audio at all, or is it a purely live sing-along experience?
+ASSUMPTION: Lyrics licensing allows karaoke-style display
 
 ```
 
@@ -457,27 +463,44 @@ Q: Do we record audio at all, or is it a purely live sing-along experience?
 > Color: #a8daff
 
 ```
-Q: Is With Friends playback truly synchronized or “best-effort” with tolerance?
+ASSUMPTION: Small latency is acceptable in group sessions
 
 ```
 
-### STICKY: 30:688
+## QUESTIONS
+
+### STICKY: 57:773
 > Color: #a8daff
 
 ```
-Q: Do we need a host at all times, or can sessions be hostless?
-
+Q: Is audio recorded or purely live?
 ```
 
-### STICKY: 30:692
+### STICKY: 57:774
 > Color: #a8daff
 
 ```
-Q: Do we support duets / rotating solo lines, or everyone sings everything?
+Q: Is group playback strict-sync or best-effort?
 
 ```
 
-### STICKY: 30:696
+### STICKY: 57:775
+> Color: #a8daff
+
+```
+Q: Is a host required at all times?
+
+```
+
+### STICKY: 57:776
+> Color: #a8daff
+
+```
+Q: Do we support duets or rotating solos?
+
+```
+
+### STICKY: 57:777
 > Color: #a8daff
 
 ```
@@ -485,7 +508,7 @@ Q: Should sessions support video, or audio-only, or lyrics-only?
 
 ```
 
-### STICKY: 30:700
+### STICKY: 57:778
 > Color: #a8daff
 
 ```
@@ -493,7 +516,7 @@ Q: Do we support scoring in v1? If yes, what model and what feedback UI?
 
 ```
 
-### STICKY: 30:704
+### STICKY: 57:779
 > Color: #a8daff
 
 ```
@@ -501,7 +524,7 @@ Q: Where does Karaoke live in the Spotify IA (song page, now playing, search)?
 
 ```
 
-### STICKY: 30:708
+### STICKY: 57:780
 > Color: #a8daff
 
 ```
@@ -509,7 +532,7 @@ Q: How do we handle explicit lyrics / content controls in group sessions?
 
 ```
 
-### STICKY: 30:712
+### STICKY: 57:781
 > Color: #a8daff
 
 ```
@@ -517,11 +540,152 @@ Q: What is the max participant count for a good experience?
 
 ```
 
-### STICKY: 29:509
+## RISKS
+
+### STICKY: 57:810
 > Color: #a8daff
 
 ```
-Sticky
+RISK: Audio desync on low-end devices
+```
+
+### STICKY: 57:811
+> Color: #a8daff
+
+```
+RISK: Abuse in group sessions
+
+```
+
+### STICKY: 57:812
+> Color: #a8daff
+
+```
+RISK: Privacy concerns around microphone usage
+
+
+```
+
+## FLOW : SOLO KARAOKE
+
+### STICKY: 57:720
+> Color: #b3efbd
+
+```
+F: Solo Karaoke
+A: User
+
+START: User initiates Solo Karaoke from a song
+
+S: (S1) User opens a song detail page
+S: (S2) User taps “Karaoke”
+SYS: Evaluate Karaoke availability for the song
+
+D: Is Karaoke supported for this song?
+E: D1 -> S3 [label=Yes]
+E: D1 -> END_EXIT [label=No]
+
+S: (S3) User selects Solo Karaoke mode
+SYS: Request microphone permission (just-in-time)
+
+D: Is microphone permission granted?
+E: D2 -> S4 [label=Yes]
+E: D2 -> S5 [label=No]
+
+S: (S4) Start Solo Karaoke with live lyrics + mic input
+S: (S5) Start Solo Karaoke in lyrics-only mode
+
+END: Solo Karaoke session completed
+END: User exits Solo Karaoke early
+
+
+```
+
+## FLOW: HOST WITH FRIENDS
+
+### STICKY: 57:760
+> Color: #b3efbd
+
+```
+F: Host With Friends
+A: Host
+
+START: Host initiates Karaoke with Friends from a song
+
+S: (H1) Host taps “Karaoke”
+S: (H2) Host selects “With Friends”
+SYS: Create karaoke session and lobby
+
+SYS: Request microphone permission (just-in-time)
+
+D: Is microphone permission granted?
+E: D3 -> H3 [label=Yes]
+E: D3 -> H4 [label=No]
+
+S: (H3) Host enters lobby with mic enabled
+S: (H4) Host enters lobby in lyrics-only mode
+
+S: (H5) Host shares invite link
+SYS: Generate invite link
+
+D: How does host invite friends?
+E: D4 -> H6 [label=Share Sheet]
+E: D4 -> H7 [label=Copy Link]
+
+S: (H8) Host waits in lobby
+SYS: Display joined participants and readiness state
+
+D: Are participants ready?
+E: D5 -> H9 [label=Yes]
+E: D5 -> H8 [label=No]
+
+S: (H9) Host starts Karaoke session
+SYS: Sync lyrics and playback for all participants
+
+END: Group Karaoke session completed
+END: Host leaves or ends session
+
+```
+
+## FLOW: JOIN VIA INVITE LINK
+
+### STICKY: 57:765
+> Color: #b3efbd
+
+```
+F: Join via Invite Link
+A: Guest
+
+START: Guest opens Karaoke invite link
+
+SYS: Validate invite link
+
+D: Is invite link valid?
+E: D6 -> G1 [label=Yes]
+E: D6 -> END_ERROR [label=No]
+
+S: (G1) Guest joins lobby
+SYS: Display song, participants, and session status
+
+SYS: Request microphone permission (just-in-time)
+
+D: Is microphone permission granted?
+E: D7 -> G2 [label=Yes]
+E: D7 -> G3 [label=No]
+
+S: (G2) Guest joins with mic enabled
+S: (G3) Guest joins in lyrics-only mode
+
+D: Has host started the session?
+E: D8 -> G4 [label=Yes]
+E: D8 -> G1 [label=No]
+
+S: (G4) Participate in karaoke session
+
+END: Guest leaves session
+END: Session ends
+
+
 ```
 
 ## CONTEXT
@@ -530,20 +694,39 @@ Sticky
 > Color: #a8daff
 
 ```
-CONTEXT:
-Project: Spotify Karaoke
-Client: Spotify
-OutputSlug: spotify_karaoke
-Version: v1
-Date: 2026-01-26
-Owner: Blue
-Platform: Mobile (iOS + Android)
-Goal: Sing along to songs solo or with friends
-Constraints: Privacy-first, low friction entry, works with imperfect network
+CTX: Project = Spotify Karaoke
+CTX: Client = Spotify
+CTX: OutputSlug = spotify_karaoke
+CTX: Version = v1
+CTX: Platform = Mobile (iOS, Android)
+CTX: Owner = Blue
+
+G: Enable users to sing along to songs solo or with friends
+G: Provide a fast, low-friction entry into karaoke from a song
+G: Preserve privacy and consent around microphone use
+G: Support imperfect networks with graceful degradation
 
 ```
 
 ### STICKY: 29:511
+> Color: #a8daff
+
+```
+Sticky
+```
+
+## USER FLOWNOTES
+
+### STICKY: 29:505
+> Color: #a8daff
+
+```
+Sticky
+```
+
+## OPEN QUESTIONS
+
+### STICKY: 29:509
 > Color: #a8daff
 
 ```

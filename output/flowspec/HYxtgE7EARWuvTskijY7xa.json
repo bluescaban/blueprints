@@ -25,7 +25,7 @@
                 "children": [
                   {
                     "id": "21:447",
-                    "name": "P: Casual Listener — wants a fun, low-pressure way to sing along without needing talent",
+                    "name": "P: Casual Listener - wants a low-pressure, no-judgment karaoke experience",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -111,11 +111,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "P: Casual Listener — wants a fun, low-pressure way to sing along without needing talent\n"
+                    "characters": "P: Casual Listener - wants a low-pressure, no-judgment karaoke experience"
                   },
                   {
                     "id": "22:385",
-                    "name": "P: Karaoke Host — wants to start a session fast and invite friends with minimal setup",
+                    "name": "P: Karaoke Host - wants to start a session fast and invite friends easily",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -201,11 +201,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "P: Karaoke Host — wants to start a session fast and invite friends with minimal setup\n"
+                    "characters": "P: Karaoke Host - wants to start a session fast and invite friends easily\n\n"
                   },
                   {
                     "id": "22:392",
-                    "name": "P: Friend Participant — wants to join instantly from an invite link and know what to do next",
+                    "name": "P: Friend Participant - wants to join instantly and understand what to do next",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -291,11 +291,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "P: Friend Participant — wants to join instantly from an invite link and know what to do next\n"
+                    "characters": "P: Friend Participant - wants to join instantly and understand what to do next\n\n"
                   },
                   {
                     "id": "22:396",
-                    "name": "P: Competitive Singer — wants scoring, stats, and bragging rights (optional mode)",
+                    "name": "P: Competitive Singer - wants scoring and performance feedback (optional)",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -381,11 +381,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "P: Competitive Singer — wants scoring, stats, and bragging rights (optional mode)\n"
+                    "characters": "P: Competitive Singer - wants scoring and performance feedback (optional)\n\n"
                   },
                   {
                     "id": "22:400",
-                    "name": "P: Social Sharer — wants clips/screenshots/results to share after the session",
+                    "name": "P: Social Sharer - wants results or clips to share after a session",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -471,11 +471,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "P: Social Sharer — wants clips/screenshots/results to share after the session\n"
+                    "characters": "P: Social Sharer - wants results or clips to share after a session\n\n"
                   },
                   {
                     "id": "22:404",
-                    "name": "P: Privacy-Conscious User — wants control over microphone use and recording, with clear consent",
+                    "name": "P: Privacy-Conscious User - wants control over mic usage and recording",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -561,7 +561,7 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "P: Privacy-Conscious User — wants control over microphone use and recording, with clear consent\n"
+                    "characters": "P: Privacy-Conscious User - wants control over mic usage and recording\n\n"
                   }
                 ],
                 "fills": [
@@ -2602,7 +2602,7 @@
               },
               {
                 "id": "21:75",
-                "name": "USER FLOWNOTES",
+                "name": "USER FLOW NOTES",
                 "type": "SECTION",
                 "scrollBehavior": "SCROLLS",
                 "children": [
@@ -3739,7 +3739,7 @@
                 "children": [
                   {
                     "id": "21:475",
-                    "name": "E: User joins session late (mid-song) — should sync to current lyric position",
+                    "name": "EXIT: User joins session mid-song SYS: Sync lyrics to current playback position",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -3825,11 +3825,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: User joins session late (mid-song) — should sync to current lyric position\n"
+                    "characters": "EXIT: User joins session mid-song\nSYS: Sync lyrics to current playback position\n"
                   },
                   {
                     "id": "30:632",
-                    "name": "E: Microphone permission denied — user can still continue in lyrics-only mode",
+                    "name": "EXIT: Network interruption SYS: Attempt resync and show connection status",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -3915,11 +3915,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: Microphone permission denied — user can still continue in lyrics-only mode\n"
+                    "characters": "EXIT: Network interruption\nSYS: Attempt resync and show connection status\n"
                   },
                   {
                     "id": "30:639",
-                    "name": "E: Host disconnects — session should either pause, transfer host, or end gracefully",
+                    "name": "EXIT: Host disconnects SYS: Pause session or transfer host",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -4005,11 +4005,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: Host disconnects — session should either pause, transfer host, or end gracefully\n"
+                    "characters": "EXIT: Host disconnects\nSYS: Pause session or transfer host\n"
                   },
                   {
                     "id": "30:643",
-                    "name": "E: Participant disconnects — they should be able to rejoin quickly",
+                    "name": "EXIT: Participant disconnects SYS: Allow quick rejoin",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -4095,11 +4095,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: Participant disconnects — they should be able to rejoin quickly\n"
+                    "characters": "EXIT: Participant disconnects\nSYS: Allow quick rejoin\n"
                   },
                   {
                     "id": "30:647",
-                    "name": "E: Bad network causes lyric desync — show “resync” option and continue playback",
+                    "name": "EXIT: Invite link expired SYS: Show recovery message and exit",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -4185,11 +4185,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: Bad network causes lyric desync — show “resync” option and continue playback\n"
+                    "characters": "EXIT: Invite link expired\nSYS: Show recovery message and exit\n"
                   },
                   {
                     "id": "30:651",
-                    "name": "E: Song unavailable in region — Karaoke entry should explain and offer alternatives",
+                    "name": "EXIT: Song unavailable in region SYS: Explain limitation and suggest alternatives",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -4275,11 +4275,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: Song unavailable in region — Karaoke entry should explain and offer alternatives\n"
+                    "characters": "EXIT: Song unavailable in region\nSYS: Explain limitation and suggest alternatives\n"
                   },
                   {
                     "id": "30:655",
-                    "name": "E: Invite link expired or invalid — show friendly recovery path",
+                    "name": "EXIT: Invite link expired or invalid SYS: Show friendly recovery path",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -4365,11 +4365,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: Invite link expired or invalid — show friendly recovery path\n"
+                    "characters": "EXIT: Invite link expired or invalid SYS: Show friendly recovery path\n"
                   },
                   {
                     "id": "30:659",
-                    "name": "E: Too many participants — enforce a session cap and communicate why",
+                    "name": "EXIT: Too many participants — SYS: Enforce a session cap and communicate why",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -4455,11 +4455,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: Too many participants — enforce a session cap and communicate why\n"
+                    "characters": "EXIT: Too many participants — \nSYS: Enforce a session cap and communicate why\n"
                   },
                   {
                     "id": "30:663",
-                    "name": "E: User receives a call/audio interruption — resume experience smoothly",
+                    "name": "EXIT: User receives a call/audio interruption SYS: resume experience smoothly",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -4545,22 +4545,22 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: User receives a call/audio interruption — resume experience smoothly\n"
+                    "characters": "EXIT: User receives a call/audio interruption\nSYS: resume experience smoothly\n"
                   },
                   {
                     "id": "30:670",
-                    "name": "E: Abusive participant — allow report + leave + block actions",
+                    "name": "EXIT: Abusive participant SYS: Allow report + leave + block actions",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": 2224,
+                      "x": 2216,
                       "y": 1152,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": 2214,
+                      "x": 2206,
                       "y": 1150,
                       "width": 436,
                       "height": 260
@@ -4635,7 +4635,7 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "E: Abusive participant — allow report + leave + block actions\n"
+                    "characters": "EXIT: Abusive participant \nSYS: Allow report + leave + block actions\n"
                   }
                 ],
                 "fills": [
@@ -4684,13 +4684,13 @@
               },
               {
                 "id": "21:77",
-                "name": "OPEN QUESTIONS",
+                "name": "ASSUMPTIONS",
                 "type": "SECTION",
                 "scrollBehavior": "SCROLLS",
                 "children": [
                   {
                     "id": "21:482",
-                    "name": "Q: Do we record audio at all, or is it a purely live sing-along experience?",
+                    "name": "ASSUMPTION: Lyrics licensing allows karaoke-style display",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -4776,11 +4776,11 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "Q: Do we record audio at all, or is it a purely live sing-along experience?\n"
+                    "characters": "ASSUMPTION: Lyrics licensing allows karaoke-style display\n"
                   },
                   {
                     "id": "30:678",
-                    "name": "Q: Is With Friends playback truly synchronized or “best-effort” with tolerance?",
+                    "name": "ASSUMPTION: Small latency is acceptable in group sessions",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -4866,22 +4866,253 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "Q: Is With Friends playback truly synchronized or “best-effort” with tolerance?\n"
-                  },
+                    "characters": "ASSUMPTION: Small latency is acceptable in group sessions\n"
+                  }
+                ],
+                "fills": [
                   {
-                    "id": "30:688",
-                    "name": "Q: Do we need a host at all times, or can sessions be hostless?",
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.8588235378265381,
+                      "g": 0.9411764740943909,
+                      "b": 1,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokes": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.239215686917305,
+                      "g": 0.6784313917160034,
+                      "b": 1,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokeWeight": 2,
+                "strokeAlign": "INSIDE",
+                "strokeDashes": [
+                  16,
+                  10
+                ],
+                "absoluteBoundingBox": {
+                  "x": 2760.855224609375,
+                  "y": -1344,
+                  "width": 529.1759643554688,
+                  "height": 4208
+                },
+                "absoluteRenderBounds": {
+                  "x": 2760.855224609375,
+                  "y": -1344,
+                  "width": 529.176025390625,
+                  "height": 4208
+                },
+                "sectionContentsHidden": false
+              },
+              {
+                "id": "57:772",
+                "name": "QUESTIONS",
+                "type": "SECTION",
+                "scrollBehavior": "SCROLLS",
+                "children": [
+                  {
+                    "id": "57:773",
+                    "name": "Q: Is audio recorded or purely live?",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": 2818,
+                      "x": 3384.144775390625,
+                      "y": -1296,
+                      "width": 416,
+                      "height": 240
+                    },
+                    "absoluteRenderBounds": {
+                      "x": 3374.144775390625,
+                      "y": -1298,
+                      "width": 436,
+                      "height": 260
+                    },
+                    "constraints": {
+                      "vertical": "TOP",
+                      "horizontal": "LEFT"
+                    },
+                    "effects": [
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.019999999552965164
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 2.5
+                        },
+                        "radius": 2,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.03999999910593033
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 3
+                        },
+                        "radius": 5,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.07999999821186066
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "radius": 10,
+                        "showShadowBehindNode": true
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "blendMode": "NORMAL",
+                        "type": "SOLID",
+                        "color": {
+                          "r": 0.658823549747467,
+                          "g": 0.8549019694328308,
+                          "b": 1,
+                          "a": 1
+                        }
+                      }
+                    ],
+                    "authorVisible": true,
+                    "characters": "Q: Is audio recorded or purely live?"
+                  },
+                  {
+                    "id": "57:774",
+                    "name": "Q: Is group playback strict-sync or best-effort?",
+                    "type": "STICKY",
+                    "scrollBehavior": "SCROLLS",
+                    "blendMode": "PASS_THROUGH",
+                    "absoluteBoundingBox": {
+                      "x": 3384.144775390625,
+                      "y": -1025,
+                      "width": 416,
+                      "height": 240
+                    },
+                    "absoluteRenderBounds": {
+                      "x": 3374.144775390625,
+                      "y": -1027,
+                      "width": 436,
+                      "height": 260
+                    },
+                    "constraints": {
+                      "vertical": "TOP",
+                      "horizontal": "LEFT"
+                    },
+                    "effects": [
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.019999999552965164
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 2.5
+                        },
+                        "radius": 2,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.03999999910593033
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 3
+                        },
+                        "radius": 5,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.07999999821186066
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "radius": 10,
+                        "showShadowBehindNode": true
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "blendMode": "NORMAL",
+                        "type": "SOLID",
+                        "color": {
+                          "r": 0.658823549747467,
+                          "g": 0.8549019694328308,
+                          "b": 1,
+                          "a": 1
+                        }
+                      }
+                    ],
+                    "authorVisible": true,
+                    "characters": "Q: Is group playback strict-sync or best-effort?\n"
+                  },
+                  {
+                    "id": "57:775",
+                    "name": "Q: Is a host required at all times?",
+                    "type": "STICKY",
+                    "scrollBehavior": "SCROLLS",
+                    "blendMode": "PASS_THROUGH",
+                    "absoluteBoundingBox": {
+                      "x": 3385.144775390625,
                       "y": -754,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": 2808,
+                      "x": 3375.144775390625,
                       "y": -756,
                       "width": 436,
                       "height": 260
@@ -4956,22 +5187,22 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "Q: Do we need a host at all times, or can sessions be hostless?\n"
+                    "characters": "Q: Is a host required at all times?\n"
                   },
                   {
-                    "id": "30:692",
-                    "name": "Q: Do we support duets / rotating solo lines, or everyone sings everything?",
+                    "id": "57:776",
+                    "name": "Q: Do we support duets or rotating solos?",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": 2819,
+                      "x": 3386.144775390625,
                       "y": -483,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": 2809,
+                      "x": 3376.144775390625,
                       "y": -485,
                       "width": 436,
                       "height": 260
@@ -5046,22 +5277,22 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "Q: Do we support duets / rotating solo lines, or everyone sings everything?\n"
+                    "characters": "Q: Do we support duets or rotating solos?\n"
                   },
                   {
-                    "id": "30:696",
+                    "id": "57:777",
                     "name": "Q: Should sessions support video, or audio-only, or lyrics-only?",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": 2820,
+                      "x": 3387.144775390625,
                       "y": -212,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": 2810,
+                      "x": 3377.144775390625,
                       "y": -214,
                       "width": 436,
                       "height": 260
@@ -5139,19 +5370,19 @@
                     "characters": "Q: Should sessions support video, or audio-only, or lyrics-only?\n"
                   },
                   {
-                    "id": "30:700",
+                    "id": "57:778",
                     "name": "Q: Do we support scoring in v1? If yes, what model and what feedback UI?",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": 2821,
+                      "x": 3388.144775390625,
                       "y": 59,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": 2811,
+                      "x": 3378.144775390625,
                       "y": 57,
                       "width": 436,
                       "height": 260
@@ -5229,19 +5460,19 @@
                     "characters": "Q: Do we support scoring in v1? If yes, what model and what feedback UI?\n"
                   },
                   {
-                    "id": "30:704",
+                    "id": "57:779",
                     "name": "Q: Where does Karaoke live in the Spotify IA (song page, now playing, search)?",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": 2822,
+                      "x": 3389.144775390625,
                       "y": 330,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": 2812,
+                      "x": 3379.144775390625,
                       "y": 328,
                       "width": 436,
                       "height": 260
@@ -5319,19 +5550,19 @@
                     "characters": "Q: Where does Karaoke live in the Spotify IA (song page, now playing, search)?\n"
                   },
                   {
-                    "id": "30:708",
+                    "id": "57:780",
                     "name": "Q: How do we handle explicit lyrics / content controls in group sessions?",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": 2823,
+                      "x": 3390.144775390625,
                       "y": 601,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": 2813,
+                      "x": 3380.144775390625,
                       "y": 599,
                       "width": 436,
                       "height": 260
@@ -5409,19 +5640,19 @@
                     "characters": "Q: How do we handle explicit lyrics / content controls in group sessions?\n"
                   },
                   {
-                    "id": "30:712",
+                    "id": "57:781",
                     "name": "Q: What is the max participant count for a good experience?",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": 2823,
+                      "x": 3390.144775390625,
                       "y": 872,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": 2813,
+                      "x": 3380.144775390625,
                       "y": 870,
                       "width": 436,
                       "height": 260
@@ -5530,13 +5761,13 @@
                   10
                 ],
                 "absoluteBoundingBox": {
-                  "x": 2760.855224609375,
+                  "x": 3328,
                   "y": -1344,
                   "width": 529.1759643554688,
                   "height": 4208
                 },
                 "absoluteRenderBounds": {
-                  "x": 2760.855224609375,
+                  "x": 3328,
                   "y": -1344,
                   "width": 529.176025390625,
                   "height": 4208
@@ -5544,28 +5775,28 @@
                 "sectionContentsHidden": false
               },
               {
-                "id": "21:57",
-                "name": "CONTEXT",
+                "id": "57:809",
+                "name": "RISKS",
                 "type": "SECTION",
                 "scrollBehavior": "SCROLLS",
                 "children": [
                   {
-                    "id": "21:117",
-                    "name": "CONTEXT: Project: Spotify Karaoke Client: Spotify OutputSlug: spotify_karaoke Version: v1 Date: 2026-01-26 Owner: Blue Platform: Mobile (iOS + Android) Goal: Sing along to songs solo or with friends Constraints: Privacy-first, low friction entry, works with imperfect network",
+                    "id": "57:810",
+                    "name": "RISK: Audio desync on low-end devices",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": -807,
+                      "x": 3960.144775390625,
                       "y": -1296,
                       "width": 416,
-                      "height": 408
+                      "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": -817,
+                      "x": 3950.144775390625,
                       "y": -1298,
-                      "width": 436,
-                      "height": 428
+                      "width": 435.999755859375,
+                      "height": 260
                     },
                     "constraints": {
                       "vertical": "TOP",
@@ -5637,7 +5868,751 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "CONTEXT:\nProject: Spotify Karaoke\nClient: Spotify\nOutputSlug: spotify_karaoke\nVersion: v1\nDate: 2026-01-26\nOwner: Blue\nPlatform: Mobile (iOS + Android)\nGoal: Sing along to songs solo or with friends\nConstraints: Privacy-first, low friction entry, works with imperfect network\n"
+                    "characters": "RISK: Audio desync on low-end devices"
+                  },
+                  {
+                    "id": "57:811",
+                    "name": "RISK: Abuse in group sessions",
+                    "type": "STICKY",
+                    "scrollBehavior": "SCROLLS",
+                    "blendMode": "PASS_THROUGH",
+                    "absoluteBoundingBox": {
+                      "x": 3960.144775390625,
+                      "y": -1025,
+                      "width": 416,
+                      "height": 240
+                    },
+                    "absoluteRenderBounds": {
+                      "x": 3950.144775390625,
+                      "y": -1027,
+                      "width": 435.999755859375,
+                      "height": 260
+                    },
+                    "constraints": {
+                      "vertical": "TOP",
+                      "horizontal": "LEFT"
+                    },
+                    "effects": [
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.019999999552965164
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 2.5
+                        },
+                        "radius": 2,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.03999999910593033
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 3
+                        },
+                        "radius": 5,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.07999999821186066
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "radius": 10,
+                        "showShadowBehindNode": true
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "blendMode": "NORMAL",
+                        "type": "SOLID",
+                        "color": {
+                          "r": 0.658823549747467,
+                          "g": 0.8549019694328308,
+                          "b": 1,
+                          "a": 1
+                        }
+                      }
+                    ],
+                    "authorVisible": true,
+                    "characters": "RISK: Abuse in group sessions\n"
+                  },
+                  {
+                    "id": "57:812",
+                    "name": "RISK: Privacy concerns around microphone usage",
+                    "type": "STICKY",
+                    "scrollBehavior": "SCROLLS",
+                    "blendMode": "PASS_THROUGH",
+                    "absoluteBoundingBox": {
+                      "x": 3961.144775390625,
+                      "y": -754,
+                      "width": 416,
+                      "height": 240
+                    },
+                    "absoluteRenderBounds": {
+                      "x": 3951.144775390625,
+                      "y": -756,
+                      "width": 435.999755859375,
+                      "height": 260
+                    },
+                    "constraints": {
+                      "vertical": "TOP",
+                      "horizontal": "LEFT"
+                    },
+                    "effects": [
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.019999999552965164
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 2.5
+                        },
+                        "radius": 2,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.03999999910593033
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 3
+                        },
+                        "radius": 5,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.07999999821186066
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "radius": 10,
+                        "showShadowBehindNode": true
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "blendMode": "NORMAL",
+                        "type": "SOLID",
+                        "color": {
+                          "r": 0.658823549747467,
+                          "g": 0.8549019694328308,
+                          "b": 1,
+                          "a": 1
+                        }
+                      }
+                    ],
+                    "authorVisible": true,
+                    "characters": "RISK: Privacy concerns around microphone usage\n\n"
+                  }
+                ],
+                "fills": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.8588235378265381,
+                      "g": 0.9411764740943909,
+                      "b": 1,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokes": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.239215686917305,
+                      "g": 0.6784313917160034,
+                      "b": 1,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokeWeight": 2,
+                "strokeAlign": "INSIDE",
+                "strokeDashes": [
+                  16,
+                  10
+                ],
+                "absoluteBoundingBox": {
+                  "x": 3904,
+                  "y": -1344,
+                  "width": 529.1759643554688,
+                  "height": 4208
+                },
+                "absoluteRenderBounds": {
+                  "x": 3904,
+                  "y": -1344,
+                  "width": 529.1759643554688,
+                  "height": 4208
+                },
+                "sectionContentsHidden": false
+              },
+              {
+                "id": "57:719",
+                "name": "FLOW : SOLO KARAOKE",
+                "type": "SECTION",
+                "scrollBehavior": "SCROLLS",
+                "children": [
+                  {
+                    "id": "57:720",
+                    "name": "F: Solo Karaoke A: User START: User initiates Solo Karaoke from a song S: (S1) User opens a song detail page S: (S2) User taps “Karaoke” SYS: Evaluate Karaoke availability for the song D: Is Karaoke supported for this song? E: D1 -> S3 [label=Yes] E: D1 -> END_EXIT [label=No] S: (S3) User selects Solo Karaoke mode SYS: Request microphone permission (just-in-time) D: Is microphone permission granted? E: D2 -> S4 [label=Yes] E: D2 -> S5 [label=No] S: (S4) Start Solo Karaoke with live lyrics + mic input S: (S5) Start Solo Karaoke in lyrics-only mode END: Solo Karaoke session completed END: User exits Solo Karaoke early",
+                    "type": "STICKY",
+                    "scrollBehavior": "SCROLLS",
+                    "blendMode": "PASS_THROUGH",
+                    "absoluteBoundingBox": {
+                      "x": 4546.14453125,
+                      "y": -1296,
+                      "width": 416,
+                      "height": 840
+                    },
+                    "absoluteRenderBounds": {
+                      "x": 4536.14453125,
+                      "y": -1298,
+                      "width": 436,
+                      "height": 860
+                    },
+                    "constraints": {
+                      "vertical": "TOP",
+                      "horizontal": "LEFT"
+                    },
+                    "effects": [
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.019999999552965164
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 2.5
+                        },
+                        "radius": 2,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.03999999910593033
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 3
+                        },
+                        "radius": 5,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.07999999821186066
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "radius": 10,
+                        "showShadowBehindNode": true
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "blendMode": "NORMAL",
+                        "type": "SOLID",
+                        "color": {
+                          "r": 0.7019608020782471,
+                          "g": 0.9372549057006836,
+                          "b": 0.7411764860153198,
+                          "a": 1
+                        }
+                      }
+                    ],
+                    "authorVisible": true,
+                    "characters": "F: Solo Karaoke\nA: User\n\nSTART: User initiates Solo Karaoke from a song\n\nS: (S1) User opens a song detail page\nS: (S2) User taps “Karaoke”\nSYS: Evaluate Karaoke availability for the song\n\nD: Is Karaoke supported for this song?\nE: D1 -> S3 [label=Yes]\nE: D1 -> END_EXIT [label=No]\n\nS: (S3) User selects Solo Karaoke mode\nSYS: Request microphone permission (just-in-time)\n\nD: Is microphone permission granted?\nE: D2 -> S4 [label=Yes]\nE: D2 -> S5 [label=No]\n\nS: (S4) Start Solo Karaoke with live lyrics + mic input\nS: (S5) Start Solo Karaoke in lyrics-only mode\n\nEND: Solo Karaoke session completed\nEND: User exits Solo Karaoke early\n\n"
+                  }
+                ],
+                "fills": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.8666666746139526,
+                      "g": 0.9725490212440491,
+                      "b": 0.886274516582489,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokes": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.4000000059604645,
+                      "g": 0.8352941274642944,
+                      "b": 0.4588235318660736,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokeWeight": 2,
+                "strokeAlign": "INSIDE",
+                "strokeDashes": [
+                  16,
+                  10
+                ],
+                "absoluteBoundingBox": {
+                  "x": 4490,
+                  "y": -1344,
+                  "width": 529.1759643554688,
+                  "height": 4208
+                },
+                "absoluteRenderBounds": {
+                  "x": 4490,
+                  "y": -1344,
+                  "width": 529.1759643554688,
+                  "height": 4208
+                },
+                "sectionContentsHidden": false
+              },
+              {
+                "id": "57:759",
+                "name": "FLOW: HOST WITH FRIENDS",
+                "type": "SECTION",
+                "scrollBehavior": "SCROLLS",
+                "children": [
+                  {
+                    "id": "57:760",
+                    "name": "F: Host With Friends A: Host START: Host initiates Karaoke with Friends from a song S: (H1) Host taps “Karaoke” S: (H2) Host selects “With Friends” SYS: Create karaoke session and lobby SYS: Request microphone permission (just-in-time) D: Is microphone permission granted? E: D3 -> H3 [label=Yes] E: D3 -> H4 [label=No] S: (H3) Host enters lobby with mic enabled S: (H4) Host enters lobby in lyrics-only mode S: (H5) Host shares invite link SYS: Generate invite link D: How does host invite friends? E: D4 -> H6 [label=Share Sheet] E: D4 -> H7 [label=Copy Link] S: (H8) Host waits in lobby SYS: Display joined participants and readiness state D: Are participants ready? E: D5 -> H9 [label=Yes] E: D5 -> H8 [label=No] S: (H9) Host starts Karaoke session SYS: Sync lyrics and playback for all participants END: Group Karaoke session completed END: Host leaves or ends session",
+                    "type": "STICKY",
+                    "scrollBehavior": "SCROLLS",
+                    "blendMode": "PASS_THROUGH",
+                    "absoluteBoundingBox": {
+                      "x": 5122.14453125,
+                      "y": -1296,
+                      "width": 416,
+                      "height": 1128
+                    },
+                    "absoluteRenderBounds": {
+                      "x": 5112.14453125,
+                      "y": -1298,
+                      "width": 436,
+                      "height": 1148
+                    },
+                    "constraints": {
+                      "vertical": "TOP",
+                      "horizontal": "LEFT"
+                    },
+                    "effects": [
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.019999999552965164
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 2.5
+                        },
+                        "radius": 2,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.03999999910593033
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 3
+                        },
+                        "radius": 5,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.07999999821186066
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "radius": 10,
+                        "showShadowBehindNode": true
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "blendMode": "NORMAL",
+                        "type": "SOLID",
+                        "color": {
+                          "r": 0.7019608020782471,
+                          "g": 0.9372549057006836,
+                          "b": 0.7411764860153198,
+                          "a": 1
+                        }
+                      }
+                    ],
+                    "authorVisible": true,
+                    "characters": "F: Host With Friends\nA: Host\n\nSTART: Host initiates Karaoke with Friends from a song\n\nS: (H1) Host taps “Karaoke”\nS: (H2) Host selects “With Friends”\nSYS: Create karaoke session and lobby\n\nSYS: Request microphone permission (just-in-time)\n\nD: Is microphone permission granted?\nE: D3 -> H3 [label=Yes]\nE: D3 -> H4 [label=No]\n\nS: (H3) Host enters lobby with mic enabled\nS: (H4) Host enters lobby in lyrics-only mode\n\nS: (H5) Host shares invite link\nSYS: Generate invite link\n\nD: How does host invite friends?\nE: D4 -> H6 [label=Share Sheet]\nE: D4 -> H7 [label=Copy Link]\n\nS: (H8) Host waits in lobby\nSYS: Display joined participants and readiness state\n\nD: Are participants ready?\nE: D5 -> H9 [label=Yes]\nE: D5 -> H8 [label=No]\n\nS: (H9) Host starts Karaoke session\nSYS: Sync lyrics and playback for all participants\n\nEND: Group Karaoke session completed\nEND: Host leaves or ends session\n"
+                  }
+                ],
+                "fills": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.8666666746139526,
+                      "g": 0.9725490212440491,
+                      "b": 0.886274516582489,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokes": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.4000000059604645,
+                      "g": 0.8352941274642944,
+                      "b": 0.4588235318660736,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokeWeight": 2,
+                "strokeAlign": "INSIDE",
+                "strokeDashes": [
+                  16,
+                  10
+                ],
+                "absoluteBoundingBox": {
+                  "x": 5066,
+                  "y": -1344,
+                  "width": 529.1759643554688,
+                  "height": 4208
+                },
+                "absoluteRenderBounds": {
+                  "x": 5066,
+                  "y": -1344,
+                  "width": 529.1759643554688,
+                  "height": 4208
+                },
+                "sectionContentsHidden": false
+              },
+              {
+                "id": "57:764",
+                "name": "FLOW: JOIN VIA INVITE LINK",
+                "type": "SECTION",
+                "scrollBehavior": "SCROLLS",
+                "children": [
+                  {
+                    "id": "57:765",
+                    "name": "F: Join via Invite Link A: Guest START: Guest opens Karaoke invite link SYS: Validate invite link D: Is invite link valid? E: D6 -> G1 [label=Yes] E: D6 -> END_ERROR [label=No] S: (G1) Guest joins lobby SYS: Display song, participants, and session status SYS: Request microphone permission (just-in-time) D: Is microphone permission granted? E: D7 -> G2 [label=Yes] E: D7 -> G3 [label=No] S: (G2) Guest joins with mic enabled S: (G3) Guest joins in lyrics-only mode D: Has host started the session? E: D8 -> G4 [label=Yes] E: D8 -> G1 [label=No] S: (G4) Participate in karaoke session END: Guest leaves session END: Session ends",
+                    "type": "STICKY",
+                    "scrollBehavior": "SCROLLS",
+                    "blendMode": "PASS_THROUGH",
+                    "absoluteBoundingBox": {
+                      "x": 5691.14453125,
+                      "y": -1296,
+                      "width": 416,
+                      "height": 912
+                    },
+                    "absoluteRenderBounds": {
+                      "x": 5681.14453125,
+                      "y": -1298,
+                      "width": 436,
+                      "height": 932
+                    },
+                    "constraints": {
+                      "vertical": "TOP",
+                      "horizontal": "LEFT"
+                    },
+                    "effects": [
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.019999999552965164
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 2.5
+                        },
+                        "radius": 2,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.03999999910593033
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 3
+                        },
+                        "radius": 5,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.07999999821186066
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "radius": 10,
+                        "showShadowBehindNode": true
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "blendMode": "NORMAL",
+                        "type": "SOLID",
+                        "color": {
+                          "r": 0.7019608020782471,
+                          "g": 0.9372549057006836,
+                          "b": 0.7411764860153198,
+                          "a": 1
+                        }
+                      }
+                    ],
+                    "authorVisible": true,
+                    "characters": "F: Join via Invite Link\nA: Guest\n\nSTART: Guest opens Karaoke invite link\n\nSYS: Validate invite link\n\nD: Is invite link valid?\nE: D6 -> G1 [label=Yes]\nE: D6 -> END_ERROR [label=No]\n\nS: (G1) Guest joins lobby\nSYS: Display song, participants, and session status\n\nSYS: Request microphone permission (just-in-time)\n\nD: Is microphone permission granted?\nE: D7 -> G2 [label=Yes]\nE: D7 -> G3 [label=No]\n\nS: (G2) Guest joins with mic enabled\nS: (G3) Guest joins in lyrics-only mode\n\nD: Has host started the session?\nE: D8 -> G4 [label=Yes]\nE: D8 -> G1 [label=No]\n\nS: (G4) Participate in karaoke session\n\nEND: Guest leaves session\nEND: Session ends\n\n"
+                  }
+                ],
+                "fills": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.8666666746139526,
+                      "g": 0.9725490212440491,
+                      "b": 0.886274516582489,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokes": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.4000000059604645,
+                      "g": 0.8352941274642944,
+                      "b": 0.4588235318660736,
+                      "a": 1
+                    }
+                  }
+                ],
+                "strokeWeight": 2,
+                "strokeAlign": "INSIDE",
+                "strokeDashes": [
+                  16,
+                  10
+                ],
+                "absoluteBoundingBox": {
+                  "x": 5635,
+                  "y": -1344,
+                  "width": 529.1759643554688,
+                  "height": 4208
+                },
+                "absoluteRenderBounds": {
+                  "x": 5635,
+                  "y": -1344,
+                  "width": 529.1759643554688,
+                  "height": 4208
+                },
+                "sectionContentsHidden": false
+              },
+              {
+                "id": "21:57",
+                "name": "CONTEXT",
+                "type": "SECTION",
+                "scrollBehavior": "SCROLLS",
+                "children": [
+                  {
+                    "id": "21:117",
+                    "name": "CTX: Project = Spotify Karaoke CTX: Client = Spotify CTX: OutputSlug = spotify_karaoke CTX: Version = v1 CTX: Platform = Mobile (iOS, Android) CTX: Owner = Blue G: Enable users to sing along to songs solo or with friends G: Provide a fast, low-friction entry into karaoke from a song G: Preserve privacy and consent around microphone use G: Support imperfect networks with graceful degradation",
+                    "type": "STICKY",
+                    "scrollBehavior": "SCROLLS",
+                    "blendMode": "PASS_THROUGH",
+                    "absoluteBoundingBox": {
+                      "x": -807,
+                      "y": -1296,
+                      "width": 416,
+                      "height": 456
+                    },
+                    "absoluteRenderBounds": {
+                      "x": -817,
+                      "y": -1298,
+                      "width": 436,
+                      "height": 476
+                    },
+                    "constraints": {
+                      "vertical": "TOP",
+                      "horizontal": "LEFT"
+                    },
+                    "effects": [
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.019999999552965164
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 2.5
+                        },
+                        "radius": 2,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.03999999910593033
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 3
+                        },
+                        "radius": 5,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.07999999821186066
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "radius": 10,
+                        "showShadowBehindNode": true
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "blendMode": "NORMAL",
+                        "type": "SOLID",
+                        "color": {
+                          "r": 0.658823549747467,
+                          "g": 0.8549019694328308,
+                          "b": 1,
+                          "a": 1
+                        }
+                      }
+                    ],
+                    "authorVisible": true,
+                    "characters": "CTX: Project = Spotify Karaoke\nCTX: Client = Spotify\nCTX: OutputSlug = spotify_karaoke\nCTX: Version = v1\nCTX: Platform = Mobile (iOS, Android)\nCTX: Owner = Blue\n\nG: Enable users to sing along to songs solo or with friends\nG: Provide a fast, low-friction entry into karaoke from a song\nG: Preserve privacy and consent around microphone use\nG: Support imperfect networks with graceful degradation\n"
                   }
                 ],
                 "fills": [
@@ -5714,13 +6689,13 @@
             "absoluteBoundingBox": {
               "x": -1051,
               "y": -1584,
-              "width": 4539,
+              "width": 8203,
               "height": 4672
             },
             "absoluteRenderBounds": {
               "x": -1051,
               "y": -1584,
-              "width": 4539,
+              "width": 8203,
               "height": 4672
             },
             "sectionContentsHidden": false
@@ -6800,9 +7775,9 @@
   "schemaVersion": 0,
   "styles": {},
   "name": "BluePrints",
-  "lastModified": "2026-01-26T23:20:37Z",
-  "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/246ff290-56da-417c-acd8-e24871ebd615?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCV44OTG5P%2F20260125%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260125T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=d8d5e68fbb6bd9e912a0cc7ec758db1d6dbfc835a788fdc30b9b5f392532fbdf",
-  "version": "2313507735919742243",
+  "lastModified": "2026-01-27T20:17:09Z",
+  "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/46df942c-8794-488e-ba51-19ae0a5d2b7d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCV44OTG5P%2F20260125%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260125T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=43527dcf4f0c3a428d1f6d141c13289a8f36784b3431778a1ea0053ca1f0fad5",
+  "version": "2313834045075908101",
   "role": "owner",
   "editorType": "figjam",
   "linkAccess": "view"

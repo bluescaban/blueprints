@@ -263,4 +263,5 @@ export const nodeTypes = {
   system: SystemNode,
   start: StartNode,
   end: EndNode,
+  exit: EndNode, // Exit nodes use same styling as end (with exit detection)
 };

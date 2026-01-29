@@ -20,20 +20,44 @@ import { FlowGraph } from '@/lib/flowgraph-types';
 
 async function loadFlowGraph(): Promise<FlowGraph | null> {
   try {
-    // Try to load the most recent flowgraph from the output directory
     const outputDir = path.join(process.cwd(), '..', 'output', 'flowgraph');
 
-    // Read directory to find flowgraph files
-    const files = await fs.readdir(outputDir);
-    const flowgraphFiles = files.filter(f => f.endsWith('_flowgraph.json'));
+    // First, check for versioned output directories with latest.json
+    const entries = await fs.readdir(outputDir, { withFileTypes: true });
+    const dirs = entries.filter(e => e.isDirectory());
 
-    if (flowgraphFiles.length === 0) {
+    // Find most recently modified directory with a latest.json
+    let latestPath: string | null = null;
+    let latestMtime = 0;
+
+    for (const dir of dirs) {
+      const latestJsonPath = path.join(outputDir, dir.name, 'latest.json');
+      try {
+        const stat = await fs.stat(latestJsonPath);
+        if (stat.mtimeMs > latestMtime) {
+          latestMtime = stat.mtimeMs;
+          latestPath = latestJsonPath;
+        }
+      } catch {
+        // No latest.json in this directory
+      }
+    }
+
+    // If found a latest.json, use it
+    if (latestPath) {
+      const content = await fs.readFile(latestPath, 'utf8');
+      return JSON.parse(content) as FlowGraph;
+    }
+
+    // Fallback: look for legacy *_flowgraph.json files
+    const files = entries.filter(e => e.isFile() && e.name.endsWith('_flowgraph.json'));
+
+    if (files.length === 0) {
       console.log('No flowgraph files found in', outputDir);
       return null;
     }
 
-    // Use the most recent (or first available)
-    const latestFile = flowgraphFiles[flowgraphFiles.length - 1];
+    const latestFile = files[files.length - 1].name;
     const filePath = path.join(outputDir, latestFile);
 
     const content = await fs.readFile(filePath, 'utf8');

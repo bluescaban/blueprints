@@ -20,7 +20,7 @@
 // ============================================================================
 
 /**
- * @typedef {'CTX'|'G'|'P'|'PR'|'R'|'NFR'|'S'|'D'|'E'|'UI'|'DATA'|'RULE'|'RISK'|'Q'|'OUT'|'NOTE'|'F'|'A'} CardLabel
+ * @typedef {'CTX'|'G'|'P'|'PR'|'R'|'NFR'|'S'|'SYS'|'D'|'CHOICE'|'E'|'UI'|'DATA'|'RULE'|'RISK'|'Q'|'OUT'|'NOTE'|'F'|'A'|'START'|'END'|'EXIT'|'ASSUMPTION'|'AC'} CardLabel
  */
 
 /**
@@ -87,6 +87,55 @@
  */
 
 /**
+ * @typedef {Object} AcceptanceCriteria
+ * @property {string} condition - The condition to test
+ * @property {string} [expectedResult] - Expected outcome
+ * @property {string} [attachedTo] - Node or edge this AC is attached to
+ * @property {boolean} [suggested] - Whether this was suggested by SpecKit
+ */
+
+/**
+ * @typedef {Object} StartNode
+ * @property {string} id - Start node identifier
+ * @property {string} label - Human-readable label
+ * @property {string} [lane] - Swimlane
+ * @property {string} [flowGroup] - Flow group
+ */
+
+/**
+ * @typedef {Object} EndNode
+ * @property {string} id - End node identifier
+ * @property {string} label - Human-readable label
+ * @property {string} [lane] - Swimlane
+ * @property {string} [flowGroup] - Flow group
+ * @property {boolean} [isExit] - True if this is an early exit (EXIT:)
+ */
+
+/**
+ * @typedef {Object} SystemStep
+ * @property {string} [id] - Step identifier like "SYS1"
+ * @property {string} text - Step description
+ * @property {string} [lane] - Swimlane (usually "System")
+ * @property {string} [flowGroup] - Flow group
+ * @property {boolean} [inferred] - Whether inferred by SpecKit
+ */
+
+/**
+ * @typedef {Object} ChoiceOption
+ * @property {string} label - Option label
+ * @property {string} [target] - Target node if selected
+ */
+
+/**
+ * @typedef {Object} Choice
+ * @property {string} [id] - Choice identifier
+ * @property {string} question - Choice question
+ * @property {ChoiceOption[]} options - Available options
+ * @property {string} [lane] - Swimlane
+ * @property {string} [flowGroup] - Flow group
+ */
+
+/**
  * @typedef {Object} FlowSpec
  * @property {FlowSpecMeta} meta - Metadata about the extraction
  * @property {string[]} context - Context notes (CTX:)
@@ -94,10 +143,17 @@
  * @property {Persona[]} personas - Personas (P:)
  * @property {{functional: string[], nonFunctional: string[]}} requirements - Requirements
  * @property {Step[]} steps - Steps in the flow (S:)
+ * @property {SystemStep[]} systemSteps - System steps (SYS:)
  * @property {Decision[]} decisions - Decisions (D:)
+ * @property {Choice[]} choices - Multi-option choices (CHOICE:)
  * @property {Edge[]} edges - Edges/connections (E:)
+ * @property {StartNode[]} startNodes - Explicit start nodes (START:)
+ * @property {EndNode[]} endNodes - Explicit end nodes (END:)
+ * @property {EndNode[]} exitNodes - Early exit nodes (EXIT:)
  * @property {FlowGroup[]} flowGroups - Named flow groups (F:)
  * @property {string[]} actors - Declared actors (A:)
+ * @property {string[]} assumptions - Assumptions (ASSUMPTION:)
+ * @property {AcceptanceCriteria[]} acceptanceCriteria - Acceptance criteria (AC:)
  * @property {string[]} notes - Unparsed or NOTE: items
  * @property {string[]} problems - Problems (PR:)
  * @property {string[]} uiElements - UI elements (UI:)
@@ -137,46 +193,82 @@ export const GRAMMAR_VERSION = '2.0.0';
  * @type {Object.<string, CardLabel>}
  */
 const LABEL_MAP = {
+  // Context & framing
   'ctx': 'CTX',
+  'context': 'CTX',
   'g': 'G',
+  'goal': 'G',
+  // Actors & personas
   'p': 'P',
+  'persona': 'P',
+  'a': 'A',
+  'actor': 'A',
+  // Flow control
+  'f': 'F',
+  'flow': 'F',        // FLOW: alias for F:
+  'start': 'START',
+  'end': 'END',
+  'exit': 'EXIT',
+  // Steps
+  's': 'S',
+  'sys': 'SYS',
+  // Decisions
+  'd': 'D',
+  'choice': 'CHOICE',
+  // Edges
+  'e': 'E',
+  // Risk & uncertainty
+  'assumption': 'ASSUMPTION',
+  'q': 'Q',
+  'risk': 'RISK',
+  // Acceptance criteria
+  'ac': 'AC',
+  // Legacy/additional
   'pr': 'PR',
   'r': 'R',
   'nfr': 'NFR',
-  's': 'S',
-  'd': 'D',
-  'e': 'E',
   'ui': 'UI',
   'data': 'DATA',
   'rule': 'RULE',
-  'risk': 'RISK',
-  'q': 'Q',
-  'out': 'OUT',
-  // New in v2.0
-  'f': 'F',      // Flow group / scenario
-  'a': 'A'       // Actor / lane declaration
+  'out': 'OUT'
 };
 
 /**
  * Label descriptions for documentation
  */
 export const LABEL_DESCRIPTIONS = {
-  'CTX': 'Context - Background information',
+  // Context & framing
+  'CTX': 'Context - Background information, constraints, assumptions',
   'G': 'Goal - What we want to achieve',
-  'P': 'Persona - User type definition',
+  // Actors & personas
+  'P': 'Persona - User type definition with optional details',
+  'A': 'Actor - Lane/swimlane declaration (sets current lane context)',
+  // Flow control
+  'F': 'Flow - Named scenario/flow group',
+  'START': 'Start - Explicit entry point',
+  'END': 'End - Successful or neutral end state',
+  'EXIT': 'Exit - Early exit or interruption',
+  // Steps
+  'S': 'Step - User-performed action in the flow',
+  'SYS': 'System - System-performed step (automatic behavior)',
+  // Decisions
+  'D': 'Decision - Branching point written as a question',
+  'CHOICE': 'Choice - Multi-option selection',
+  // Edges
+  'E': 'Edge - Explicit connection (from -> to [label=...])',
+  // Risk & uncertainty
+  'ASSUMPTION': 'Assumption - Design assumption that may need validation',
+  'Q': 'Question - Open question to be resolved',
+  'RISK': 'Risk - Potential issue or concern',
+  // Acceptance criteria
+  'AC': 'Acceptance Criteria - Testable expectation',
+  // Legacy/additional
   'PR': 'Problem - Issue to solve',
   'R': 'Requirement - Functional requirement',
   'NFR': 'Non-Functional Requirement',
-  'S': 'Step - Action in the flow',
-  'D': 'Decision - Branching point',
-  'E': 'Edge - Connection between nodes',
-  'F': 'Flow - Named scenario/flow group',
-  'A': 'Actor - Lane/swimlane declaration',
   'UI': 'UI Element - Interface component',
   'DATA': 'Data Object - Data entity',
   'RULE': 'Business Rule',
-  'RISK': 'Risk - Potential issue',
-  'Q': 'Question - Open question',
   'OUT': 'Output - Expected artifact',
   'NOTE': 'Note - General comment'
 };
@@ -445,6 +537,169 @@ function parseFlowGroup(value) {
 }
 
 /**
+ * Parse a START node declaration.
+ *
+ * @param {string} value - The value after "START:"
+ * @param {Object} [context] - Parsing context
+ * @returns {StartNode} Parsed start node
+ */
+function parseStartNode(value, context = {}) {
+  const idMatch = value.match(/^\(([^)]+)\)\s*(.*)/);
+
+  let id, label;
+  if (idMatch) {
+    id = idMatch[1].trim();
+    label = idMatch[2].trim() || value.trim();
+  } else {
+    label = value.trim();
+  }
+
+  const result = { label };
+  if (id) result.id = id;
+  if (context.flowGroup) result.flowGroup = context.flowGroup;
+  if (context.actor) result.lane = context.actor;
+
+  return result;
+}
+
+/**
+ * Parse an END node declaration.
+ *
+ * @param {string} value - The value after "END:"
+ * @param {Object} [context] - Parsing context
+ * @returns {EndNode} Parsed end node
+ */
+function parseEndNode(value, context = {}) {
+  const idMatch = value.match(/^\(([^)]+)\)\s*(.*)/);
+
+  let id, label;
+  if (idMatch) {
+    id = idMatch[1].trim();
+    label = idMatch[2].trim() || value.trim();
+  } else {
+    label = value.trim();
+  }
+
+  const result = { label, isExit: false };
+  if (id) result.id = id;
+  if (context.flowGroup) result.flowGroup = context.flowGroup;
+  if (context.actor) result.lane = context.actor;
+
+  return result;
+}
+
+/**
+ * Parse an EXIT node declaration (early exit/interruption).
+ *
+ * @param {string} value - The value after "EXIT:"
+ * @param {Object} [context] - Parsing context
+ * @returns {EndNode} Parsed exit node
+ */
+function parseExitNode(value, context = {}) {
+  const result = parseEndNode(value, context);
+  result.isExit = true;
+  return result;
+}
+
+/**
+ * Parse a system step (SYS:).
+ *
+ * @param {string} value - The value after "SYS:"
+ * @param {Object} [context] - Parsing context
+ * @returns {SystemStep} Parsed system step
+ */
+function parseSystemStep(value, context = {}) {
+  const idMatch = value.match(/^\(([^)]+)\)\s*(.*)/);
+
+  let id, text;
+  if (idMatch) {
+    id = idMatch[1].trim();
+    text = idMatch[2].trim() || value.trim();
+  } else {
+    text = value.trim();
+  }
+
+  const result = { text, lane: 'System' };
+  if (id) result.id = id;
+  if (context.flowGroup) result.flowGroup = context.flowGroup;
+
+  return result;
+}
+
+/**
+ * Parse a CHOICE (multi-option selection).
+ *
+ * @param {string} value - The value after "CHOICE:"
+ * @param {Object} [context] - Parsing context
+ * @returns {Choice} Parsed choice
+ */
+function parseChoice(value, context = {}) {
+  const idMatch = value.match(/^\(([^)]+)\)\s*(.*)/);
+
+  let id, rest;
+  if (idMatch) {
+    id = idMatch[1].trim();
+    rest = idMatch[2].trim();
+  } else {
+    rest = value.trim();
+  }
+
+  // Split by pipe to find options
+  const parts = rest.split('|').map(p => p.trim());
+  const question = parts[0];
+  const options = parts.slice(1).map(opt => {
+    // Parse option format: "Label -> Target" or just "Label"
+    const targetMatch = opt.match(/^(.+?)\s*->\s*(.+)$/);
+    if (targetMatch) {
+      return { label: targetMatch[1].trim(), target: targetMatch[2].trim() };
+    }
+    return { label: opt };
+  });
+
+  const result = { question, options };
+  if (id) result.id = id;
+  if (context.flowGroup) result.flowGroup = context.flowGroup;
+  if (context.actor) result.lane = context.actor;
+
+  return result;
+}
+
+/**
+ * Parse an Acceptance Criteria (AC:).
+ *
+ * @param {string} value - The value after "AC:"
+ * @param {Object} [context] - Parsing context
+ * @returns {AcceptanceCriteria} Parsed AC
+ */
+function parseAcceptanceCriteria(value, context = {}) {
+  // Format: "Condition -> Expected result" or just "Condition"
+  const arrowMatch = value.match(/^(.+?)\s*(?:->|→)\s*(.+)$/);
+
+  if (arrowMatch) {
+    return {
+      condition: arrowMatch[1].trim(),
+      expectedResult: arrowMatch[2].trim(),
+      suggested: false
+    };
+  }
+
+  return {
+    condition: value.trim(),
+    suggested: false
+  };
+}
+
+/**
+ * DSL prefixes that should NOT be treated as lane names.
+ */
+const DSL_PREFIXES = new Set([
+  'CTX', 'CONTEXT', 'G', 'GOAL', 'P', 'PERSONA', 'A', 'ACTOR',
+  'F', 'FLOW', 'START', 'END', 'EXIT', 'S', 'SYS',
+  'D', 'CHOICE', 'E', 'ASSUMPTION', 'Q', 'RISK', 'AC',
+  'PR', 'R', 'NFR', 'UI', 'DATA', 'RULE', 'OUT', 'NOTE'
+]);
+
+/**
  * Extract lane information from node name.
  *
  * @param {string} nodeName - FigJam node name
@@ -461,13 +716,13 @@ function extractLaneFromNodeName(nodeName) {
 
   // Pattern: "NAME / ..." (common swimlane naming)
   const slashMatch = nodeName.match(/^([A-Z][A-Z0-9_]*)\s*\//);
-  if (slashMatch) {
+  if (slashMatch && !DSL_PREFIXES.has(slashMatch[1].toUpperCase())) {
     return slashMatch[1];
   }
 
-  // Pattern: "NAME:" at the start
+  // Pattern: "NAME:" at the start - but NOT DSL prefixes
   const colonMatch = nodeName.match(/^([A-Z][A-Z0-9_]*):/);
-  if (colonMatch) {
+  if (colonMatch && !DSL_PREFIXES.has(colonMatch[1].toUpperCase())) {
     return colonMatch[1];
   }
 
@@ -500,10 +755,17 @@ export function parseExtractedNodes(input) {
       nonFunctional: []
     },
     steps: [],
+    systemSteps: [],
     decisions: [],
+    choices: [],
     edges: [],
+    startNodes: [],
+    endNodes: [],
+    exitNodes: [],
     flowGroups: [],
     actors: [],
+    assumptions: [],
+    acceptanceCriteria: [],
     notes: [],
     problems: [],
     uiElements: [],
@@ -545,7 +807,7 @@ export function parseExtractedNodes(input) {
         nodeName,
         lineIndex,
         currentFlowGroup,
-        currentActor: parsed?.actor || currentActor || laneFromName
+        currentActor: currentActor || laneFromName
       });
 
       // Route to appropriate array based on label
@@ -670,6 +932,90 @@ export function parseExtractedNodes(input) {
         case 'Q':
           flowSpec.questions.push(parsed.value);
           break;
+
+        case 'START': {
+          const startNode = parseStartNode(parsed.value, {
+            flowGroup: currentFlowGroup,
+            actor: parsed.actor || currentActor || laneFromName
+          });
+
+          // Auto-assign ID if not present
+          if (!startNode.id) {
+            startNode.id = `START_${flowSpec.startNodes.length + 1}`;
+          }
+
+          flowSpec.startNodes.push(startNode);
+          break;
+        }
+
+        case 'END': {
+          const endNode = parseEndNode(parsed.value, {
+            flowGroup: currentFlowGroup,
+            actor: parsed.actor || currentActor || laneFromName
+          });
+
+          // Auto-assign ID if not present
+          if (!endNode.id) {
+            endNode.id = `END_${flowSpec.endNodes.length + 1}`;
+          }
+
+          flowSpec.endNodes.push(endNode);
+          break;
+        }
+
+        case 'EXIT': {
+          const exitNode = parseExitNode(parsed.value, {
+            flowGroup: currentFlowGroup,
+            actor: parsed.actor || currentActor || laneFromName
+          });
+
+          // Auto-assign ID if not present
+          if (!exitNode.id) {
+            exitNode.id = `EXIT_${flowSpec.exitNodes.length + 1}`;
+          }
+
+          flowSpec.exitNodes.push(exitNode);
+          break;
+        }
+
+        case 'SYS': {
+          const sysStep = parseSystemStep(parsed.value, {
+            flowGroup: currentFlowGroup
+          });
+
+          // Auto-assign ID if not present
+          if (!sysStep.id) {
+            sysStep.id = `SYS${flowSpec.systemSteps.length + 1}`;
+          }
+
+          flowSpec.systemSteps.push(sysStep);
+          break;
+        }
+
+        case 'CHOICE': {
+          const choice = parseChoice(parsed.value, {
+            flowGroup: currentFlowGroup,
+            actor: parsed.actor || currentActor || laneFromName
+          });
+
+          // Auto-assign ID if not present
+          if (!choice.id) {
+            choice.id = `CHOICE_${flowSpec.choices.length + 1}`;
+          }
+
+          flowSpec.choices.push(choice);
+          break;
+        }
+
+        case 'ASSUMPTION':
+          flowSpec.assumptions.push(parsed.value);
+          break;
+
+        case 'AC': {
+          const ac = parseAcceptanceCriteria(parsed.value);
+          flowSpec.acceptanceCriteria.push(ac);
+          break;
+        }
 
         case 'OUT':
           flowSpec.outputs.push(parsed.value);

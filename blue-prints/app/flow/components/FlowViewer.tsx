@@ -47,6 +47,7 @@ const NODE_WIDTHS: Record<string, number> = {
   decision: 260,
   start: 220,
   end: 220,
+  exit: 220,
 };
 
 // ============================================================================
@@ -73,6 +74,7 @@ function getLaneX(lane: string, lanes: string[], nodeType: string): number {
 
 /**
  * Compute the depth (level) of each node using BFS from start nodes.
+ * Handles cycles by limiting iterations and tracking visit counts.
  */
 function computeNodeLevels(
   nodes: FlowNode[],
@@ -101,16 +103,30 @@ function computeNodeLevels(
     levels.set(node.id, 0);
   }
 
-  while (queue.length > 0) {
+  // Track visit counts to detect cycles and prevent infinite loops
+  const visitCount = new Map<string, number>();
+  const MAX_VISITS_PER_NODE = 2; // Allow revisiting once for back-edges
+  const MAX_ITERATIONS = nodes.length * 3; // Safety limit
+  let iterations = 0;
+
+  while (queue.length > 0 && iterations < MAX_ITERATIONS) {
+    iterations++;
     const { id, level } = queue.shift()!;
     const neighbors = adjacency.get(id) || [];
 
     for (const neighbor of neighbors) {
+      const visits = visitCount.get(neighbor) || 0;
+      if (visits >= MAX_VISITS_PER_NODE) {
+        // Already visited enough times, skip to avoid cycle
+        continue;
+      }
+
       const currentLevel = levels.get(neighbor);
       const newLevel = level + 1;
 
       if (currentLevel === undefined || newLevel > currentLevel) {
         levels.set(neighbor, newLevel);
+        visitCount.set(neighbor, visits + 1);
         queue.push({ id: neighbor, level: newLevel });
       }
     }

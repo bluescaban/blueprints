@@ -44,7 +44,7 @@ export const VALIDATOR_VERSION = '1.0.0';
  * @property {Object} stats - Validation statistics
  */
 
-// Error codes
+// Error codes per BluePrints DSL v2.0
 const ERROR_CODES = {
   MISSING_NODE_REF: 'E001',
   DECISION_INSUFFICIENT_EDGES: 'E002',
@@ -56,6 +56,9 @@ const ERROR_CODES = {
   ORPHAN_END: 'E008',
   SELF_LOOP: 'E009',
   DUPLICATE_EDGE: 'E010',
+  FLOW_NO_EXIT: 'E011',       // New: must have EXIT or END_ERROR
+  MISSING_AC_DECISION: 'E012', // New: decision without AC
+  MISSING_AC_EXIT: 'E013',     // New: exit without AC
 };
 
 const WARNING_CODES = {
@@ -64,6 +67,9 @@ const WARNING_CODES = {
   LONG_LABEL: 'W003',
   EMPTY_FLOW_GROUP: 'W004',
   INFERRED_HEAVY: 'W005',
+  MISSING_AC_START: 'W006',   // New: start without AC
+  NO_EXPLICIT_STARTS: 'W007', // New: no START: nodes
+  NO_EXPLICIT_ENDS: 'W008',   // New: no END: nodes
 };
 
 // ============================================================================
@@ -357,6 +363,77 @@ function validateDuplicateEdges(flowGraph) {
 }
 
 /**
+ * Check that flows have proper exit handling (EXIT or END_ERROR).
+ * Per DSL v2.0: "Every flow must include at least one EXIT or END_ERROR"
+ * @param {Object} flowGraph
+ * @returns {ValidationIssue[]}
+ */
+function validateExitHandling(flowGraph) {
+  const issues = [];
+
+  // Check for exit nodes or error end states
+  const exitNodes = flowGraph.nodes.filter(n =>
+    n.type === 'exit' ||
+    n.isExit === true ||
+    (n.type === 'end' && (
+      n.label?.toLowerCase().includes('error') ||
+      n.label?.toLowerCase().includes('exit') ||
+      n.id?.toLowerCase().includes('error') ||
+      n.id?.toLowerCase().includes('exit')
+    ))
+  );
+
+  if (exitNodes.length === 0) {
+    issues.push({
+      severity: 'warning', // Warning since it can be inferred
+      code: WARNING_CODES.NO_EXPLICIT_ENDS,
+      message: 'No explicit exit or error handling nodes found',
+      suggestion: 'Add EXIT: or END: nodes for early exits and error states'
+    });
+  }
+
+  return issues;
+}
+
+/**
+ * Check for explicit start/end node usage.
+ * Per DSL v2.0: explicit START/END/EXIT is preferred.
+ * @param {Object} flowGraph
+ * @returns {ValidationIssue[]}
+ */
+function validateExplicitNodes(flowGraph) {
+  const warnings = [];
+
+  // Check if start nodes are inferred
+  const startNodes = flowGraph.nodes.filter(n => n.type === 'start');
+  const inferredStarts = startNodes.filter(n => n.inferred);
+
+  if (startNodes.length > 0 && inferredStarts.length === startNodes.length) {
+    warnings.push({
+      severity: 'warning',
+      code: WARNING_CODES.NO_EXPLICIT_STARTS,
+      message: 'All start nodes are inferred (no explicit START: definitions)',
+      suggestion: 'Consider adding explicit START: nodes to your FigJam'
+    });
+  }
+
+  // Check if end nodes are inferred
+  const endNodes = flowGraph.nodes.filter(n => n.type === 'end' || n.type === 'exit');
+  const inferredEnds = endNodes.filter(n => n.inferred);
+
+  if (endNodes.length > 0 && inferredEnds.length === endNodes.length) {
+    warnings.push({
+      severity: 'warning',
+      code: WARNING_CODES.NO_EXPLICIT_ENDS,
+      message: 'All end nodes are inferred (no explicit END:/EXIT: definitions)',
+      suggestion: 'Consider adding explicit END: and EXIT: nodes to your FigJam'
+    });
+  }
+
+  return warnings;
+}
+
+/**
  * Check for quality warnings.
  * @param {Object} flowGraph
  * @returns {ValidationIssue[]}
@@ -379,7 +456,7 @@ function checkQualityWarnings(flowGraph) {
   }
 
   // Check for empty flow groups
-  for (const flow of flowGraph.flows) {
+  for (const flow of flowGraph.flows || []) {
     if ((flow.nodes?.length || 0) === 0) {
       warnings.push({
         severity: 'warning',
@@ -399,7 +476,20 @@ function checkQualityWarnings(flowGraph) {
       severity: 'warning',
       code: WARNING_CODES.INFERRED_HEAVY,
       message: `${inferredCount}/${totalCount} nodes are inferred (>50%)`,
-      suggestion: 'Consider adding more explicit steps to the FlowSpec'
+      suggestion: 'Consider adding more explicit steps using the BluePrints DSL'
+    });
+  }
+
+  // Check AC coverage for decisions
+  const decisionNodes = flowGraph.nodes.filter(n => n.type === 'decision');
+  const acceptanceCriteria = flowGraph.acceptanceCriteria || [];
+
+  if (decisionNodes.length > 0 && acceptanceCriteria.length === 0) {
+    warnings.push({
+      severity: 'warning',
+      code: WARNING_CODES.MISSING_AC_START,
+      message: `${decisionNodes.length} decision node(s) have no acceptance criteria`,
+      suggestion: 'Add AC: criteria for each decision outcome'
     });
   }
 
@@ -455,6 +545,8 @@ export function validateFlowGraph(flowGraph, options = {}) {
   // Quality warnings
   warnings.push(...validateDuplicateEdges(flowGraph));
   warnings.push(...checkQualityWarnings(flowGraph));
+  warnings.push(...validateExitHandling(flowGraph));
+  warnings.push(...validateExplicitNodes(flowGraph));
 
   // Build stats
   const stats = {

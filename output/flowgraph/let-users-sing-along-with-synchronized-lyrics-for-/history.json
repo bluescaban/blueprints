@@ -1,0 +1,26 @@
+[
+  {
+    "version": "20260127-182648",
+    "filename": "20260127-182648.json",
+    "createdAt": "2026-01-28T02:26:48.763Z",
+    "nodeCount": 70,
+    "edgeCount": 28,
+    "valid": true
+  },
+  {
+    "version": "20260127-183027",
+    "filename": "20260127-183027.json",
+    "createdAt": "2026-01-28T02:30:27.001Z",
+    "nodeCount": 70,
+    "edgeCount": 25,
+    "valid": true
+  },
+  {
+    "version": "20260128-155211",
+    "filename": "20260128-155211.json",
+    "createdAt": "2026-01-28T23:52:11.452Z",
+    "nodeCount": 70,
+    "edgeCount": 78,
+    "valid": true
+  }
+]
