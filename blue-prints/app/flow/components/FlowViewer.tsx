@@ -346,7 +346,13 @@ export default function FlowViewer({ flowGraph }: FlowViewerProps) {
             color="rgba(255,255,255,0.3)"
             style={{ backgroundColor: CANVAS_BG }}
           />
-          <Controls position="bottom-right" />
+          <Controls
+            position="bottom-right"
+            style={{
+              marginRight: '16px',
+              marginBottom: '16px',
+            }}
+          />
           <MiniMap
             position="bottom-left"
             nodeColor={(node) => {
@@ -354,11 +360,14 @@ export default function FlowViewer({ flowGraph }: FlowViewerProps) {
               return LANE_COLORS[lane]?.accent || '#3b82f6';
             }}
             style={{
-              backgroundColor: 'rgba(74, 133, 200, 0.9)',
-              border: '2px solid rgba(255,255,255,0.5)',
-              borderRadius: '8px',
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              border: '2px solid rgba(74, 133, 200, 0.6)',
+              borderRadius: '12px',
+              marginLeft: '16px',
+              marginBottom: '16px',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             }}
-            maskColor="rgba(74, 133, 200, 0.4)"
+            maskColor="rgba(200, 220, 240, 0.6)"
           />
         </ReactFlow>
       </div>

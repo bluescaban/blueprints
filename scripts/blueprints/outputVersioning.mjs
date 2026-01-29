@@ -26,7 +26,7 @@ import path from 'path';
 
 export const VERSIONING_VERSION = '1.0.0';
 
-const DEFAULT_OUTPUT_DIR = 'output/flowgraph';
+const DEFAULT_OUTPUT_DIR = '../output/flowgraph';
 const LATEST_FILENAME = 'latest.json';
 const HISTORY_FILENAME = 'history.json';
 const MAX_HISTORY_ENTRIES = 50;

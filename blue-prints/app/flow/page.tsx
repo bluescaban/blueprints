@@ -10,7 +10,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 import FlowViewer from './components/FlowViewer';
-import InfoPanel from './components/InfoPanel';
+import HeaderActions from './components/HeaderActions';
 import RegenerateButton from './components/RegenerateButton';
 import { FlowGraph } from '@/lib/flowgraph-types';
 
@@ -167,23 +167,12 @@ export default async function FlowPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Timestamp */}
-          <div
-            className="px-3 py-1.5 rounded-lg text-xs text-white/80 border border-white/20"
-            style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-            }}
-          >
-            {new Date(flowGraph.meta.generatedAt).toLocaleString()}
-          </div>
-
-          {/* Regenerate Button */}
-          <RegenerateButton
-            defaultFileKey={flowGraph.meta.sourceFileKey}
-            defaultFeature={flowGraph.meta.feature}
-          />
-        </div>
+        {/* Header Actions - Timestamp, Regenerate, Info */}
+        <HeaderActions
+          flowGraph={flowGraph}
+          defaultFileKey={flowGraph.meta.sourceFileKey}
+          defaultFeature={flowGraph.meta.feature}
+        />
       </header>
 
       {/* Main Content */}
@@ -191,7 +180,6 @@ export default async function FlowPage() {
         <Suspense fallback={<LoadingState />}>
           <FlowViewer flowGraph={flowGraph} />
         </Suspense>
-        <InfoPanel flowGraph={flowGraph} />
       </main>
     </div>
   );

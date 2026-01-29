@@ -17,13 +17,19 @@ import { FlowGraph, LANE_COLORS, AcceptanceCriteria } from '@/lib/flowgraph-type
 
 interface InfoPanelProps {
   flowGraph: FlowGraph;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 type TabType = 'info' | 'personas' | 'questions' | 'assumptions' | 'ac';
 
-export default function InfoPanel({ flowGraph }: InfoPanelProps) {
-  const [isOpen, setIsOpen] = useState(true);
+export default function InfoPanel({ flowGraph, isOpen: controlledIsOpen, onClose }: InfoPanelProps) {
+  const [internalIsOpen, setInternalIsOpen] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>('info');
+
+  // Use controlled state if provided, otherwise use internal state
+  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+  const handleClose = onClose || (() => setInternalIsOpen(false));
 
   // Get acceptance criteria
   const acceptanceCriteria: AcceptanceCriteria[] = flowGraph.acceptanceCriteria || [];
@@ -33,23 +39,9 @@ export default function InfoPanel({ flowGraph }: InfoPanelProps) {
     .filter(lane => lane !== 'System')
     .map(lane => ({ name: lane }));
 
+  // When controlled externally, don't render anything when closed
   if (!isOpen) {
-    return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed right-4 top-20 z-20 px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition-all flex items-center gap-2 rounded-xl border border-white/30"
-        style={{
-          background: 'rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-        }}
-      >
-        <span>Info</span>
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </button>
-    );
+    return null;
   }
 
   return (
@@ -74,7 +66,7 @@ export default function InfoPanel({ flowGraph }: InfoPanelProps) {
           <span>Flow Info</span>
         </h3>
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={handleClose}
           className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

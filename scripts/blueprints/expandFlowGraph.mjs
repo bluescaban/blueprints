@@ -1185,12 +1185,18 @@ function expandFlowGroup(flowSpec, flowGroup, lanes, personaNames, declaredActor
 export function expandFlowGraph(flowSpec, options = {}) {
   const {
     featureName = 'Feature',
+    projectName: projectNameOption,
     addSystemSteps = true
   } = options;
 
-  // Extract metadata
-  const projectName = flowSpec.context?.find(c => c.toLowerCase().includes('project'))?.split(':')[1]?.trim() || 'BluePrints';
-  const feature = flowSpec.goals?.[0] || featureName;
+  // Extract metadata - use option if provided, otherwise try to infer from context
+  const projectName = projectNameOption ||
+    flowSpec.context?.find(c => c.toLowerCase().includes('project'))?.split(':')[1]?.trim() ||
+    'BluePrints';
+  // Feature priority: CLI option > featureName param > goals from FigJam
+  const feature = (featureName !== 'Feature' ? featureName : null) ||
+    flowSpec.goals?.[0] ||
+    'Feature';
 
   // Get declared actors and persona names
   const declaredActors = flowSpec.actors || [];

@@ -103,6 +103,7 @@ function parseArgs(args) {
     input: null,
     output: null,
     feature: null,
+    project: null,
     strict: true,
     save: true,
     quiet: false
@@ -128,6 +129,10 @@ function parseArgs(args) {
       case '--feature':
       case '-f':
         parsed.feature = args[++i];
+        break;
+      case '--project':
+      case '-p':
+        parsed.project = args[++i];
         break;
       case '--strict':
         parsed.strict = true;
@@ -196,7 +201,7 @@ async function cmdParse(args) {
 }
 
 async function cmdExpand(args) {
-  const { input, output, feature, quiet } = args;
+  const { input, output, feature, project, quiet } = args;
 
   if (!input) {
     console.error('Error: Input file required. Use -i <file>');
@@ -206,7 +211,7 @@ async function cmdExpand(args) {
   log(quiet, `🔄 Expanding: ${input}`);
 
   const flowSpec = await readJsonFile(input);
-  const flowGraph = expandFlowGraph(flowSpec, { featureName: feature });
+  const flowGraph = expandFlowGraph(flowSpec, { featureName: feature, projectName: project });
 
   log(quiet, `✅ Expanded to ${flowGraph.nodes.length} nodes, ${flowGraph.edges.length} edges`);
   log(quiet, `   Lanes: ${flowGraph.lanes.join(', ')}`);
@@ -247,7 +252,7 @@ async function cmdValidate(args) {
 }
 
 async function cmdPipeline(args) {
-  const { input, output, feature, strict, save, quiet } = args;
+  const { input, output, feature, project, strict, save, quiet } = args;
 
   if (!input) {
     console.error('Error: Input file required. Use -i <file>');
@@ -277,7 +282,8 @@ async function cmdPipeline(args) {
   log(quiet, '═══════════════════════════════════════════════════════════════');
 
   const featureName = feature || flowSpec.goals?.[0] || 'Unknown Feature';
-  const flowGraph = expandFlowGraph(flowSpec, { featureName });
+  const projectName = project || 'BluePrints';
+  const flowGraph = expandFlowGraph(flowSpec, { featureName, projectName });
 
   log(quiet, `✅ Expanded:`);
   log(quiet, `   Nodes:  ${flowGraph.nodes.length}`);
@@ -309,7 +315,7 @@ async function cmdPipeline(args) {
     log(quiet, '═══════════════════════════════════════════════════════════════');
 
     const saveResult = await saveFlowGraph(flowGraph, {
-      baseDir: output || 'output/flowgraph',
+      baseDir: output || '../output/flowgraph',
       trackHistory: true
     });
 
