@@ -1,0 +1,2405 @@
+{
+  "meta": {
+    "project": "Spotify",
+    "feature": "Karaoke",
+    "generatedAt": "2026-01-30T02:08:37.496Z",
+    "sourceFileKey": "HYxtgE7EARWuvTskijY7xa",
+    "specKitVersion": "2.0.0",
+    "version": "20260129-180837",
+    "versioningVersion": "1.0.0",
+    "savedAt": "2026-01-30T02:08:37.502Z"
+  },
+  "flows": [
+    {
+      "id": "flow_solo_karaoke",
+      "name": "Solo Karaoke",
+      "starts": [
+        "START_1"
+      ],
+      "ends": [
+        "END_1",
+        "END_2"
+      ],
+      "nodes": [
+        {
+          "id": "START_1",
+          "type": "start",
+          "lane": "User",
+          "label": "User initiates Solo Karaoke from a song",
+          "flowGroup": "flow_solo_karaoke"
+        },
+        {
+          "id": "S1",
+          "type": "step",
+          "lane": "User",
+          "label": "User opens a song detail page",
+          "sourceText": "User opens a song detail page",
+          "flowGroup": "flow_solo_karaoke"
+        },
+        {
+          "id": "S2",
+          "type": "step",
+          "lane": "User",
+          "label": "User taps “Karaoke”",
+          "sourceText": "User taps “Karaoke”",
+          "flowGroup": "flow_solo_karaoke"
+        },
+        {
+          "id": "S3",
+          "type": "step",
+          "lane": "User",
+          "label": "User selects Solo Karaoke mode",
+          "sourceText": "User selects Solo Karaoke mode",
+          "flowGroup": "flow_solo_karaoke"
+        },
+        {
+          "id": "S4",
+          "type": "step",
+          "lane": "User",
+          "label": "Start Solo Karaoke with live lyrics + mic input",
+          "sourceText": "Start Solo Karaoke with live lyrics + mic input",
+          "flowGroup": "flow_solo_karaoke"
+        },
+        {
+          "id": "S5",
+          "type": "step",
+          "lane": "User",
+          "label": "Start Solo Karaoke in lyrics-only mode",
+          "sourceText": "Start Solo Karaoke in lyrics-only mode",
+          "flowGroup": "flow_solo_karaoke"
+        },
+        {
+          "id": "SYS10",
+          "type": "system",
+          "lane": "System",
+          "label": "Evaluate Karaoke availability for the song",
+          "sourceText": "Evaluate Karaoke availability for the song",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": false
+        },
+        {
+          "id": "SYS11",
+          "type": "system",
+          "lane": "System",
+          "label": "Request microphone permission (just-in-time)",
+          "sourceText": "Request microphone permission (just-in-time)",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": false
+        },
+        {
+          "id": "D1",
+          "type": "decision",
+          "lane": "User",
+          "label": "Is Karaoke supported for this song?",
+          "sourceText": "Is Karaoke supported for this song?",
+          "flowGroup": "flow_solo_karaoke",
+          "branches": {
+            "condition": "Is Karaoke supported for this song",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "D2",
+          "type": "decision",
+          "lane": "User",
+          "label": "Is microphone permission granted?",
+          "sourceText": "Is microphone permission granted?",
+          "flowGroup": "flow_solo_karaoke",
+          "branches": {
+            "condition": "Is microphone permission granted",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "END_1",
+          "type": "end",
+          "lane": "User",
+          "label": "Solo Karaoke session completed",
+          "flowGroup": "flow_solo_karaoke",
+          "isExit": false
+        },
+        {
+          "id": "END_2",
+          "type": "end",
+          "lane": "User",
+          "label": "User exits Solo Karaoke early",
+          "flowGroup": "flow_solo_karaoke",
+          "isExit": false
+        }
+      ],
+      "edges": [
+        {
+          "from": "D1",
+          "to": "S3",
+          "label": "Yes",
+          "flowGroup": "flow_solo_karaoke"
+        },
+        {
+          "from": "D1",
+          "to": "END_2",
+          "label": "No",
+          "flowGroup": "flow_solo_karaoke",
+          "corrected": true
+        },
+        {
+          "from": "D2",
+          "to": "S4",
+          "label": "Yes",
+          "flowGroup": "flow_solo_karaoke"
+        },
+        {
+          "from": "D2",
+          "to": "S5",
+          "label": "No",
+          "flowGroup": "flow_solo_karaoke"
+        },
+        {
+          "from": "START_1",
+          "to": "S1",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "D2",
+          "to": "END_1",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "S1",
+          "to": "S2",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "S2",
+          "to": "S3",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "S3",
+          "to": "S4",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "S4",
+          "to": "S5",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "S5",
+          "to": "SYS10",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "SYS10",
+          "to": "SYS11",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "SYS11",
+          "to": "END_1",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "S2",
+          "to": "D1",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        },
+        {
+          "from": "S3",
+          "to": "D2",
+          "flowGroup": "flow_solo_karaoke",
+          "inferred": true
+        }
+      ]
+    },
+    {
+      "id": "flow_host_with_friends",
+      "name": "Host With Friends",
+      "starts": [
+        "START_2"
+      ],
+      "ends": [
+        "END_3",
+        "END_4"
+      ],
+      "nodes": [
+        {
+          "id": "START_2",
+          "type": "start",
+          "lane": "Host",
+          "label": "Host initiates Karaoke with Friends from a song",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "id": "H1",
+          "type": "step",
+          "lane": "Host",
+          "label": "Host taps “Karaoke”",
+          "sourceText": "Host taps “Karaoke”",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "id": "H2",
+          "type": "step",
+          "lane": "Host",
+          "label": "Host selects “With Friends”",
+          "sourceText": "Host selects “With Friends”",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "id": "H3",
+          "type": "step",
+          "lane": "Host",
+          "label": "Host enters lobby with mic enabled",
+          "sourceText": "Host enters lobby with mic enabled",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "id": "H4",
+          "type": "step",
+          "lane": "Host",
+          "label": "Host enters lobby in lyrics-only mode",
+          "sourceText": "Host enters lobby in lyrics-only mode",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "id": "H5",
+          "type": "step",
+          "lane": "Host",
+          "label": "Host shares invite link",
+          "sourceText": "Host shares invite link",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "id": "H8",
+          "type": "step",
+          "lane": "Host",
+          "label": "Host waits in lobby",
+          "sourceText": "Host waits in lobby",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "id": "H9",
+          "type": "step",
+          "lane": "Host",
+          "label": "Host starts Karaoke session",
+          "sourceText": "Host starts Karaoke session",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "id": "SYS12",
+          "type": "system",
+          "lane": "System",
+          "label": "Create karaoke session and lobby",
+          "sourceText": "Create karaoke session and lobby",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": false
+        },
+        {
+          "id": "SYS13",
+          "type": "system",
+          "lane": "System",
+          "label": "Request microphone permission (just-in-time)",
+          "sourceText": "Request microphone permission (just-in-time)",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": false
+        },
+        {
+          "id": "SYS14",
+          "type": "system",
+          "lane": "System",
+          "label": "Generate invite link",
+          "sourceText": "Generate invite link",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": false
+        },
+        {
+          "id": "SYS15",
+          "type": "system",
+          "lane": "System",
+          "label": "Display joined participants and readiness state",
+          "sourceText": "Display joined participants and readiness state",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": false
+        },
+        {
+          "id": "SYS16",
+          "type": "system",
+          "lane": "System",
+          "label": "Sync lyrics and playback for all participants",
+          "sourceText": "Sync lyrics and playback for all participants",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": false
+        },
+        {
+          "id": "D3",
+          "type": "decision",
+          "lane": "Host",
+          "label": "Is microphone permission granted?",
+          "sourceText": "Is microphone permission granted?",
+          "flowGroup": "flow_host_with_friends",
+          "branches": {
+            "condition": "Is microphone permission granted",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "D4",
+          "type": "decision",
+          "lane": "Host",
+          "label": "How does host invite friends?",
+          "sourceText": "How does host invite friends?",
+          "flowGroup": "flow_host_with_friends",
+          "branches": {
+            "condition": "How does host invite friends",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "D5",
+          "type": "decision",
+          "lane": "Host",
+          "label": "Are participants ready?",
+          "sourceText": "Are participants ready?",
+          "flowGroup": "flow_host_with_friends",
+          "branches": {
+            "condition": "Are participants ready",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "END_3",
+          "type": "end",
+          "lane": "Host",
+          "label": "Group Karaoke session completed",
+          "flowGroup": "flow_host_with_friends",
+          "isExit": false
+        },
+        {
+          "id": "END_4",
+          "type": "end",
+          "lane": "Host",
+          "label": "Host leaves or ends session",
+          "flowGroup": "flow_host_with_friends",
+          "isExit": false
+        }
+      ],
+      "edges": [
+        {
+          "from": "D3",
+          "to": "H3",
+          "label": "Yes",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "from": "D3",
+          "to": "H4",
+          "label": "No",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "from": "D4",
+          "to": "H8",
+          "label": "Share Sheet",
+          "flowGroup": "flow_host_with_friends",
+          "corrected": true
+        },
+        {
+          "from": "D4",
+          "to": "H8",
+          "label": "Copy Link",
+          "flowGroup": "flow_host_with_friends",
+          "corrected": true
+        },
+        {
+          "from": "D5",
+          "to": "H9",
+          "label": "Yes",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "from": "D5",
+          "to": "H8",
+          "label": "No",
+          "flowGroup": "flow_host_with_friends"
+        },
+        {
+          "from": "START_2",
+          "to": "H1",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "D5",
+          "to": "END_3",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "D5",
+          "to": "END_4",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H1",
+          "to": "H2",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H2",
+          "to": "H3",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H3",
+          "to": "H4",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H4",
+          "to": "H5",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H5",
+          "to": "H8",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H8",
+          "to": "H9",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H9",
+          "to": "SYS12",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "SYS12",
+          "to": "SYS13",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "SYS13",
+          "to": "SYS14",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "SYS14",
+          "to": "SYS15",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "SYS15",
+          "to": "SYS16",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "SYS16",
+          "to": "END_3",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H2",
+          "to": "D3",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H5",
+          "to": "D4",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        },
+        {
+          "from": "H5",
+          "to": "D5",
+          "flowGroup": "flow_host_with_friends",
+          "inferred": true
+        }
+      ]
+    },
+    {
+      "id": "flow_join_via_invite_link",
+      "name": "Join via Invite Link",
+      "starts": [
+        "START_3"
+      ],
+      "ends": [
+        "END_5",
+        "END_6"
+      ],
+      "nodes": [
+        {
+          "id": "START_3",
+          "type": "start",
+          "lane": "Guest",
+          "label": "Guest opens Karaoke invite link",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "id": "G1",
+          "type": "step",
+          "lane": "Guest",
+          "label": "Guest joins lobby",
+          "sourceText": "Guest joins lobby",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "id": "G2",
+          "type": "step",
+          "lane": "Guest",
+          "label": "Guest joins with mic enabled",
+          "sourceText": "Guest joins with mic enabled",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "id": "G3",
+          "type": "step",
+          "lane": "Guest",
+          "label": "Guest joins in lyrics-only mode",
+          "sourceText": "Guest joins in lyrics-only mode",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "id": "G4",
+          "type": "step",
+          "lane": "Guest",
+          "label": "Participate in karaoke session",
+          "sourceText": "Participate in karaoke session",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "id": "SYS17",
+          "type": "system",
+          "lane": "System",
+          "label": "Validate invite link",
+          "sourceText": "Validate invite link",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": false
+        },
+        {
+          "id": "SYS18",
+          "type": "system",
+          "lane": "System",
+          "label": "Display song, participants, and session status",
+          "sourceText": "Display song, participants, and session status",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": false
+        },
+        {
+          "id": "SYS19",
+          "type": "system",
+          "lane": "System",
+          "label": "Request microphone permission (just-in-time)",
+          "sourceText": "Request microphone permission (just-in-time)",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": false
+        },
+        {
+          "id": "D6",
+          "type": "decision",
+          "lane": "Guest",
+          "label": "Is invite link valid?",
+          "sourceText": "Is invite link valid?",
+          "flowGroup": "flow_join_via_invite_link",
+          "branches": {
+            "condition": "Is invite link valid",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "D7",
+          "type": "decision",
+          "lane": "Guest",
+          "label": "Is microphone permission granted?",
+          "sourceText": "Is microphone permission granted?",
+          "flowGroup": "flow_join_via_invite_link",
+          "branches": {
+            "condition": "Is microphone permission granted",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "D8",
+          "type": "decision",
+          "lane": "Guest",
+          "label": "Has host started the session?",
+          "sourceText": "Has host started the session?",
+          "flowGroup": "flow_join_via_invite_link",
+          "branches": {
+            "condition": "Has host started the session",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "END_5",
+          "type": "end",
+          "lane": "Guest",
+          "label": "Guest leaves session",
+          "flowGroup": "flow_join_via_invite_link",
+          "isExit": false
+        },
+        {
+          "id": "END_6",
+          "type": "end",
+          "lane": "Guest",
+          "label": "Session ends",
+          "flowGroup": "flow_join_via_invite_link",
+          "isExit": false
+        }
+      ],
+      "edges": [
+        {
+          "from": "D6",
+          "to": "G1",
+          "label": "Yes",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "from": "D6",
+          "to": "END_5",
+          "label": "No",
+          "flowGroup": "flow_join_via_invite_link",
+          "corrected": true
+        },
+        {
+          "from": "D7",
+          "to": "G2",
+          "label": "Yes",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "from": "D7",
+          "to": "G3",
+          "label": "No",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "from": "D8",
+          "to": "G4",
+          "label": "Yes",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "from": "D8",
+          "to": "G1",
+          "label": "No",
+          "flowGroup": "flow_join_via_invite_link"
+        },
+        {
+          "from": "START_3",
+          "to": "G1",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        },
+        {
+          "from": "D8",
+          "to": "END_6",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        },
+        {
+          "from": "G1",
+          "to": "G2",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        },
+        {
+          "from": "G2",
+          "to": "G3",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        },
+        {
+          "from": "G3",
+          "to": "G4",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        },
+        {
+          "from": "G4",
+          "to": "SYS17",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        },
+        {
+          "from": "SYS17",
+          "to": "SYS18",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        },
+        {
+          "from": "SYS18",
+          "to": "SYS19",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        },
+        {
+          "from": "SYS19",
+          "to": "END_5",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        },
+        {
+          "from": "G1",
+          "to": "D7",
+          "flowGroup": "flow_join_via_invite_link",
+          "inferred": true
+        }
+      ]
+    },
+    {
+      "id": "main",
+      "name": "Main Flow",
+      "starts": [
+        "START"
+      ],
+      "ends": [
+        "EXIT_1",
+        "EXIT_2",
+        "EXIT_3",
+        "EXIT_4",
+        "EXIT_5",
+        "EXIT_6",
+        "EXIT_7",
+        "EXIT_8",
+        "EXIT_9",
+        "EXIT_10"
+      ],
+      "nodes": [
+        {
+          "id": "START",
+          "type": "start",
+          "lane": "User",
+          "label": "Start",
+          "flowGroup": "",
+          "inferred": true
+        },
+        {
+          "id": "S1",
+          "type": "step",
+          "lane": "User",
+          "label": "User opens a song detail page",
+          "sourceText": "User opens a song detail page",
+          "flowGroup": ""
+        },
+        {
+          "id": "S2",
+          "type": "step",
+          "lane": "User",
+          "label": "User taps a new action called “Karaoke”",
+          "sourceText": "User taps a new action called “Karaoke”",
+          "flowGroup": ""
+        },
+        {
+          "id": "S3",
+          "type": "step",
+          "lane": "Guest",
+          "label": "App shows Karaoke setup screen with mode selection (Solo / With Friends)",
+          "sourceText": "App shows Karaoke setup screen with mode selection (Solo / With Friends)",
+          "flowGroup": ""
+        },
+        {
+          "id": "S4",
+          "type": "step",
+          "lane": "User",
+          "label": "If Solo, user starts immediately and sees lyrics sync with playback",
+          "sourceText": "If Solo, user starts immediately and sees lyrics sync with playback",
+          "flowGroup": ""
+        },
+        {
+          "id": "S5",
+          "type": "step",
+          "lane": "User",
+          "label": "If With Friends, user becomes Host and a lobby is created",
+          "sourceText": "If With Friends, user becomes Host and a lobby is created",
+          "flowGroup": ""
+        },
+        {
+          "id": "S6",
+          "type": "step",
+          "lane": "System",
+          "label": "Lobby shows session status and invite button",
+          "sourceText": "Lobby shows session status and invite button",
+          "flowGroup": ""
+        },
+        {
+          "id": "S7",
+          "type": "step",
+          "lane": "Host",
+          "label": "Host sends invite link via share sheet",
+          "sourceText": "Host sends invite link via share sheet",
+          "flowGroup": ""
+        },
+        {
+          "id": "S8",
+          "type": "step",
+          "lane": "Guest",
+          "label": "Friend opens invite link and joins as Participant",
+          "sourceText": "Friend opens invite link and joins as Participant",
+          "flowGroup": ""
+        },
+        {
+          "id": "S9",
+          "type": "step",
+          "lane": "Guest",
+          "label": "Participants see lobby with song + readiness state",
+          "sourceText": "Participants see lobby with song + readiness state",
+          "flowGroup": ""
+        },
+        {
+          "id": "S10",
+          "type": "step",
+          "lane": "Host",
+          "label": "Host taps Start to begin karaoke session",
+          "sourceText": "Host taps Start to begin karaoke session",
+          "flowGroup": ""
+        },
+        {
+          "id": "S11",
+          "type": "step",
+          "lane": "User",
+          "label": "During session, lyrics highlight and users can mute/unmute or leave",
+          "sourceText": "During session, lyrics highlight and users can mute/unmute or leave",
+          "flowGroup": ""
+        },
+        {
+          "id": "S12",
+          "type": "step",
+          "lane": "User",
+          "label": "At end, users see a summary screen with share / replay / new song options",
+          "sourceText": "At end, users see a summary screen with share / replay / new song options",
+          "flowGroup": ""
+        },
+        {
+          "id": "SYS1",
+          "type": "system",
+          "lane": "System",
+          "label": "Sync lyrics to current playback position",
+          "sourceText": "Sync lyrics to current playback position",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS2",
+          "type": "system",
+          "lane": "System",
+          "label": "Attempt resync and show connection status",
+          "sourceText": "Attempt resync and show connection status",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS3",
+          "type": "system",
+          "lane": "System",
+          "label": "Pause session or transfer host",
+          "sourceText": "Pause session or transfer host",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS4",
+          "type": "system",
+          "lane": "System",
+          "label": "Allow quick rejoin",
+          "sourceText": "Allow quick rejoin",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS5",
+          "type": "system",
+          "lane": "System",
+          "label": "Show recovery message and exit",
+          "sourceText": "Show recovery message and exit",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS6",
+          "type": "system",
+          "lane": "System",
+          "label": "Explain limitation and suggest alternatives",
+          "sourceText": "Explain limitation and suggest alternatives",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS7",
+          "type": "system",
+          "lane": "System",
+          "label": "Enforce a session cap and communicate why",
+          "sourceText": "Enforce a session cap and communicate why",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS8",
+          "type": "system",
+          "lane": "System",
+          "label": "resume experience smoothly",
+          "sourceText": "resume experience smoothly",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS9",
+          "type": "system",
+          "lane": "System",
+          "label": "Allow report + leave + block actions",
+          "sourceText": "Allow report + leave + block actions",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "EXIT_1",
+          "type": "exit",
+          "lane": "User",
+          "label": "User joins session mid-song",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_2",
+          "type": "exit",
+          "lane": "User",
+          "label": "Network interruption",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_3",
+          "type": "exit",
+          "lane": "User",
+          "label": "Host disconnects",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_4",
+          "type": "exit",
+          "lane": "User",
+          "label": "Participant disconnects",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_5",
+          "type": "exit",
+          "lane": "User",
+          "label": "Invite link expired",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_6",
+          "type": "exit",
+          "lane": "User",
+          "label": "Song unavailable in region",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_7",
+          "type": "exit",
+          "lane": "User",
+          "label": "Invite link expired or invalid SYS: Show friendly recovery path",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_8",
+          "type": "exit",
+          "lane": "User",
+          "label": "Too many participants —",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_9",
+          "type": "exit",
+          "lane": "User",
+          "label": "User receives a call/audio interruption",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_10",
+          "type": "exit",
+          "lane": "User",
+          "label": "Abusive participant",
+          "flowGroup": "",
+          "isExit": true
+        }
+      ],
+      "edges": [
+        {
+          "from": "START",
+          "to": "S1",
+          "flowGroup": ""
+        },
+        {
+          "from": "S1",
+          "to": "S2",
+          "flowGroup": ""
+        },
+        {
+          "from": "S2",
+          "to": "S3",
+          "flowGroup": ""
+        },
+        {
+          "from": "S3",
+          "to": "S4",
+          "flowGroup": ""
+        },
+        {
+          "from": "S4",
+          "to": "S5",
+          "flowGroup": ""
+        },
+        {
+          "from": "S5",
+          "to": "S6",
+          "flowGroup": ""
+        },
+        {
+          "from": "S6",
+          "to": "S7",
+          "flowGroup": ""
+        },
+        {
+          "from": "S7",
+          "to": "S8",
+          "flowGroup": ""
+        },
+        {
+          "from": "S8",
+          "to": "S9",
+          "flowGroup": ""
+        },
+        {
+          "from": "S9",
+          "to": "S10",
+          "flowGroup": ""
+        },
+        {
+          "from": "S10",
+          "to": "S11",
+          "flowGroup": ""
+        },
+        {
+          "from": "S11",
+          "to": "S12",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "SYS1",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS1",
+          "to": "SYS2",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS2",
+          "to": "SYS3",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS3",
+          "to": "SYS4",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS4",
+          "to": "SYS5",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS5",
+          "to": "SYS6",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS6",
+          "to": "SYS7",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS7",
+          "to": "SYS8",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS8",
+          "to": "SYS9",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS9",
+          "to": "EXIT_1",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_2",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_3",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_4",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_5",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_6",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_7",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_8",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_9",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_10",
+          "flowGroup": ""
+        }
+      ]
+    }
+  ],
+  "lanes": [
+    "User",
+    "Host",
+    "Guest",
+    "System"
+  ],
+  "personas": [
+    {
+      "name": "Casual Listener",
+      "details": "wants a low-pressure, no-judgment karaoke experience"
+    },
+    {
+      "name": "Karaoke Host",
+      "details": "wants to start a session fast and invite friends easily"
+    },
+    {
+      "name": "Friend Participant",
+      "details": "wants to join instantly and understand what to do next"
+    },
+    {
+      "name": "Competitive Singer",
+      "details": "wants scoring and performance feedback (optional)"
+    },
+    {
+      "name": "Social Sharer",
+      "details": "wants results or clips to share after a session"
+    },
+    {
+      "name": "Privacy-Conscious User",
+      "details": "wants control over mic usage and recording"
+    }
+  ],
+  "starts": [
+    "START_1",
+    "START_2",
+    "START_3",
+    "START"
+  ],
+  "ends": [
+    "END_1",
+    "END_2",
+    "END_3",
+    "END_4",
+    "END_5",
+    "END_6",
+    "EXIT_1",
+    "EXIT_2",
+    "EXIT_3",
+    "EXIT_4",
+    "EXIT_5",
+    "EXIT_6",
+    "EXIT_7",
+    "EXIT_8",
+    "EXIT_9",
+    "EXIT_10"
+  ],
+  "nodes": [
+    {
+      "id": "START_1",
+      "type": "start",
+      "lane": "User",
+      "label": "User initiates Solo Karaoke from a song",
+      "flowGroup": "flow_solo_karaoke"
+    },
+    {
+      "id": "S1",
+      "type": "step",
+      "lane": "User",
+      "label": "User opens a song detail page",
+      "sourceText": "User opens a song detail page",
+      "flowGroup": "flow_solo_karaoke"
+    },
+    {
+      "id": "S2",
+      "type": "step",
+      "lane": "User",
+      "label": "User taps “Karaoke”",
+      "sourceText": "User taps “Karaoke”",
+      "flowGroup": "flow_solo_karaoke"
+    },
+    {
+      "id": "S3",
+      "type": "step",
+      "lane": "User",
+      "label": "User selects Solo Karaoke mode",
+      "sourceText": "User selects Solo Karaoke mode",
+      "flowGroup": "flow_solo_karaoke"
+    },
+    {
+      "id": "S4",
+      "type": "step",
+      "lane": "User",
+      "label": "Start Solo Karaoke with live lyrics + mic input",
+      "sourceText": "Start Solo Karaoke with live lyrics + mic input",
+      "flowGroup": "flow_solo_karaoke"
+    },
+    {
+      "id": "S5",
+      "type": "step",
+      "lane": "User",
+      "label": "Start Solo Karaoke in lyrics-only mode",
+      "sourceText": "Start Solo Karaoke in lyrics-only mode",
+      "flowGroup": "flow_solo_karaoke"
+    },
+    {
+      "id": "SYS10",
+      "type": "system",
+      "lane": "System",
+      "label": "Evaluate Karaoke availability for the song",
+      "sourceText": "Evaluate Karaoke availability for the song",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": false
+    },
+    {
+      "id": "SYS11",
+      "type": "system",
+      "lane": "System",
+      "label": "Request microphone permission (just-in-time)",
+      "sourceText": "Request microphone permission (just-in-time)",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": false
+    },
+    {
+      "id": "D1",
+      "type": "decision",
+      "lane": "User",
+      "label": "Is Karaoke supported for this song?",
+      "sourceText": "Is Karaoke supported for this song?",
+      "flowGroup": "flow_solo_karaoke",
+      "branches": {
+        "condition": "Is Karaoke supported for this song",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "D2",
+      "type": "decision",
+      "lane": "User",
+      "label": "Is microphone permission granted?",
+      "sourceText": "Is microphone permission granted?",
+      "flowGroup": "flow_solo_karaoke",
+      "branches": {
+        "condition": "Is microphone permission granted",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "END_1",
+      "type": "end",
+      "lane": "User",
+      "label": "Solo Karaoke session completed",
+      "flowGroup": "flow_solo_karaoke",
+      "isExit": false
+    },
+    {
+      "id": "END_2",
+      "type": "end",
+      "lane": "User",
+      "label": "User exits Solo Karaoke early",
+      "flowGroup": "flow_solo_karaoke",
+      "isExit": false
+    },
+    {
+      "id": "START_2",
+      "type": "start",
+      "lane": "Host",
+      "label": "Host initiates Karaoke with Friends from a song",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "id": "H1",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host taps “Karaoke”",
+      "sourceText": "Host taps “Karaoke”",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "id": "H2",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host selects “With Friends”",
+      "sourceText": "Host selects “With Friends”",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "id": "H3",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host enters lobby with mic enabled",
+      "sourceText": "Host enters lobby with mic enabled",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "id": "H4",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host enters lobby in lyrics-only mode",
+      "sourceText": "Host enters lobby in lyrics-only mode",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "id": "H5",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host shares invite link",
+      "sourceText": "Host shares invite link",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "id": "H8",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host waits in lobby",
+      "sourceText": "Host waits in lobby",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "id": "H9",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host starts Karaoke session",
+      "sourceText": "Host starts Karaoke session",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "id": "SYS12",
+      "type": "system",
+      "lane": "System",
+      "label": "Create karaoke session and lobby",
+      "sourceText": "Create karaoke session and lobby",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": false
+    },
+    {
+      "id": "SYS13",
+      "type": "system",
+      "lane": "System",
+      "label": "Request microphone permission (just-in-time)",
+      "sourceText": "Request microphone permission (just-in-time)",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": false
+    },
+    {
+      "id": "SYS14",
+      "type": "system",
+      "lane": "System",
+      "label": "Generate invite link",
+      "sourceText": "Generate invite link",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": false
+    },
+    {
+      "id": "SYS15",
+      "type": "system",
+      "lane": "System",
+      "label": "Display joined participants and readiness state",
+      "sourceText": "Display joined participants and readiness state",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": false
+    },
+    {
+      "id": "SYS16",
+      "type": "system",
+      "lane": "System",
+      "label": "Sync lyrics and playback for all participants",
+      "sourceText": "Sync lyrics and playback for all participants",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": false
+    },
+    {
+      "id": "D3",
+      "type": "decision",
+      "lane": "Host",
+      "label": "Is microphone permission granted?",
+      "sourceText": "Is microphone permission granted?",
+      "flowGroup": "flow_host_with_friends",
+      "branches": {
+        "condition": "Is microphone permission granted",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "D4",
+      "type": "decision",
+      "lane": "Host",
+      "label": "How does host invite friends?",
+      "sourceText": "How does host invite friends?",
+      "flowGroup": "flow_host_with_friends",
+      "branches": {
+        "condition": "How does host invite friends",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "D5",
+      "type": "decision",
+      "lane": "Host",
+      "label": "Are participants ready?",
+      "sourceText": "Are participants ready?",
+      "flowGroup": "flow_host_with_friends",
+      "branches": {
+        "condition": "Are participants ready",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "END_3",
+      "type": "end",
+      "lane": "Host",
+      "label": "Group Karaoke session completed",
+      "flowGroup": "flow_host_with_friends",
+      "isExit": false
+    },
+    {
+      "id": "END_4",
+      "type": "end",
+      "lane": "Host",
+      "label": "Host leaves or ends session",
+      "flowGroup": "flow_host_with_friends",
+      "isExit": false
+    },
+    {
+      "id": "START_3",
+      "type": "start",
+      "lane": "Guest",
+      "label": "Guest opens Karaoke invite link",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "id": "G1",
+      "type": "step",
+      "lane": "Guest",
+      "label": "Guest joins lobby",
+      "sourceText": "Guest joins lobby",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "id": "G2",
+      "type": "step",
+      "lane": "Guest",
+      "label": "Guest joins with mic enabled",
+      "sourceText": "Guest joins with mic enabled",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "id": "G3",
+      "type": "step",
+      "lane": "Guest",
+      "label": "Guest joins in lyrics-only mode",
+      "sourceText": "Guest joins in lyrics-only mode",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "id": "G4",
+      "type": "step",
+      "lane": "Guest",
+      "label": "Participate in karaoke session",
+      "sourceText": "Participate in karaoke session",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "id": "SYS17",
+      "type": "system",
+      "lane": "System",
+      "label": "Validate invite link",
+      "sourceText": "Validate invite link",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": false
+    },
+    {
+      "id": "SYS18",
+      "type": "system",
+      "lane": "System",
+      "label": "Display song, participants, and session status",
+      "sourceText": "Display song, participants, and session status",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": false
+    },
+    {
+      "id": "SYS19",
+      "type": "system",
+      "lane": "System",
+      "label": "Request microphone permission (just-in-time)",
+      "sourceText": "Request microphone permission (just-in-time)",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": false
+    },
+    {
+      "id": "D6",
+      "type": "decision",
+      "lane": "Guest",
+      "label": "Is invite link valid?",
+      "sourceText": "Is invite link valid?",
+      "flowGroup": "flow_join_via_invite_link",
+      "branches": {
+        "condition": "Is invite link valid",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "D7",
+      "type": "decision",
+      "lane": "Guest",
+      "label": "Is microphone permission granted?",
+      "sourceText": "Is microphone permission granted?",
+      "flowGroup": "flow_join_via_invite_link",
+      "branches": {
+        "condition": "Is microphone permission granted",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "D8",
+      "type": "decision",
+      "lane": "Guest",
+      "label": "Has host started the session?",
+      "sourceText": "Has host started the session?",
+      "flowGroup": "flow_join_via_invite_link",
+      "branches": {
+        "condition": "Has host started the session",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "END_5",
+      "type": "end",
+      "lane": "Guest",
+      "label": "Guest leaves session",
+      "flowGroup": "flow_join_via_invite_link",
+      "isExit": false
+    },
+    {
+      "id": "END_6",
+      "type": "end",
+      "lane": "Guest",
+      "label": "Session ends",
+      "flowGroup": "flow_join_via_invite_link",
+      "isExit": false
+    },
+    {
+      "id": "START",
+      "type": "start",
+      "lane": "User",
+      "label": "Start",
+      "flowGroup": "",
+      "inferred": true
+    },
+    {
+      "id": "S6",
+      "type": "step",
+      "lane": "System",
+      "label": "Lobby shows session status and invite button",
+      "sourceText": "Lobby shows session status and invite button",
+      "flowGroup": ""
+    },
+    {
+      "id": "S7",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host sends invite link via share sheet",
+      "sourceText": "Host sends invite link via share sheet",
+      "flowGroup": ""
+    },
+    {
+      "id": "S8",
+      "type": "step",
+      "lane": "Guest",
+      "label": "Friend opens invite link and joins as Participant",
+      "sourceText": "Friend opens invite link and joins as Participant",
+      "flowGroup": ""
+    },
+    {
+      "id": "S9",
+      "type": "step",
+      "lane": "Guest",
+      "label": "Participants see lobby with song + readiness state",
+      "sourceText": "Participants see lobby with song + readiness state",
+      "flowGroup": ""
+    },
+    {
+      "id": "S10",
+      "type": "step",
+      "lane": "Host",
+      "label": "Host taps Start to begin karaoke session",
+      "sourceText": "Host taps Start to begin karaoke session",
+      "flowGroup": ""
+    },
+    {
+      "id": "S11",
+      "type": "step",
+      "lane": "User",
+      "label": "During session, lyrics highlight and users can mute/unmute or leave",
+      "sourceText": "During session, lyrics highlight and users can mute/unmute or leave",
+      "flowGroup": ""
+    },
+    {
+      "id": "S12",
+      "type": "step",
+      "lane": "User",
+      "label": "At end, users see a summary screen with share / replay / new song options",
+      "sourceText": "At end, users see a summary screen with share / replay / new song options",
+      "flowGroup": ""
+    },
+    {
+      "id": "SYS1",
+      "type": "system",
+      "lane": "System",
+      "label": "Sync lyrics to current playback position",
+      "sourceText": "Sync lyrics to current playback position",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS2",
+      "type": "system",
+      "lane": "System",
+      "label": "Attempt resync and show connection status",
+      "sourceText": "Attempt resync and show connection status",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS3",
+      "type": "system",
+      "lane": "System",
+      "label": "Pause session or transfer host",
+      "sourceText": "Pause session or transfer host",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS4",
+      "type": "system",
+      "lane": "System",
+      "label": "Allow quick rejoin",
+      "sourceText": "Allow quick rejoin",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS5",
+      "type": "system",
+      "lane": "System",
+      "label": "Show recovery message and exit",
+      "sourceText": "Show recovery message and exit",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS6",
+      "type": "system",
+      "lane": "System",
+      "label": "Explain limitation and suggest alternatives",
+      "sourceText": "Explain limitation and suggest alternatives",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS7",
+      "type": "system",
+      "lane": "System",
+      "label": "Enforce a session cap and communicate why",
+      "sourceText": "Enforce a session cap and communicate why",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS8",
+      "type": "system",
+      "lane": "System",
+      "label": "resume experience smoothly",
+      "sourceText": "resume experience smoothly",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS9",
+      "type": "system",
+      "lane": "System",
+      "label": "Allow report + leave + block actions",
+      "sourceText": "Allow report + leave + block actions",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "EXIT_1",
+      "type": "exit",
+      "lane": "User",
+      "label": "User joins session mid-song",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_2",
+      "type": "exit",
+      "lane": "User",
+      "label": "Network interruption",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_3",
+      "type": "exit",
+      "lane": "User",
+      "label": "Host disconnects",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_4",
+      "type": "exit",
+      "lane": "User",
+      "label": "Participant disconnects",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_5",
+      "type": "exit",
+      "lane": "User",
+      "label": "Invite link expired",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_6",
+      "type": "exit",
+      "lane": "User",
+      "label": "Song unavailable in region",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_7",
+      "type": "exit",
+      "lane": "User",
+      "label": "Invite link expired or invalid SYS: Show friendly recovery path",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_8",
+      "type": "exit",
+      "lane": "User",
+      "label": "Too many participants —",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_9",
+      "type": "exit",
+      "lane": "User",
+      "label": "User receives a call/audio interruption",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_10",
+      "type": "exit",
+      "lane": "User",
+      "label": "Abusive participant",
+      "flowGroup": "",
+      "isExit": true
+    }
+  ],
+  "edges": [
+    {
+      "from": "D1",
+      "to": "S3",
+      "label": "Yes",
+      "flowGroup": "flow_solo_karaoke"
+    },
+    {
+      "from": "D1",
+      "to": "END_2",
+      "label": "No",
+      "flowGroup": "flow_solo_karaoke",
+      "corrected": true
+    },
+    {
+      "from": "D2",
+      "to": "S4",
+      "label": "Yes",
+      "flowGroup": "flow_solo_karaoke"
+    },
+    {
+      "from": "D2",
+      "to": "S5",
+      "label": "No",
+      "flowGroup": "flow_solo_karaoke"
+    },
+    {
+      "from": "START_1",
+      "to": "S1",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "D2",
+      "to": "END_1",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "S1",
+      "to": "S2",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "S2",
+      "to": "S3",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "S3",
+      "to": "S4",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "S4",
+      "to": "S5",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "S5",
+      "to": "SYS10",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "SYS10",
+      "to": "SYS11",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "SYS11",
+      "to": "END_1",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "S2",
+      "to": "D1",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "S3",
+      "to": "D2",
+      "flowGroup": "flow_solo_karaoke",
+      "inferred": true
+    },
+    {
+      "from": "D3",
+      "to": "H3",
+      "label": "Yes",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "from": "D3",
+      "to": "H4",
+      "label": "No",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "from": "D4",
+      "to": "H8",
+      "label": "Share Sheet",
+      "flowGroup": "flow_host_with_friends",
+      "corrected": true
+    },
+    {
+      "from": "D4",
+      "to": "H8",
+      "label": "Copy Link",
+      "flowGroup": "flow_host_with_friends",
+      "corrected": true
+    },
+    {
+      "from": "D5",
+      "to": "H9",
+      "label": "Yes",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "from": "D5",
+      "to": "H8",
+      "label": "No",
+      "flowGroup": "flow_host_with_friends"
+    },
+    {
+      "from": "START_2",
+      "to": "H1",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "D5",
+      "to": "END_3",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "D5",
+      "to": "END_4",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H1",
+      "to": "H2",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H2",
+      "to": "H3",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H3",
+      "to": "H4",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H4",
+      "to": "H5",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H5",
+      "to": "H8",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H8",
+      "to": "H9",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H9",
+      "to": "SYS12",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "SYS12",
+      "to": "SYS13",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "SYS13",
+      "to": "SYS14",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "SYS14",
+      "to": "SYS15",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "SYS15",
+      "to": "SYS16",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "SYS16",
+      "to": "END_3",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H2",
+      "to": "D3",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H5",
+      "to": "D4",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "H5",
+      "to": "D5",
+      "flowGroup": "flow_host_with_friends",
+      "inferred": true
+    },
+    {
+      "from": "D6",
+      "to": "G1",
+      "label": "Yes",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "from": "D6",
+      "to": "END_5",
+      "label": "No",
+      "flowGroup": "flow_join_via_invite_link",
+      "corrected": true
+    },
+    {
+      "from": "D7",
+      "to": "G2",
+      "label": "Yes",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "from": "D7",
+      "to": "G3",
+      "label": "No",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "from": "D8",
+      "to": "G4",
+      "label": "Yes",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "from": "D8",
+      "to": "G1",
+      "label": "No",
+      "flowGroup": "flow_join_via_invite_link"
+    },
+    {
+      "from": "START_3",
+      "to": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "D8",
+      "to": "END_6",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "G1",
+      "to": "G2",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "G2",
+      "to": "G3",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "G3",
+      "to": "G4",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "G4",
+      "to": "SYS17",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "SYS17",
+      "to": "SYS18",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "SYS18",
+      "to": "SYS19",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "SYS19",
+      "to": "END_5",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "G1",
+      "to": "D7",
+      "flowGroup": "flow_join_via_invite_link",
+      "inferred": true
+    },
+    {
+      "from": "START",
+      "to": "S1",
+      "flowGroup": ""
+    },
+    {
+      "from": "S5",
+      "to": "S6",
+      "flowGroup": ""
+    },
+    {
+      "from": "S6",
+      "to": "S7",
+      "flowGroup": ""
+    },
+    {
+      "from": "S7",
+      "to": "S8",
+      "flowGroup": ""
+    },
+    {
+      "from": "S8",
+      "to": "S9",
+      "flowGroup": ""
+    },
+    {
+      "from": "S9",
+      "to": "S10",
+      "flowGroup": ""
+    },
+    {
+      "from": "S10",
+      "to": "S11",
+      "flowGroup": ""
+    },
+    {
+      "from": "S11",
+      "to": "S12",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "SYS1",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS1",
+      "to": "SYS2",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS2",
+      "to": "SYS3",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS3",
+      "to": "SYS4",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS4",
+      "to": "SYS5",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS5",
+      "to": "SYS6",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS6",
+      "to": "SYS7",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS7",
+      "to": "SYS8",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS8",
+      "to": "SYS9",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS9",
+      "to": "EXIT_1",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_2",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_3",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_4",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_5",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_6",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_7",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_8",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_9",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_10",
+      "flowGroup": ""
+    }
+  ],
+  "assumptions": [
+    "Lyrics licensing allows karaoke-style display",
+    "Small latency is acceptable in group sessions",
+    "---",
+    "SpecKit v2.0.0 expansion",
+    "4 flow group(s) identified",
+    "4 swimlanes: User, Host, Guest, System",
+    "4 entry point(s)",
+    "16 end state(s)",
+    "Explicit edges used (E:)",
+    "Explicit start nodes used (START:)",
+    "Explicit end/exit nodes used (END:/EXIT:)",
+    "Explicit system steps used (SYS:)",
+    "1 node(s) inferred by SpecKit"
+  ],
+  "openQuestions": [
+    "Is audio recorded or purely live?",
+    "Is group playback strict-sync or best-effort?",
+    "Is a host required at all times?",
+    "Do we support duets or rotating solos?",
+    "Should sessions support video, or audio-only, or lyrics-only?",
+    "Do we support scoring in v1? If yes, what model and what feedback UI?",
+    "Where does Karaoke live in the Spotify IA (song page, now playing, search)?",
+    "How do we handle explicit lyrics / content controls in group sessions?",
+    "What is the max participant count for a good experience?",
+    "What is the max participant count for a good experience?"
+  ],
+  "risks": [
+    "Audio desync on low-end devices",
+    "Abuse in group sessions",
+    "Privacy concerns around microphone usage"
+  ],
+  "acceptanceCriteria": []
+}

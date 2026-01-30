@@ -1,8 +1,8 @@
 # Extracted Nodes from BluePrints
 
 > File Key: `HYxtgE7EARWuvTskijY7xa`
-> Extracted: 2026-01-27T21:52:29.701Z
-> Node Count: 74
+> Extracted: 2026-01-29T20:53:41.747Z
+> Node Count: 75
 
 ---
 
@@ -474,6 +474,7 @@ ASSUMPTION: Small latency is acceptable in group sessions
 
 ```
 Q: Is audio recorded or purely live?
+
 ```
 
 ### STICKY: 57:774
@@ -533,6 +534,14 @@ Q: How do we handle explicit lyrics / content controls in group sessions?
 ```
 
 ### STICKY: 57:781
+> Color: #a8daff
+
+```
+Q: What is the max participant count for a good experience?
+
+```
+
+### STICKY: 66:846
 > Color: #a8daff
 
 ```

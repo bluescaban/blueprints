@@ -1,8 +1,8 @@
 {
   "fileKey": "HYxtgE7EARWuvTskijY7xa",
   "fileName": "BluePrints",
-  "extractedAt": "2026-01-27T21:52:29.701Z",
-  "nodeCount": 74,
+  "extractedAt": "2026-01-29T20:53:41.747Z",
+  "nodeCount": 75,
   "extracted": [
     {
       "id": "21:447",
@@ -415,7 +415,7 @@
     {
       "id": "57:773",
       "name": "Q: Is audio recorded or purely live?",
-      "text": "Q: Is audio recorded or purely live?",
+      "text": "Q: Is audio recorded or purely live?\n",
       "type": "STICKY",
       "section": "QUESTIONS",
       "color": "#a8daff"
@@ -478,6 +478,14 @@
     },
     {
       "id": "57:781",
+      "name": "Q: What is the max participant count for a good experience?",
+      "text": "Q: What is the max participant count for a good experience?\n",
+      "type": "STICKY",
+      "section": "QUESTIONS",
+      "color": "#a8daff"
+    },
+    {
+      "id": "66:846",
       "name": "Q: What is the max participant count for a good experience?",
       "text": "Q: What is the max participant count for a good experience?\n",
       "type": "STICKY",

@@ -5007,7 +5007,7 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "Q: Is audio recorded or purely live?"
+                    "characters": "Q: Is audio recorded or purely live?\n"
                   },
                   {
                     "id": "57:774",
@@ -5654,6 +5654,96 @@
                     "absoluteRenderBounds": {
                       "x": 3380.144775390625,
                       "y": 870,
+                      "width": 436,
+                      "height": 260
+                    },
+                    "constraints": {
+                      "vertical": "TOP",
+                      "horizontal": "LEFT"
+                    },
+                    "effects": [
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.019999999552965164
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 2.5
+                        },
+                        "radius": 2,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.03999999910593033
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 3
+                        },
+                        "radius": 5,
+                        "showShadowBehindNode": true
+                      },
+                      {
+                        "type": "DROP_SHADOW",
+                        "visible": true,
+                        "color": {
+                          "r": 0,
+                          "g": 0,
+                          "b": 0,
+                          "a": 0.07999999821186066
+                        },
+                        "blendMode": "NORMAL",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "radius": 10,
+                        "showShadowBehindNode": true
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "blendMode": "NORMAL",
+                        "type": "SOLID",
+                        "color": {
+                          "r": 0.658823549747467,
+                          "g": 0.8549019694328308,
+                          "b": 1,
+                          "a": 1
+                        }
+                      }
+                    ],
+                    "authorVisible": true,
+                    "characters": "Q: What is the max participant count for a good experience?\n"
+                  },
+                  {
+                    "id": "66:846",
+                    "name": "Q: What is the max participant count for a good experience?",
+                    "type": "STICKY",
+                    "scrollBehavior": "SCROLLS",
+                    "blendMode": "PASS_THROUGH",
+                    "absoluteBoundingBox": {
+                      "x": 3390,
+                      "y": 1143,
+                      "width": 416,
+                      "height": 240
+                    },
+                    "absoluteRenderBounds": {
+                      "x": 3380,
+                      "y": 1141,
                       "width": 436,
                       "height": 260
                     },
@@ -7775,9 +7865,9 @@
   "schemaVersion": 0,
   "styles": {},
   "name": "BluePrints",
-  "lastModified": "2026-01-27T20:17:09Z",
-  "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/46df942c-8794-488e-ba51-19ae0a5d2b7d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCV44OTG5P%2F20260125%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260125T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=43527dcf4f0c3a428d1f6d141c13289a8f36784b3431778a1ea0053ca1f0fad5",
-  "version": "2313834045075908101",
+  "lastModified": "2026-01-27T21:57:07Z",
+  "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/210c0531-d2f4-40f8-872a-3d950dfb4770?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCV44OTG5P%2F20260129%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260129T000000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=f8a752f0fea732397c6e88f921c12153f4af3ee450e35d54ce320f8365cd52e7",
+  "version": "2314521574751811525",
   "role": "owner",
   "editorType": "figjam",
   "linkAccess": "view"

@@ -255,6 +255,205 @@ function truncate(text, max) {
 }
 
 // ============================================================================
+// Decision Routing Helpers
+// ============================================================================
+
+/**
+ * Keywords that indicate decision types and their expected No-branch outcomes.
+ */
+const DECISION_PATTERNS = {
+  permission: {
+    keywords: ['permission', 'granted', 'allowed', 'access', 'microphone', 'camera', 'location'],
+    noOutcome: ['denied', 'limited', 'restricted', 'listen-only', 'view-only']
+  },
+  availability: {
+    keywords: ['available', 'supported', 'exists', 'found', 'karaoke'],
+    noOutcome: ['unavailable', 'not supported', 'not found', 'error', 'fail']
+  },
+  validity: {
+    keywords: ['valid', 'expired', 'active', 'link', 'invite', 'session'],
+    noOutcome: ['invalid', 'expired', 'error', 'fail']
+  },
+  readiness: {
+    keywords: ['ready', 'started', 'waiting', 'joined', 'connected'],
+    noOutcome: ['waiting', 'not ready', 'pending']
+  },
+  authentication: {
+    keywords: ['authenticated', 'logged in', 'signed in', 'authorized'],
+    noOutcome: ['login', 'sign in', 'unauthorized', 'error']
+  }
+};
+
+/**
+ * Detect the type of decision based on its question text.
+ * @param {string} question - The decision question
+ * @returns {{type: string, isYesNo: boolean, keywords: string[]}}
+ */
+function analyzeDecisionType(question) {
+  const lower = question.toLowerCase();
+
+  // Check if it's a multiple choice (How/Which/What without ?)
+  const isMultipleChoice =
+    (lower.startsWith('how do') || lower.startsWith('how does') ||
+     lower.startsWith('which') || lower.startsWith('what')) &&
+    !lower.includes('?');
+
+  if (isMultipleChoice) {
+    return { type: 'choice', isYesNo: false, keywords: [] };
+  }
+
+  // Detect the decision type
+  for (const [type, pattern] of Object.entries(DECISION_PATTERNS)) {
+    for (const keyword of pattern.keywords) {
+      if (lower.includes(keyword)) {
+        return {
+          type,
+          isYesNo: true,
+          keywords: pattern.keywords,
+          noOutcomeKeywords: pattern.noOutcome
+        };
+      }
+    }
+  }
+
+  // Default: assume Yes/No question
+  return { type: 'generic', isYesNo: true, keywords: [] };
+}
+
+/**
+ * Find the best exit node for a decision's No branch.
+ * Matches decision keywords to exit node labels.
+ * @param {Object} decision - Decision node
+ * @param {Object[]} exitNodes - Available exit nodes
+ * @param {Object} decisionAnalysis - Result from analyzeDecisionType
+ * @returns {Object|null} Best matching exit node
+ */
+function findBestExitForDecision(decision, exitNodes, decisionAnalysis) {
+  if (!exitNodes.length) return null;
+
+  const questionLower = decision.label?.toLowerCase() || '';
+
+  // Score each exit node based on keyword relevance
+  const scoredExits = exitNodes.map(exit => {
+    const exitLower = exit.label?.toLowerCase() || '';
+    let score = 0;
+
+    // Check for direct keyword matches from noOutcomeKeywords
+    if (decisionAnalysis.noOutcomeKeywords) {
+      for (const keyword of decisionAnalysis.noOutcomeKeywords) {
+        if (exitLower.includes(keyword)) {
+          score += 10;
+        }
+      }
+    }
+
+    // Check for context-specific matches
+    if (questionLower.includes('permission') && exitLower.includes('denied')) score += 5;
+    if (questionLower.includes('microphone') && exitLower.includes('listen')) score += 5;
+    if (questionLower.includes('valid') && exitLower.includes('invalid')) score += 5;
+    if (questionLower.includes('valid') && exitLower.includes('expired')) score += 5;
+    if (questionLower.includes('link') && exitLower.includes('link')) score += 3;
+    if (questionLower.includes('supported') && exitLower.includes('unavailable')) score += 5;
+    if (questionLower.includes('karaoke') && exitLower.includes('unavailable')) score += 5;
+    if (questionLower.includes('started') && exitLower.includes('waiting')) score += 3;
+    if (questionLower.includes('ready') && exitLower.includes('waiting')) score += 3;
+
+    // General error/fail matches for generic decisions
+    if (exitLower.includes('error') || exitLower.includes('fail')) score += 2;
+
+    // Prefer exits in the same lane
+    if (exit.lane === decision.lane) score += 1;
+
+    return { exit, score };
+  });
+
+  // Sort by score descending
+  scoredExits.sort((a, b) => b.score - a.score);
+
+  // Return the best match if it has a meaningful score, otherwise first exit
+  return scoredExits[0].score > 0 ? scoredExits[0].exit : exitNodes[0];
+}
+
+/**
+ * Find the best "Yes" target for a decision.
+ * Looks for steps that continue the happy path.
+ * @param {Object} decision - Decision node
+ * @param {Object[]} candidateNodes - Nodes after the decision
+ * @param {string} decisionLane - The lane of the decision
+ * @returns {Object|null} Best target for Yes branch
+ */
+function findBestYesTarget(decision, candidateNodes, decisionLane) {
+  if (!candidateNodes.length) return null;
+
+  const questionLower = decision.label?.toLowerCase() || '';
+
+  // Score candidates based on relevance
+  const scoredCandidates = candidateNodes.map(node => {
+    const nodeLower = node.label?.toLowerCase() || '';
+    let score = 0;
+
+    // Skip exit/end nodes for Yes branch
+    if (node.type === 'exit' || node.type === 'end') {
+      return { node, score: -100 };
+    }
+
+    // Prefer same lane
+    if (node.lane === decisionLane) score += 5;
+
+    // Prefer steps that suggest continuation
+    if (nodeLower.includes('continue') || nodeLower.includes('proceed')) score += 3;
+    if (nodeLower.includes('start') || nodeLower.includes('begin')) score += 2;
+    if (nodeLower.includes('enter') || nodeLower.includes('join')) score += 2;
+
+    // Permission granted should lead to enabled features
+    if (questionLower.includes('permission')) {
+      if (nodeLower.includes('enabled') || nodeLower.includes('with mic')) score += 5;
+      if (nodeLower.includes('lobby') || nodeLower.includes('session')) score += 3;
+    }
+
+    // Prefer first step as default
+    if (candidateNodes.indexOf(node) === 0) score += 1;
+
+    return { node, score };
+  });
+
+  scoredCandidates.sort((a, b) => b.score - a.score);
+  return scoredCandidates[0]?.score >= 0 ? scoredCandidates[0].node : candidateNodes[0];
+}
+
+/**
+ * Find an alternative path node for the No branch when no exit is suitable.
+ * This is for decisions where No means "do something different" not "fail".
+ * @param {Object} decision - Decision node
+ * @param {Object[]} candidateNodes - Nodes after the decision
+ * @param {Object} yesTarget - The Yes branch target
+ * @returns {Object|null} Alternative node for No branch
+ */
+function findAlternativeNoTarget(decision, candidateNodes, yesTarget) {
+  const questionLower = decision.label?.toLowerCase() || '';
+
+  // For permission decisions, look for "limited" or "listen-only" alternatives
+  if (questionLower.includes('permission') || questionLower.includes('microphone')) {
+    for (const node of candidateNodes) {
+      const nodeLower = node.label?.toLowerCase() || '';
+      if (nodeLower.includes('listen') || nodeLower.includes('limited') ||
+          nodeLower.includes('without') || nodeLower.includes('view')) {
+        return node;
+      }
+    }
+  }
+
+  // Find a step that's different from yesTarget but in the same flow
+  for (const node of candidateNodes) {
+    if (node !== yesTarget && node.type === 'step') {
+      return node;
+    }
+  }
+
+  return null;
+}
+
+// ============================================================================
 // Lane Analysis
 // ============================================================================
 
@@ -568,7 +767,7 @@ function findEndNodesForStep(nodes, lastStep) {
  */
 function generateIntelligentEdges(nodes, entryPoints, endStates, decisions, flowId) {
   const edges = [];
-  const edgeSet = new Set(); // Track unique edges
+  const edgeSet = new Set(); // Track unique edges (include labels for choice decisions)
 
   // Build adjacency list for cycle detection
   const adjacency = new Map();
@@ -576,7 +775,8 @@ function generateIntelligentEdges(nodes, entryPoints, endStates, decisions, flow
   const addEdge = (from, to, label) => {
     if (!from || !to) return false;
     if (from === to) return false; // No self-loops
-    const key = `${from}->${to}`;
+    // Include label in key to allow multiple labeled edges between same nodes (e.g., choice options)
+    const key = `${from}->${to}${label ? `[${label}]` : ''}`;
     if (edgeSet.has(key)) return false;
 
     // Check if this would create a cycle
@@ -643,7 +843,8 @@ function generateIntelligentEdges(nodes, entryPoints, endStates, decisions, flow
     addEdge(current.id, next.id);
   }
 
-  // === RULE 3: Handle decisions with proper branching ===
+  // === RULE 3: Handle decisions with intelligent branching ===
+  // Uses semantic analysis to route Yes/No branches to contextually relevant nodes
   for (let i = 0; i < actionNodes.length; i++) {
     const node = actionNodes[i];
     if (node.type !== 'decision') continue;
@@ -651,27 +852,54 @@ function generateIntelligentEdges(nodes, entryPoints, endStates, decisions, flow
     // Find what comes after this decision
     const afterDecision = actionNodes.slice(i + 1);
 
-    // Check if this decision has parsed branches
+    // Analyze the decision type based on its question text
+    const decisionAnalysis = analyzeDecisionType(node.label || '');
+
+    // Check if this decision has parsed branches from DSL
     const decisionInfo = decisions.find(d => d.id === node.id);
 
-    // Find Yes target (next step in happy path)
-    let yesTarget = afterDecision[0]; // Default: next action
+    // Find Yes target using semantic matching
+    let yesTarget = findBestYesTarget(node, afterDecision, node.lane);
 
-    // Find No target (exit, error, or alternative path)
+    // Fallback: use first action after decision
+    if (!yesTarget && afterDecision.length > 0) {
+      yesTarget = afterDecision[0];
+    }
+
+    // Find No target based on decision type
     let noTarget = null;
 
-    // Look for exit/error nodes
-    const exitNode = endNodes.find(n =>
+    // Get all exit nodes for this analysis
+    const exitNodes = endNodes.filter(n =>
       n.type === 'exit' ||
       n.label?.toLowerCase().includes('exit') ||
       n.label?.toLowerCase().includes('error') ||
-      n.label?.toLowerCase().includes('fail')
+      n.label?.toLowerCase().includes('fail') ||
+      n.label?.toLowerCase().includes('denied') ||
+      n.label?.toLowerCase().includes('unavailable') ||
+      n.label?.toLowerCase().includes('waiting') ||
+      n.label?.toLowerCase().includes('listen')
     );
 
-    // Look for alternative paths (different steps after Yes target)
-    const altTarget = afterDecision.length > 1 ? afterDecision[1] : null;
+    // Use intelligent exit matching based on decision keywords
+    const bestExit = findBestExitForDecision(node, exitNodes, decisionAnalysis);
 
-    noTarget = exitNode || altTarget || endNodes[0];
+    // For some decisions, No doesn't mean failure - look for alternative paths
+    // e.g., "Permission granted?" -> No could mean "listen-only mode" not "error"
+    const altPath = findAlternativeNoTarget(node, afterDecision, yesTarget);
+
+    // Choose No target: prefer alternative path if semantically matched, else exit
+    if (altPath && decisionAnalysis.type === 'permission') {
+      // Permission decisions often have graceful degradation paths
+      noTarget = altPath;
+    } else if (bestExit) {
+      noTarget = bestExit;
+    } else if (altPath) {
+      noTarget = altPath;
+    } else {
+      // Fallback: use any end node
+      noTarget = endNodes[0];
+    }
 
     // Add Yes branch
     if (yesTarget) {
@@ -679,8 +907,14 @@ function generateIntelligentEdges(nodes, entryPoints, endStates, decisions, flow
     }
 
     // Add No branch
-    if (noTarget) {
+    if (noTarget && noTarget !== yesTarget) {
       addEdge(node.id, noTarget.id, 'No');
+    } else if (endNodes.length > 0) {
+      // Ensure we have a No branch even if noTarget matches yesTarget
+      const fallbackNo = endNodes.find(n => n !== yesTarget) || endNodes[0];
+      if (fallbackNo) {
+        addEdge(node.id, fallbackNo.id, 'No');
+      }
     }
   }
 
@@ -794,7 +1028,8 @@ function wouldCreateCycle(from, to, adjacency) {
  */
 function fillMissingEdges(explicitEdges, nodes, flowId) {
   const edges = [...explicitEdges];
-  const edgeSet = new Set(explicitEdges.map(e => `${e.from}->${e.to}`));
+  // Include label in key to allow multiple labeled edges between same nodes (e.g., choice options)
+  const edgeSet = new Set(explicitEdges.map(e => `${e.from}->${e.to}${e.label ? `[${e.label}]` : ''}`));
 
   // Build adjacency list for cycle detection
   const adjacency = new Map();
@@ -806,7 +1041,8 @@ function fillMissingEdges(explicitEdges, nodes, flowId) {
   const addEdge = (from, to, label) => {
     if (!from || !to) return false;
     if (from === to) return false; // No self-loops
-    const key = `${from}->${to}`;
+    // Include label in key to allow multiple labeled edges between same nodes
+    const key = `${from}->${to}${label ? `[${label}]` : ''}`;
     if (edgeSet.has(key)) return false;
 
     // Check if this would create a cycle
@@ -884,7 +1120,7 @@ function fillMissingEdges(explicitEdges, nodes, flowId) {
     }
   }
 
-  // Ensure decisions have at least 2 outgoing edges
+  // Ensure decisions have at least 2 outgoing edges with intelligent routing
   for (const node of actionNodes.filter(n => n.type === 'decision')) {
     const currentEdgeMap = buildEdgeMap(edges);
     const outs = currentEdgeMap.outgoing.get(node.id) || [];
@@ -892,25 +1128,63 @@ function fillMissingEdges(explicitEdges, nodes, flowId) {
       const idx = actionNodes.indexOf(node);
       const afterDecision = actionNodes.slice(idx + 1);
 
+      // Analyze decision type for intelligent routing
+      const decisionAnalysis = analyzeDecisionType(node.label || '');
+
+      // Get exit nodes that match this decision type
+      const exitNodes = endNodes.filter(n =>
+        n.type === 'exit' ||
+        n.label?.toLowerCase().includes('exit') ||
+        n.label?.toLowerCase().includes('error') ||
+        n.label?.toLowerCase().includes('fail') ||
+        n.label?.toLowerCase().includes('denied') ||
+        n.label?.toLowerCase().includes('unavailable') ||
+        n.label?.toLowerCase().includes('waiting') ||
+        n.label?.toLowerCase().includes('listen')
+      );
+
       if (outs.length === 0) {
-        // Add both Yes and No
-        const yesTarget = afterDecision[0];
-        const noTarget = endNodes.find(n => n.type === 'exit') || endNodes[0];
+        // Add both Yes and No with intelligent routing
+        const yesTarget = findBestYesTarget(node, afterDecision, node.lane) || afterDecision[0];
+        const bestExit = findBestExitForDecision(node, exitNodes, decisionAnalysis);
+        const altPath = findAlternativeNoTarget(node, afterDecision, yesTarget);
+
+        // Choose No target based on decision type
+        let noTarget = null;
+        if (altPath && decisionAnalysis.type === 'permission') {
+          noTarget = altPath;
+        } else if (bestExit) {
+          noTarget = bestExit;
+        } else if (altPath) {
+          noTarget = altPath;
+        } else {
+          noTarget = endNodes[0];
+        }
+
         if (yesTarget) addEdge(node.id, yesTarget.id, 'Yes');
-        if (noTarget) addEdge(node.id, noTarget.id, 'No');
+        if (noTarget && noTarget !== yesTarget) {
+          addEdge(node.id, noTarget.id, 'No');
+        } else if (endNodes[0]) {
+          addEdge(node.id, endNodes[0].id, 'No');
+        }
       } else if (outs.length === 1) {
-        // Add missing branch
+        // Add missing branch with intelligent routing
         const existingTarget = outs[0];
         const hasYes = edges.some(e => e.from === node.id && e.label?.toLowerCase() === 'yes');
         const hasNo = edges.some(e => e.from === node.id && e.label?.toLowerCase() === 'no');
 
         if (!hasNo) {
-          const noTarget = endNodes.find(n => n.type === 'exit') ||
+          const bestExit = findBestExitForDecision(node, exitNodes, decisionAnalysis);
+          const altPath = findAlternativeNoTarget(node, afterDecision,
+            nodes.find(n => n.id === existingTarget));
+          const noTarget = (altPath && decisionAnalysis.type === 'permission') ? altPath :
+                          bestExit ||
                           afterDecision.find(a => a.id !== existingTarget) ||
                           endNodes[0];
           if (noTarget) addEdge(node.id, noTarget.id, 'No');
         } else if (!hasYes) {
-          const yesTarget = afterDecision.find(a => a.id !== existingTarget) ||
+          const yesTarget = findBestYesTarget(node, afterDecision.filter(a => a.id !== existingTarget), node.lane) ||
+                           afterDecision.find(a => a.id !== existingTarget) ||
                            afterDecision[0];
           if (yesTarget) addEdge(node.id, yesTarget.id, 'Yes');
         }
@@ -1143,14 +1417,111 @@ function expandFlowGroup(flowSpec, flowGroup, lanes, personaNames, declaredActor
   let edges = [];
 
   if (hasExplicitEdges) {
-    // Start with explicit edges
-    const explicitEdges = flowEdges.map(e => ({
-      from: e.from,
-      to: e.to,
-      label: e.label,
-      condition: e.condition,
-      flowGroup: flowId
-    }));
+    // Start with explicit edges, but validate targets exist
+    const explicitEdges = [];
+    const endNodesList = nodes.filter(n => n.type === 'end' || n.type === 'exit');
+    const actionNodesList = nodes.filter(n => n.type === 'step' || n.type === 'system' || n.type === 'decision');
+
+    for (const e of flowEdges) {
+      // Check if source and target exist
+      const sourceExists = nodeMap.has(e.from);
+      const targetExists = nodeMap.has(e.to);
+
+      if (!sourceExists) {
+        // Skip edges from non-existent sources
+        continue;
+      }
+
+      let targetId = e.to;
+      if (!targetExists) {
+        // Target doesn't exist - try to find a replacement
+        const sourceNode = nodeMap.get(e.from);
+        const label = e.label?.toLowerCase() || '';
+
+        // If it's a No/error/exit edge, find the best exit node
+        if (label.includes('no') || e.to.includes('EXIT') || e.to.includes('ERROR')) {
+          const decisionAnalysis = analyzeDecisionType(sourceNode?.label || '');
+          const exitNodes = endNodesList.filter(n =>
+            n.type === 'exit' ||
+            n.label?.toLowerCase().includes('exit') ||
+            n.label?.toLowerCase().includes('error')
+          );
+          const bestExit = findBestExitForDecision(sourceNode, exitNodes, decisionAnalysis);
+          if (bestExit) {
+            targetId = bestExit.id;
+          } else if (endNodesList.length > 0) {
+            targetId = endNodesList[0].id;
+          } else {
+            continue; // Skip edge if no valid target
+          }
+        } else {
+          // Try to find a matching step by looking at the ID pattern
+          // e.g., H6 might map to a step like H8 (the next H step)
+          const idMatch = e.to.match(/^([A-Z]+)(\d+)$/);
+          if (idMatch) {
+            const prefix = idMatch[1];
+            const targetNum = parseInt(idMatch[2], 10);
+
+            // Find all steps with the same prefix in this flow
+            const matchingSteps = actionNodesList.filter(n =>
+              n.id.startsWith(prefix) &&
+              n.flowGroup === flowId &&
+              n.type === 'step'
+            );
+
+            if (matchingSteps.length > 0) {
+              // Find the step with the closest ID number >= target number
+              // e.g., if target is H6, look for H6, H7, H8...
+              let bestMatch = null;
+              let bestDiff = Infinity;
+
+              for (const step of matchingSteps) {
+                const stepMatch = step.id.match(/^[A-Z]+(\d+)$/);
+                if (stepMatch) {
+                  const stepNum = parseInt(stepMatch[1], 10);
+                  // Prefer steps with number >= target
+                  if (stepNum >= targetNum) {
+                    const diff = stepNum - targetNum;
+                    if (diff < bestDiff) {
+                      bestDiff = diff;
+                      bestMatch = step;
+                    }
+                  }
+                }
+              }
+
+              // If no step >= target, use the last matching step
+              if (!bestMatch) {
+                bestMatch = matchingSteps[matchingSteps.length - 1];
+              }
+
+              if (bestMatch) {
+                targetId = bestMatch.id;
+              } else if (endNodesList.length > 0) {
+                targetId = endNodesList[0].id;
+              } else {
+                continue;
+              }
+            } else if (endNodesList.length > 0) {
+              targetId = endNodesList[0].id;
+            } else {
+              continue; // Skip edge if no valid target
+            }
+          } else {
+            continue; // Skip edge if we can't find a valid target
+          }
+        }
+      }
+
+      explicitEdges.push({
+        from: e.from,
+        to: targetId,
+        label: e.label,
+        condition: e.condition,
+        flowGroup: flowId,
+        corrected: targetId !== e.to ? true : undefined
+      });
+    }
 
     // Fill in missing connections to ensure all nodes are connected
     edges = fillMissingEdges(explicitEdges, nodes, flowId);
@@ -1247,17 +1618,28 @@ export function expandFlowGraph(flowSpec, options = {}) {
   // Also expand "ungrouped" steps (those without a flow group)
   const ungroupedSteps = flowSpec.steps?.filter(s => !s.flowGroup) || [];
   const ungroupedDecisions = flowSpec.decisions?.filter(d => !d.flowGroup) || [];
+  const ungroupedEnds = flowSpec.endNodes?.filter(e => !e.flowGroup) || [];
+  const ungroupedExits = flowSpec.exitNodes?.filter(e => !e.flowGroup) || [];
 
-  if (ungroupedSteps.length > 0 || ungroupedDecisions.length > 0 || flowGroups.length === 0) {
+  // Only create main flow if there's meaningful ungrouped content with end states,
+  // or if there are no flow groups at all
+  const hasUngroupedContent = ungroupedSteps.length > 0 || ungroupedDecisions.length > 0;
+  const hasUngroupedEnds = ungroupedEnds.length > 0 || ungroupedExits.length > 0;
+
+  if ((hasUngroupedContent && hasUngroupedEnds) || flowGroups.length === 0) {
     const mainFlow = expandFlowGroup(flowSpec, null, lanes, personaNames, declaredActors);
     mainFlow.id = 'main';
     mainFlow.name = 'Main Flow';
-    flowGraph.flows.push(mainFlow);
 
-    flowGraph.starts.push(...mainFlow.starts);
-    flowGraph.ends.push(...mainFlow.ends);
-    flowGraph.nodes.push(...mainFlow.nodes);
-    flowGraph.edges.push(...mainFlow.edges);
+    // Only add main flow if it has meaningful nodes (not just inferred)
+    if (mainFlow.nodes.length > 0 && mainFlow.ends.length > 0) {
+      flowGraph.flows.push(mainFlow);
+
+      flowGraph.starts.push(...mainFlow.starts);
+      flowGraph.ends.push(...mainFlow.ends);
+      flowGraph.nodes.push(...mainFlow.nodes);
+      flowGraph.edges.push(...mainFlow.edges);
+    }
   }
 
   // Deduplicate nodes and edges
@@ -1270,7 +1652,8 @@ export function expandFlowGraph(flowSpec, options = {}) {
 
   const seenEdges = new Set();
   flowGraph.edges = flowGraph.edges.filter(e => {
-    const key = `${e.from}->${e.to}`;
+    // Include label in key to preserve multiple labeled edges between same nodes (e.g., choice options)
+    const key = `${e.from}->${e.to}${e.label ? `[${e.label}]` : ''}`;
     if (seenEdges.has(key)) return false;
     seenEdges.add(key);
     return true;

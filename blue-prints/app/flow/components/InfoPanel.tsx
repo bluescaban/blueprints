@@ -13,7 +13,7 @@
  */
 
 import { useState } from 'react';
-import { FlowGraph, LANE_COLORS, AcceptanceCriteria } from '@/lib/flowgraph-types';
+import { FlowGraph, LANE_COLORS, AcceptanceCriteria, Persona } from '@/lib/flowgraph-types';
 
 interface InfoPanelProps {
   flowGraph: FlowGraph;
@@ -35,7 +35,7 @@ export default function InfoPanel({ flowGraph, isOpen: controlledIsOpen, onClose
   const acceptanceCriteria: AcceptanceCriteria[] = flowGraph.acceptanceCriteria || [];
 
   // Derive personas from lanes (excluding System)
-  const personas = flowGraph.personas || flowGraph.lanes
+  const personas: Persona[] = flowGraph.personas || flowGraph.lanes
     .filter(lane => lane !== 'System')
     .map(lane => ({ name: lane }));
 

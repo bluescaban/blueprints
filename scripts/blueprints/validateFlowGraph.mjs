@@ -155,7 +155,8 @@ function validateFlowStartEnd(flowGraph) {
   for (const flow of flowGraph.flows) {
     const flowNodes = flow.nodes || [];
     const startNodes = flowNodes.filter(n => n.type === 'start');
-    const endNodes = flowNodes.filter(n => n.type === 'end');
+    // Include both 'end' and 'exit' types as valid end nodes
+    const endNodes = flowNodes.filter(n => n.type === 'end' || n.type === 'exit');
 
     if (startNodes.length === 0) {
       issues.push({
@@ -344,12 +345,13 @@ function validateDuplicateEdges(flowGraph) {
   const seen = new Map();
 
   for (const edge of flowGraph.edges) {
-    const key = `${edge.from}->${edge.to}`;
+    // Include label in key - allows multiple labeled edges between same nodes (choice options)
+    const key = `${edge.from}->${edge.to}${edge.label ? `[${edge.label}]` : ''}`;
     if (seen.has(key)) {
       issues.push({
         severity: 'warning',
         code: ERROR_CODES.DUPLICATE_EDGE,
-        message: `Duplicate edge: "${edge.from}" -> "${edge.to}"`,
+        message: `Duplicate edge: "${edge.from}" -> "${edge.to}"${edge.label ? ` [${edge.label}]` : ''}`,
         edgeId: key,
         flowId: edge.flowGroup,
         suggestion: 'Remove duplicate edge definition'
