@@ -59,6 +59,13 @@ const NODE_HEIGHTS: Record<string, number> = {
 
 interface FlowViewerProps {
   flowGraph: FlowGraph;
+  onRegisterSave?: (callback: () => void) => void;
+  onRegisterReset?: (callback: () => void) => void;
+  onLayoutStateChange?: (hasChanges: boolean, hasSavedLayout: boolean) => void;
+  showLayoutToolbar?: boolean;
+  // External flow selection control (when managed by parent)
+  activeFlowId?: string;
+  onSelectFlow?: (flowId: string) => void;
 }
 
 // ============================================================================
@@ -727,21 +734,34 @@ function NodeEditModal({ nodeId, initialLabel, onSave, onClose }: NodeEditModalP
 // Main Component
 // ============================================================================
 
-export default function FlowViewer({ flowGraph }: FlowViewerProps) {
+export default function FlowViewer({
+  flowGraph,
+  onRegisterSave,
+  onRegisterReset,
+  onLayoutStateChange,
+  showLayoutToolbar = true,
+  activeFlowId: externalActiveFlowId,
+  onSelectFlow: externalOnSelectFlow,
+}: FlowViewerProps) {
   // State for flow group selection
   const flows = flowGraph.flows || [];
+  const isExternallyControlled = externalActiveFlowId !== undefined && externalOnSelectFlow !== undefined;
 
   // Default to the 'main' flow when available, otherwise fall back to the
   // first flow in the list (or 'main' if nothing present). Use an effect so
   // the selection will update if `flowGraph.flows` changes at runtime.
   const initialFlowId = flows.find(f => f.id === 'main') ? 'main' : (flows[0]?.id || 'main');
-  const [activeFlowId, setActiveFlowId] = useState<string>(initialFlowId);
+  const [internalActiveFlowId, setInternalActiveFlowId] = useState<string>(initialFlowId);
+
+  // Use external or internal state
+  const activeFlowId = isExternallyControlled ? externalActiveFlowId : internalActiveFlowId;
+  const setActiveFlowId = isExternallyControlled ? externalOnSelectFlow : setInternalActiveFlowId;
 
   useEffect(() => {
-    if (flows.length === 0) return;
+    if (flows.length === 0 || isExternallyControlled) return;
     const defaultId = flows.find(f => f.id === 'main') ? 'main' : flows[0].id;
-    setActiveFlowId(defaultId);
-  }, [flows]);
+    setInternalActiveFlowId(defaultId);
+  }, [flows, isExternallyControlled]);
 
   // Get active flow's nodes and edges, or fall back to combined
   const activeFlow = flows.find(f => f.id === activeFlowId);
@@ -827,6 +847,26 @@ export default function FlowViewer({ flowGraph }: FlowViewerProps) {
     setHasSavedLayout(false);
   }, [storageKey, defaultNodes, setNodes]);
 
+  // Register callbacks for external control (menu shelf)
+  useEffect(() => {
+    if (onRegisterSave) {
+      onRegisterSave(handleSave);
+    }
+  }, [onRegisterSave, handleSave]);
+
+  useEffect(() => {
+    if (onRegisterReset) {
+      onRegisterReset(handleReset);
+    }
+  }, [onRegisterReset, handleReset]);
+
+  // Report layout state changes to parent
+  useEffect(() => {
+    if (onLayoutStateChange) {
+      onLayoutStateChange(hasChanges, hasSavedLayout);
+    }
+  }, [onLayoutStateChange, hasChanges, hasSavedLayout]);
+
   // Handle node edit request
   const handleNodeEdit = useCallback((nodeId: string, label: string) => {
     setEditingNode({ id: nodeId, label });
@@ -864,23 +904,27 @@ export default function FlowViewer({ flowGraph }: FlowViewerProps) {
 
   return (
     <div className="w-full h-full relative" style={{ minHeight: '100vh' }}>
-      {/* Flow Group Tabs */}
-      <FlowGroupTabs
-        flows={flows}
-        activeFlowId={activeFlowId}
-        onSelectFlow={setActiveFlowId}
-      />
+      {/* Flow Group Tabs - only shown when not externally controlled */}
+      {!isExternallyControlled && (
+        <FlowGroupTabs
+          flows={flows}
+          activeFlowId={activeFlowId}
+          onSelectFlow={setActiveFlowId}
+        />
+      )}
 
       {/* Legend */}
       <Legend lanes={flowGraph.lanes} />
 
-      {/* Layout Toolbar */}
-      <LayoutToolbar
-        onSave={handleSave}
-        onReset={handleReset}
-        hasChanges={hasChanges}
-        hasSavedLayout={hasSavedLayout}
-      />
+      {/* Layout Toolbar - conditionally shown */}
+      {showLayoutToolbar && (
+        <LayoutToolbar
+          onSave={handleSave}
+          onReset={handleReset}
+          hasChanges={hasChanges}
+          hasSavedLayout={hasSavedLayout}
+        />
+      )}
 
       {/* Node Edit Modal */}
       {editingNode && (

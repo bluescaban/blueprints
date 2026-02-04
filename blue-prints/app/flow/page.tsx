@@ -5,12 +5,10 @@
  * Renders at /flow
  */
 
-import { Suspense } from 'react';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import FlowViewer from './components/FlowViewer';
-import HeaderActions from './components/HeaderActions';
+import FlowPageClient from './components/FlowPageClient';
 import RegenerateButton from './components/RegenerateButton';
 import { FlowGraph } from '@/lib/flowgraph-types';
 
@@ -123,80 +121,5 @@ export default async function FlowPage() {
     );
   }
 
-  return (
-    <div className="min-h-screen" style={{ backgroundColor: '#4A85C8' }}>
-      {/* Header - Glassmorphism */}
-      <header
-        className="sticky top-0 z-30 px-6 py-3 flex items-center justify-between border-b border-white/30"
-        style={{
-          background: 'rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <div className="flex items-center gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <span className="text-3xl font-bold text-white drop-shadow-lg">青</span>
-            <div className="h-8 w-px bg-white/30" />
-          </div>
-
-          {/* Title */}
-          <div>
-            <h1 className="text-lg font-bold text-white drop-shadow-sm flex items-center gap-2">
-              <span className="text-white/70 font-normal">BluePrints</span>
-              <span className="text-white/50">/</span>
-              <span>{flowGraph.meta.feature}</span>
-            </h1>
-            <div className="flex items-center gap-3 mt-0.5">
-              <span className="text-xs text-white/70 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                v{flowGraph.meta.specKitVersion}
-              </span>
-              <span className="text-xs text-white/60">
-                {flowGraph.nodes.length} nodes
-              </span>
-              <span className="text-xs text-white/60">
-                {flowGraph.edges.length} edges
-              </span>
-              <span className="text-xs text-white/60">
-                {flowGraph.lanes.length} lanes
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Header Actions - Timestamp, Regenerate, Info */}
-        <HeaderActions
-          flowGraph={flowGraph}
-          defaultFileKey={flowGraph.meta.sourceFileKey}
-          defaultFeature={flowGraph.meta.feature}
-        />
-      </header>
-
-      {/* Main Content */}
-      <main className="relative">
-        <Suspense fallback={<LoadingState />}>
-          <FlowViewer flowGraph={flowGraph} />
-        </Suspense>
-      </main>
-    </div>
-  );
-}
-
-// ============================================================================
-// Loading State
-// ============================================================================
-
-function LoadingState() {
-  return (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#4A85C8' }}>
-      <div className="text-center">
-        <div className="text-5xl font-bold text-white drop-shadow-lg mb-4 animate-pulse">青</div>
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-white/30 border-t-white mx-auto mb-4" />
-        <p className="text-white/70 text-sm">Loading FlowGraph...</p>
-      </div>
-    </div>
-  );
+  return <FlowPageClient flowGraph={flowGraph} />;
 }

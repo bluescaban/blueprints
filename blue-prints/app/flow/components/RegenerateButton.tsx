@@ -13,6 +13,9 @@ import { useRouter } from 'next/navigation';
 interface RegenerateButtonProps {
   defaultFileKey?: string;
   defaultFeature?: string;
+  isExternallyControlled?: boolean;
+  externalIsOpen?: boolean;
+  onExternalClose?: () => void;
 }
 
 interface RegenerateResponse {
@@ -29,9 +32,18 @@ interface RegenerateResponse {
 export default function RegenerateButton({
   defaultFileKey = '',
   defaultFeature = '',
+  isExternallyControlled = false,
+  externalIsOpen = false,
+  onExternalClose,
 }: RegenerateButtonProps) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+
+  // Use external or internal state
+  const isOpen = isExternallyControlled ? externalIsOpen : internalIsOpen;
+  const setIsOpen = isExternallyControlled
+    ? (open: boolean) => { if (!open && onExternalClose) onExternalClose(); }
+    : setInternalIsOpen;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -84,7 +96,13 @@ export default function RegenerateButton({
     }
   };
 
-  if (!isOpen) {
+  // When externally controlled, don't render anything if closed
+  if (isExternallyControlled && !isOpen) {
+    return null;
+  }
+
+  // When internally controlled, show the button if closed
+  if (!isExternallyControlled && !isOpen) {
     return (
       <button
         onClick={() => setIsOpen(true)}
