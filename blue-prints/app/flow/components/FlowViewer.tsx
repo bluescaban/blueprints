@@ -581,7 +581,7 @@ interface LayoutToolbarProps {
 function LayoutToolbar({ onSave, onReset, hasChanges, hasSavedLayout }: LayoutToolbarProps) {
   return (
     <div
-      className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2 rounded-xl p-2 border border-white/30"
+      className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex gap-2 rounded-xl p-2 border border-white/30"
       style={{
         background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
@@ -765,14 +765,12 @@ export default function FlowViewer({ flowGraph }: FlowViewerProps) {
   );
 
   // Load saved positions or use default layout
-  const initialNodes = useMemo(() => {
-    const saved = loadNodePositions(storageKey);
-    if (saved) {
-      setHasSavedLayout(true);
-      return applyPositions(defaultNodes, saved);
-    }
-    return defaultNodes;
-  }, [defaultNodes, storageKey]);
+  // Note: We don't check localStorage here during SSR to avoid hydration mismatch.
+  // The useEffect below handles loading saved positions after hydration.
+  const initialNodes = useMemo(
+    () => defaultNodes,
+    [defaultNodes]
+  );
 
   const initialEdges = useMemo(
     () => convertEdges(displayEdges, displayNodes),
@@ -923,7 +921,7 @@ export default function FlowViewer({ flowGraph }: FlowViewerProps) {
             position="bottom-right"
             style={{
               marginRight: '16px',
-              marginBottom: '16px',
+              marginBottom: '80px',
             }}
           />
           <MiniMap
@@ -937,7 +935,7 @@ export default function FlowViewer({ flowGraph }: FlowViewerProps) {
               border: '2px solid rgba(74, 133, 200, 0.6)',
               borderRadius: '12px',
               marginLeft: '16px',
-              marginBottom: '16px',
+              marginBottom: '80px',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             }}
             maskColor="rgba(200, 220, 240, 0.6)"
