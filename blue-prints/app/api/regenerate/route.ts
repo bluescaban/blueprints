@@ -61,6 +61,7 @@ async function fetchFigmaFile(fileKey: string, token: string, outputPath: string
     headers: {
       'X-Figma-Token': token,
     },
+    cache: 'no-store',
   });
 
   if (!response.ok) {
@@ -93,11 +94,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check for FIGMA_TOKEN
-    const figmaToken = process.env.FIGMA_TOKEN;
+    // Check for FIGMA_API_TOKEN
+    const figmaToken = process.env.FIGMA_API_TOKEN;
     if (!figmaToken) {
       return NextResponse.json(
-        { ok: false, error: 'FIGMA_TOKEN not configured' },
+        { ok: false, error: 'FIGMA_API_TOKEN not configured' },
         { status: 500 }
       );
     }

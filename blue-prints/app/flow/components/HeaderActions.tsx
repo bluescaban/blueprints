@@ -38,22 +38,15 @@ export default function HeaderActions({
         {new Date(flowGraph.meta.generatedAt).toLocaleString()}
       </div>
 
-      {/* Regenerate Button - conditionally shown or externally controlled */}
+      {/* Regenerate Button - only render when self-managed (not externally controlled) */}
       {showRegenerate && (
         <RegenerateButton
           defaultFileKey={defaultFileKey}
           defaultFeature={defaultFeature}
         />
       )}
-      {!showRegenerate && isRegenerateOpen !== undefined && (
-        <RegenerateButton
-          defaultFileKey={defaultFileKey}
-          defaultFeature={defaultFeature}
-          isExternallyControlled
-          externalIsOpen={isRegenerateOpen}
-          onExternalClose={onRegenerateClose}
-        />
-      )}
+      {/* Note: Externally controlled modal is rendered at root level in FlowPageClient
+          to avoid stacking context issues from header's backdrop-filter */}
     </div>
   );
 }

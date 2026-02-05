@@ -15,6 +15,7 @@ import FlowViewer from './FlowViewer';
 import HeaderActions from './HeaderActions';
 import MenuShelf from './MenuShelf';
 import FlowSelector from './FlowSelector';
+import RegenerateButton from './RegenerateButton';
 import { FlowGraph } from '@/lib/flowgraph-types';
 
 interface FlowPageClientProps {
@@ -191,6 +192,15 @@ export default function FlowPageClient({ flowGraph }: FlowPageClientProps) {
           />
         </Suspense>
       </main>
+
+      {/* Regenerate Modal - rendered at root level to avoid backdrop-filter stacking context */}
+      <RegenerateButton
+        defaultFileKey={flowGraph.meta.sourceFileKey}
+        defaultFeature={flowGraph.meta.feature}
+        isExternallyControlled
+        externalIsOpen={isRegenerateOpen}
+        onExternalClose={() => setIsRegenerateOpen(false)}
+      />
     </div>
   );
 }
