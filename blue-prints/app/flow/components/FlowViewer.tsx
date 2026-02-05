@@ -26,6 +26,8 @@ import {
   useEdgesState,
   MarkerType,
   ConnectionLineType,
+  Connection,
+  addEdge,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -731,6 +733,215 @@ function NodeEditModal({ nodeId, initialLabel, onSave, onClose }: NodeEditModalP
 }
 
 // ============================================================================
+// Edge Label Modal Component (for creating new edges)
+// ============================================================================
+
+interface EdgeLabelModalProps {
+  connection: Connection;
+  onSave: (connection: Connection, label: string) => void;
+  onClose: () => void;
+}
+
+function EdgeLabelModal({ connection, onSave, onClose }: EdgeLabelModalProps) {
+  const [label, setLabel] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(connection, label.trim());
+    onClose();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm mx-4 rounded-2xl border border-white/30 overflow-hidden"
+        style={{
+          background: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between px-5 py-4 border-b border-gray-200/50"
+          style={{
+            background: 'linear-gradient(135deg, rgba(74, 133, 200, 0.1), rgba(74, 133, 200, 0.05))',
+          }}
+        >
+          <h3 className="font-bold text-gray-800 flex items-center gap-2">
+            <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            New Connection
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-5">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Edge Label (optional)
+          </label>
+          <input
+            type="text"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-gray-800"
+            autoFocus
+            placeholder="e.g., Yes, No, Success, Error..."
+          />
+          <p className="text-xs text-gray-500 mt-2">
+            Common labels: Yes, No, Success, Error, Cancel
+          </p>
+
+          <div className="flex gap-3 mt-5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-md"
+            >
+              Create Connection
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// Edge Edit Modal Component (for editing existing edges)
+// ============================================================================
+
+interface EdgeEditModalProps {
+  edgeId: string;
+  initialLabel: string;
+  onSave: (edgeId: string, newLabel: string) => void;
+  onDelete: (edgeId: string) => void;
+  onClose: () => void;
+}
+
+function EdgeEditModal({ edgeId, initialLabel, onSave, onDelete, onClose }: EdgeEditModalProps) {
+  const [label, setLabel] = useState(initialLabel);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(edgeId, label.trim());
+    onClose();
+  };
+
+  const handleDelete = () => {
+    onDelete(edgeId);
+    onClose();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm mx-4 rounded-2xl border border-white/30 overflow-hidden"
+        style={{
+          background: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between px-5 py-4 border-b border-gray-200/50"
+          style={{
+            background: 'linear-gradient(135deg, rgba(74, 133, 200, 0.1), rgba(74, 133, 200, 0.05))',
+          }}
+        >
+          <h3 className="font-bold text-gray-800 flex items-center gap-2">
+            <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Edit Connection
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-5">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Edge Label
+          </label>
+          <input
+            type="text"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-gray-800"
+            autoFocus
+            placeholder="e.g., Yes, No, Success, Error..."
+          />
+          <p className="text-xs text-gray-500 mt-2">
+            Leave empty to remove the label
+          </p>
+
+          <div className="flex gap-3 mt-5">
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="px-4 py-2.5 rounded-xl text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+              title="Delete this connection"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-md"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
 // Main Component
 // ============================================================================
 
@@ -777,6 +988,12 @@ export default function FlowViewer({
 
   // Edit modal state
   const [editingNode, setEditingNode] = useState<{ id: string; label: string } | null>(null);
+
+  // Edge creation state
+  const [pendingConnection, setPendingConnection] = useState<Connection | null>(null);
+
+  // Edge edit state
+  const [editingEdge, setEditingEdge] = useState<{ id: string; label: string } | null>(null);
 
   // Compute the default layout
   const defaultNodes = useMemo(
@@ -891,6 +1108,65 @@ export default function FlowViewer({
     setHasChanges(true);
   }, [setNodes]);
 
+  // Handle new edge connection - show modal to get label
+  const handleConnect = useCallback((connection: Connection) => {
+    setPendingConnection(connection);
+  }, []);
+
+  // Create the actual edge after user provides label
+  const handleCreateEdge = useCallback((connection: Connection, label: string) => {
+    const newEdge: Edge = {
+      id: `e-${connection.source}-${connection.target}-${Date.now()}`,
+      source: connection.source!,
+      target: connection.target!,
+      label: label || undefined,
+      type: 'smoothstep',
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#ffffff' },
+      style: { strokeWidth: 3, stroke: '#ffffff' },
+      labelStyle: { fontSize: 12, fontWeight: 700, fill: '#1e3a5f' },
+      labelBgStyle: { fill: 'white', fillOpacity: 1 },
+      labelBgPadding: [8, 4] as [number, number],
+      labelBgBorderRadius: 6,
+    };
+    setEdges((eds) => addEdge(newEdge, eds));
+    setHasChanges(true);
+  }, [setEdges]);
+
+  // Handle edge deletion
+  const handleEdgesDelete = useCallback((deletedEdges: Edge[]) => {
+    if (deletedEdges.length > 0) {
+      setHasChanges(true);
+    }
+  }, []);
+
+  // Handle edge click - open edit modal
+  const handleEdgeClick = useCallback((_event: React.MouseEvent, edge: Edge) => {
+    const label = typeof edge.label === 'string' ? edge.label : '';
+    setEditingEdge({ id: edge.id, label });
+  }, []);
+
+  // Handle edge label save
+  const handleEdgeLabelSave = useCallback((edgeId: string, newLabel: string) => {
+    setEdges((eds) =>
+      eds.map((edge) => {
+        if (edge.id === edgeId) {
+          return {
+            ...edge,
+            label: newLabel || undefined,
+          };
+        }
+        return edge;
+      })
+    );
+    setHasChanges(true);
+  }, [setEdges]);
+
+  // Handle edge delete from modal
+  const handleEdgeDelete = useCallback((edgeId: string) => {
+    setEdges((eds) => eds.filter((edge) => edge.id !== edgeId));
+    setHasChanges(true);
+  }, [setEdges]);
+
   // Add onEdit callback to all nodes
   const nodesWithEditCallback = useMemo(() => {
     return nodes.map((node) => ({
@@ -936,6 +1212,26 @@ export default function FlowViewer({
         />
       )}
 
+      {/* Edge Label Modal */}
+      {pendingConnection && (
+        <EdgeLabelModal
+          connection={pendingConnection}
+          onSave={handleCreateEdge}
+          onClose={() => setPendingConnection(null)}
+        />
+      )}
+
+      {/* Edge Edit Modal */}
+      {editingEdge && (
+        <EdgeEditModal
+          edgeId={editingEdge.id}
+          initialLabel={editingEdge.label}
+          onSave={handleEdgeLabelSave}
+          onDelete={handleEdgeDelete}
+          onClose={() => setEditingEdge(null)}
+        />
+      )}
+
       {/* React Flow Canvas */}
       <div style={{ height: '100vh' }}>
         <ReactFlow
@@ -943,16 +1239,22 @@ export default function FlowViewer({
           edges={edges}
           onNodesChange={handleNodesChange}
           onEdgesChange={onEdgesChange}
+          onConnect={handleConnect}
+          onEdgesDelete={handleEdgesDelete}
+          onEdgeClick={handleEdgeClick}
           nodeTypes={nodeTypes}
           connectionLineType={ConnectionLineType.SmoothStep}
           fitView
           fitViewOptions={{ padding: 0.2 }}
           minZoom={0.3}
           maxZoom={1.5}
+          edgesReconnectable
+          deleteKeyCode={['Backspace', 'Delete']}
           defaultEdgeOptions={{
             type: 'smoothstep',
             markerEnd: { type: MarkerType.ArrowClosed },
           }}
+          connectionLineStyle={{ stroke: '#ffffff', strokeWidth: 3 }}
         >
           <Background
             variant={BackgroundVariant.Dots}

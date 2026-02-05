@@ -91,18 +91,26 @@ export const SPECKIT_VERSION = '2.0.0';
 // Default lanes if not inferable
 const DEFAULT_LANES = ['User', 'System'];
 
-// Keywords for lane inference (fallback only)
+// Keywords for lane inference (fallback only - generic patterns)
 const LANE_KEYWORDS = {
-  'host': 'Host',
-  'participant': 'Guest',
-  'guest': 'Guest',
-  'friend': 'Guest',
+  // User-related
   'user': 'User',
+  'customer': 'User',
+  'visitor': 'User',
+  'member': 'User',
+  // Admin-related
+  'admin': 'Admin',
+  'administrator': 'Admin',
+  'moderator': 'Admin',
+  'manager': 'Admin',
+  // System-related
   'app': 'System',
   'system': 'System',
   'server': 'System',
-  'lobby': 'System',
-  'session': 'System'
+  'api': 'System',
+  'database': 'System',
+  'service': 'System',
+  'backend': 'System'
 };
 
 // System step inference patterns
@@ -153,24 +161,23 @@ function genFlowId(flowId, prefix, index) {
 function inferLane(text, personas, declaredActors) {
   const lower = text.toLowerCase();
 
-  // Check declared actors first
+  // Check declared actors first (highest priority)
   for (const actor of declaredActors) {
     if (lower.includes(actor.toLowerCase())) {
       return actor;
     }
   }
 
-  // Check persona names
+  // Check persona names and map to appropriate lane
   for (const persona of personas) {
     const personaLower = persona.toLowerCase();
     if (lower.includes(personaLower)) {
-      if (personaLower.includes('host')) return 'Host';
-      if (personaLower.includes('participant') || personaLower.includes('friend')) return 'Guest';
-      if (personaLower.includes('listener') || personaLower.includes('user')) return 'User';
+      // Return the persona name as the lane if it matches
+      return persona;
     }
   }
 
-  // Keyword-based fallback
+  // Keyword-based fallback (generic patterns)
   for (const [keyword, lane] of Object.entries(LANE_KEYWORDS)) {
     if (lower.includes(keyword)) {
       return lane;
@@ -178,10 +185,9 @@ function inferLane(text, personas, declaredActors) {
   }
 
   // Sentence structure fallback
-  if (lower.startsWith('user ') || lower.startsWith('users ')) return 'User';
-  if (lower.startsWith('app ') || lower.startsWith('system ')) return 'System';
-  if (lower.startsWith('host ')) return 'Host';
-  if (lower.startsWith('friend ') || lower.startsWith('participant')) return 'Guest';
+  if (lower.startsWith('user ') || lower.startsWith('users ') || lower.startsWith('customer ')) return 'User';
+  if (lower.startsWith('app ') || lower.startsWith('system ') || lower.startsWith('server ')) return 'System';
+  if (lower.startsWith('admin ') || lower.startsWith('administrator ')) return 'Admin';
 
   return 'User'; // Default
 }
@@ -267,8 +273,8 @@ const DECISION_PATTERNS = {
     noOutcome: ['denied', 'limited', 'restricted', 'listen-only', 'view-only']
   },
   availability: {
-    keywords: ['available', 'supported', 'exists', 'found', 'karaoke'],
-    noOutcome: ['unavailable', 'not supported', 'not found', 'error', 'fail']
+    keywords: ['available', 'supported', 'exists', 'found', 'enabled'],
+    noOutcome: ['unavailable', 'not supported', 'not found', 'error', 'fail', 'disabled']
   },
   validity: {
     keywords: ['valid', 'expired', 'active', 'link', 'invite', 'session'],
@@ -347,16 +353,17 @@ function findBestExitForDecision(decision, exitNodes, decisionAnalysis) {
       }
     }
 
-    // Check for context-specific matches
+    // Check for context-specific matches (generic patterns)
     if (questionLower.includes('permission') && exitLower.includes('denied')) score += 5;
-    if (questionLower.includes('microphone') && exitLower.includes('listen')) score += 5;
     if (questionLower.includes('valid') && exitLower.includes('invalid')) score += 5;
     if (questionLower.includes('valid') && exitLower.includes('expired')) score += 5;
-    if (questionLower.includes('link') && exitLower.includes('link')) score += 3;
     if (questionLower.includes('supported') && exitLower.includes('unavailable')) score += 5;
-    if (questionLower.includes('karaoke') && exitLower.includes('unavailable')) score += 5;
+    if (questionLower.includes('available') && exitLower.includes('unavailable')) score += 5;
+    if (questionLower.includes('enabled') && exitLower.includes('disabled')) score += 5;
     if (questionLower.includes('started') && exitLower.includes('waiting')) score += 3;
     if (questionLower.includes('ready') && exitLower.includes('waiting')) score += 3;
+    if (questionLower.includes('found') && exitLower.includes('not found')) score += 5;
+    if (questionLower.includes('exists') && exitLower.includes('not found')) score += 5;
 
     // General error/fail matches for generic decisions
     if (exitLower.includes('error') || exitLower.includes('fail')) score += 2;
@@ -400,15 +407,20 @@ function findBestYesTarget(decision, candidateNodes, decisionLane) {
     // Prefer same lane
     if (node.lane === decisionLane) score += 5;
 
-    // Prefer steps that suggest continuation
+    // Prefer steps that suggest continuation (generic patterns)
     if (nodeLower.includes('continue') || nodeLower.includes('proceed')) score += 3;
     if (nodeLower.includes('start') || nodeLower.includes('begin')) score += 2;
-    if (nodeLower.includes('enter') || nodeLower.includes('join')) score += 2;
+    if (nodeLower.includes('enter') || nodeLower.includes('open')) score += 2;
+    if (nodeLower.includes('success') || nodeLower.includes('complete')) score += 2;
 
-    // Permission granted should lead to enabled features
-    if (questionLower.includes('permission')) {
-      if (nodeLower.includes('enabled') || nodeLower.includes('with mic')) score += 5;
-      if (nodeLower.includes('lobby') || nodeLower.includes('session')) score += 3;
+    // Permission/access granted should lead to enabled features
+    if (questionLower.includes('permission') || questionLower.includes('access') || questionLower.includes('allowed')) {
+      if (nodeLower.includes('enabled') || nodeLower.includes('granted') || nodeLower.includes('full')) score += 5;
+    }
+
+    // Validation success should proceed to next step
+    if (questionLower.includes('valid') || questionLower.includes('correct')) {
+      if (nodeLower.includes('process') || nodeLower.includes('submit') || nodeLower.includes('save')) score += 4;
     }
 
     // Prefer first step as default
@@ -432,12 +444,13 @@ function findBestYesTarget(decision, candidateNodes, decisionLane) {
 function findAlternativeNoTarget(decision, candidateNodes, yesTarget) {
   const questionLower = decision.label?.toLowerCase() || '';
 
-  // For permission decisions, look for "limited" or "listen-only" alternatives
-  if (questionLower.includes('permission') || questionLower.includes('microphone')) {
+  // For permission/access decisions, look for "limited", "restricted", or "read-only" alternatives
+  if (questionLower.includes('permission') || questionLower.includes('access') || questionLower.includes('allowed')) {
     for (const node of candidateNodes) {
       const nodeLower = node.label?.toLowerCase() || '';
-      if (nodeLower.includes('listen') || nodeLower.includes('limited') ||
-          nodeLower.includes('without') || nodeLower.includes('view')) {
+      if (nodeLower.includes('limited') || nodeLower.includes('restricted') ||
+          nodeLower.includes('without') || nodeLower.includes('read-only') ||
+          nodeLower.includes('view-only') || nodeLower.includes('basic')) {
         return node;
       }
     }
@@ -472,12 +485,11 @@ function determineLanes(declaredActors, personaNames, steps) {
     lanes.add(actor);
   }
 
-  // Add from personas
+  // Add from personas - use persona names directly as lanes
   for (const name of personaNames) {
-    const lower = name.toLowerCase();
-    if (lower.includes('host')) lanes.add('Host');
-    else if (lower.includes('participant') || lower.includes('friend') || lower.includes('guest')) lanes.add('Guest');
-    else if (lower.includes('user') || lower.includes('listener')) lanes.add('User');
+    // Add the persona name as a lane (capitalize first letter)
+    const laneName = name.charAt(0).toUpperCase() + name.slice(1);
+    lanes.add(laneName);
   }
 
   // Add from step lanes
@@ -493,16 +505,21 @@ function determineLanes(declaredActors, personaNames, steps) {
     lanes.add('User');
   }
 
-  // Return in logical order
-  const order = ['User', 'Host', 'Guest', 'System'];
-  const orderedLanes = order.filter(l => lanes.has(l));
+  // Return in logical order: User first, System last, others in between
+  const orderedLanes = [];
 
-  // Add any custom lanes not in the standard order
+  // User-like lanes first
+  if (lanes.has('User')) orderedLanes.push('User');
+
+  // Add all other non-System lanes
   for (const lane of lanes) {
-    if (!orderedLanes.includes(lane)) {
-      orderedLanes.splice(orderedLanes.length - 1, 0, lane); // Insert before System
+    if (lane !== 'User' && lane !== 'System' && !orderedLanes.includes(lane)) {
+      orderedLanes.push(lane);
     }
   }
+
+  // System always last
+  if (lanes.has('System')) orderedLanes.push('System');
 
   return orderedLanes;
 }
@@ -524,34 +541,34 @@ function identifyEntryPoints(steps, decisions, flowSpec, flowGroupId, lanes) {
   const entries = [];
   const prefix = flowGroupId ? `${flowGroupId}_` : '';
 
-  // Check for mode selection patterns in decisions
-  const modeDecision = decisions.find(d =>
-    d.question?.toLowerCase().includes('solo') ||
-    d.question?.toLowerCase().includes('with friends') ||
-    d.question?.toLowerCase().includes('mode')
-  );
+  // Check for mode selection patterns in decisions (generic detection)
+  const modeDecision = decisions.find(d => {
+    const q = d.question?.toLowerCase() || '';
+    // Generic mode detection: look for "mode", "type", "option", or "how" questions
+    return q.includes('mode') || q.includes('type') ||
+           (q.includes('how') && (q.includes('start') || q.includes('begin'))) ||
+           q.includes('which option');
+  });
 
   if (modeDecision) {
-    // Create separate entry points for each mode
-    entries.push({
-      id: `${prefix}START_SOLO`,
-      lane: 'User',
-      label: 'Solo Mode'
-    });
+    // Create entry points based on declared lanes (excluding System)
+    const userLanes = lanes.filter(l => l !== 'System');
 
-    if (lanes.includes('Host')) {
+    if (userLanes.length > 1) {
+      // Multiple user lanes - create entry per lane
+      for (const lane of userLanes) {
+        entries.push({
+          id: `${prefix}START_${lane.toUpperCase().replace(/\s+/g, '_')}`,
+          lane: lane,
+          label: `${lane} Entry`
+        });
+      }
+    } else {
+      // Single user lane - just create default start
       entries.push({
-        id: `${prefix}START_HOST`,
-        lane: 'Host',
-        label: 'Host Session'
-      });
-    }
-
-    if (lanes.includes('Guest')) {
-      entries.push({
-        id: `${prefix}START_JOIN`,
-        lane: 'Guest',
-        label: 'Join Session'
+        id: `${prefix}START`,
+        lane: userLanes[0] || 'User',
+        label: 'Start'
       });
     }
   } else if (steps.length > 0) {

@@ -27,6 +27,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // Node types to extract text from
 const TEXT_NODE_TYPES = ['TEXT', 'STICKY'];
 
+// Section names to ignore during extraction (case-insensitive)
+const IGNORED_SECTIONS = ['README'];
+
 // ============================================================================
 // Types (JSDoc)
 // ============================================================================
@@ -66,6 +69,13 @@ function walkAndExtract(node, results, parentSection = null) {
   let currentSection = parentSection;
   if (node.type === 'SECTION') {
     currentSection = node.name;
+
+    // Skip ignored sections entirely (don't process their children)
+    const sectionNameUpper = node.name?.toUpperCase() || '';
+    if (IGNORED_SECTIONS.some(ignored => sectionNameUpper.includes(ignored.toUpperCase()))) {
+      console.log(`  Skipping section: "${node.name}" (matches ignored pattern)`);
+      return; // Skip this section and all its children
+    }
   }
 
   // Check if this node has text content we want
