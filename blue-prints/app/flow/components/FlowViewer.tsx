@@ -1119,6 +1119,8 @@ export default function FlowViewer({
       id: `e-${connection.source}-${connection.target}-${Date.now()}`,
       source: connection.source!,
       target: connection.target!,
+      sourceHandle: connection.sourceHandle || undefined,
+      targetHandle: connection.targetHandle || undefined,
       label: label || undefined,
       type: 'smoothstep',
       markerEnd: { type: MarkerType.ArrowClosed, color: '#ffffff' },

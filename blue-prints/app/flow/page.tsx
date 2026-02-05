@@ -12,6 +12,9 @@ import FlowPageClient from './components/FlowPageClient';
 import RegenerateButton from './components/RegenerateButton';
 import { FlowGraph } from '@/lib/flowgraph-types';
 
+// Force dynamic rendering to ensure fresh data on every request
+export const dynamic = 'force-dynamic';
+
 // ============================================================================
 // Data Loading
 // ============================================================================

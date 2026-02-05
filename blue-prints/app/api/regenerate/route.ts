@@ -54,6 +54,20 @@ function sanitizeFeatureName(feature: string): string {
     .substring(0, 50) || 'unknown';
 }
 
+function formatReadableDate(): string {
+  const now = new Date();
+  const pad = (n: number) => n.toString().padStart(2, '0');
+
+  const year = now.getFullYear();
+  const month = pad(now.getMonth() + 1);
+  const day = pad(now.getDate());
+  const hour = pad(now.getHours());
+  const minute = pad(now.getMinutes());
+
+  // Format: 2024-01-15_10-30
+  return `${year}-${month}-${day}_${hour}-${minute}`;
+}
+
 async function fetchFigmaFile(fileKey: string, token: string, outputPath: string): Promise<void> {
   const url = `https://api.figma.com/v1/files/${fileKey}`;
 
@@ -160,11 +174,16 @@ export async function POST(request: NextRequest) {
     // Step 4: Expand to FlowGraph using CLI
     console.log(`[Regenerate] Step 4: Expanding to FlowGraph...`);
 
-    const flowgraphDir = path.join(outputDir, 'flowgraph');
+    // Create feature-specific directory for better organization
+    // Structure: output/flowgraph/<feature-name>/flowgraph_2024-01-15_10-30.json
+    const sanitizedFeature = sanitizeFeatureName(feature);
+    const flowgraphBaseDir = path.join(outputDir, 'flowgraph');
+    const flowgraphDir = path.join(flowgraphBaseDir, sanitizedFeature);
     mkdirSync(flowgraphDir, { recursive: true });
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    const flowgraphFilename = `${fileKey}_${timestamp}_flowgraph.json`;
+    // Human-readable filename: flowgraph_2024-01-15_10-30.json
+    const readableDate = formatReadableDate();
+    const flowgraphFilename = `flowgraph_${readableDate}.json`;
     const flowgraphPath = path.join(flowgraphDir, flowgraphFilename);
 
     // Run the CLI expand command
@@ -189,8 +208,8 @@ export async function POST(request: NextRequest) {
     const flowGraph = JSON.parse(readFileSync(flowgraphPath, 'utf8'));
     console.log(`[Regenerate] Saved FlowGraph to ${flowgraphPath}`);
 
-    // Also save as latest for easy loading
-    const latestPath = path.join(flowgraphDir, `${fileKey}_latest_flowgraph.json`);
+    // Save as latest.json for easy loading
+    const latestPath = path.join(flowgraphDir, 'latest.json');
     writeFileSync(latestPath, JSON.stringify(flowGraph, null, 2), 'utf8');
 
     console.log(`[Regenerate] Pipeline complete!`);
