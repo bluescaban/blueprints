@@ -1,0 +1,2665 @@
+{
+  "meta": {
+    "fileKey": "HYxtgE7EARWuvTskijY7xa",
+    "generatedAt": "2026-02-05T20:55:21.905Z",
+    "grammarVersion": "2.0.0"
+  },
+  "context": [
+    "Project = Smart Watch Language Tutor",
+    "Client = Preply",
+    "OutputSlug = smartwatch_language_tutor",
+    "Version = v1",
+    "Platform = Smart Watch (Apple Watch + Wear OS) + Companion Mobile App",
+    "Owner = Blue",
+    "Project = Spotify Karaoke",
+    "Client = Spotify",
+    "OutputSlug = spotify_karaoke",
+    "Version = v1",
+    "Platform = Mobile (iOS, Android)",
+    "Owner = Blue",
+    "Project =",
+    "Client =",
+    "OutputSlug = ex_ex",
+    "Version = v1",
+    "Platform =",
+    "Owner = Blue",
+    "Project = Spotify Karaoke",
+    "Client = Spotify",
+    "OutputSlug = spotify_karaoke",
+    "Version = v1",
+    "Platform = Mobile (iOS, Android)",
+    "Owner = Blue",
+    "",
+    ""
+  ],
+  "goals": [
+    "Enable bite-sized live language practice sessions from a smart watch",
+    "Allow users to quickly ask a tutor a question or practice a phrase",
+    "Minimize time-to-connection with a tutor",
+    "Support hands-free and glanceable interactions",
+    "Allow seamless escalation from watch → phone when needed",
+    "Respect privacy, consent, and recording transparency",
+    "Practice a foreign language with a live tutor through quick, on-the-go interactions",
+    "Enable users to get immediate, situational language help at the exact moment they need it.",
+    "Make live language practice feel lightweight, approachable, and non-disruptive to daily life.",
+    "Allow users to confidently communicate in real-world situations without committing to long lessons.",
+    "Seamlessly bridge micro-interactions on a smart watch into deeper learning experiences on mobile when needed.",
+    "Let users sing along with synchronized lyrics for any supported song",
+    "Support both Solo Karaoke and With Friends Karaoke",
+    "Minimize time-to-first-lyric (fast entry from a song page)",
+    "Make joining a friend session effortless via link",
+    "Provide a delightful “session” feeling (lobby, ready states, shared experience)",
+    "Keep the feature safe, respectful, and privacy-first",
+    "Enable users to sing along to songs solo or with friends",
+    "Provide a fast, low-friction entry into karaoke from a song",
+    "Preserve privacy and consent around microphone use",
+    "Support imperfect networks with graceful degradation",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "Let users sing along with synchronized lyrics for any supported song",
+    "Support both Solo Karaoke and With Friends Karaoke",
+    "Minimize time-to-first-lyric (fast entry from a song page)",
+    "Make joining a friend session effortless via link",
+    "Provide a delightful “session” feeling (lobby, ready states, shared experience)",
+    "Keep the feature safe, respectful, and privacy-first",
+    "Enable users to sing along to songs solo or with friends",
+    "Provide a fast, low-friction entry into karaoke from a song",
+    "Preserve privacy and consent around microphone use",
+    "Support imperfect networks with graceful degradation",
+    "Enable bite-sized live language practice sessions from a smart watch",
+    "Allow users to quickly ask a tutor a question or practice a phrase",
+    "Minimize time-to-connection with a tutor",
+    "Support hands-free and glanceable interactions",
+    "Allow seamless escalation from watch → phone when needed",
+    "Respect privacy, consent, and recording transparency",
+    "Sing along to songs solo or with friends",
+    "Let users sing along with synchronized lyrics for any supported song",
+    "Support both Solo Karaoke and With Friends Karaoke",
+    "Minimize time-to-first-lyric (fast entry from a song page)",
+    "Make joining a friend session effortless via link",
+    "Provide a delightful “session” feeling (lobby, ready states, shared experience)",
+    "Keep the feature safe, respectful, and privacy-first"
+  ],
+  "personas": [
+    {
+      "name": "Traveler Learner",
+      "details": "wants quick language help while navigating a foreign country"
+    },
+    {
+      "name": "Busy Professional",
+      "details": "wants short, focused practice sessions between meetings"
+    },
+    {
+      "name": "Language Beginner",
+      "details": "wants reassurance, corrections, and simple explanations"
+    },
+    {
+      "name": "Advanced Learner",
+      "details": "wants nuanced phrasing, pronunciation feedback, and cultural tips"
+    },
+    {
+      "name": "Tutor",
+      "details": "wants to deliver helpful micro-lessons without context switching"
+    },
+    {
+      "name": "Privacy-Conscious User",
+      "details": "wants control over audio recording and session history"
+    },
+    {
+      "name": "Casual Listener",
+      "details": "wants a low-pressure, no-judgment karaoke experience"
+    },
+    {
+      "name": "Karaoke Host",
+      "details": "wants to start a session fast and invite friends easily"
+    },
+    {
+      "name": "Friend Participant",
+      "details": "wants to join instantly and understand what to do next"
+    },
+    {
+      "name": "Competitive Singer",
+      "details": "wants scoring and performance feedback (optional)"
+    },
+    {
+      "name": "Social Sharer",
+      "details": "wants results or clips to share after a session"
+    },
+    {
+      "name": "Privacy-Conscious User",
+      "details": "wants control over mic usage and recording"
+    },
+    {
+      "name": ""
+    },
+    {
+      "name": ""
+    },
+    {
+      "name": ""
+    },
+    {
+      "name": ""
+    },
+    {
+      "name": ""
+    },
+    {
+      "name": ""
+    },
+    {
+      "name": "Casual Listener",
+      "details": "wants a low-pressure, no-judgment karaoke experience"
+    },
+    {
+      "name": "Karaoke Host",
+      "details": "wants to start a session fast and invite friends easily"
+    },
+    {
+      "name": "Friend Participant",
+      "details": "wants to join instantly and understand what to do next"
+    },
+    {
+      "name": "Competitive Singer",
+      "details": "wants scoring and performance feedback (optional)"
+    },
+    {
+      "name": "Social Sharer",
+      "details": "wants results or clips to share after a session"
+    },
+    {
+      "name": "Privacy-Conscious User",
+      "details": "wants control over mic usage and recording"
+    },
+    {
+      "name": "Traveler Learner",
+      "details": "wants quick language help while navigating a foreign country"
+    },
+    {
+      "name": "Busy Professional",
+      "details": "wants short, focused practice sessions between meetings"
+    },
+    {
+      "name": "Language Beginner",
+      "details": "wants reassurance, corrections, and simple explanations"
+    },
+    {
+      "name": "Advanced Learner",
+      "details": "wants nuanced phrasing, pronunciation feedback, and cultural tips"
+    },
+    {
+      "name": "Tutor",
+      "details": "wants to deliver helpful micro-lessons without context switching"
+    },
+    {
+      "name": "Privacy-Conscious User",
+      "details": "wants control over audio recording and session history"
+    },
+    {
+      "name": "Casual Listener",
+      "details": "wants a fun, low-pressure way to sing along without needing talent"
+    },
+    {
+      "name": "Karaoke Host",
+      "details": "wants to start a session fast and invite friends with minimal setup"
+    },
+    {
+      "name": "Friend Participant",
+      "details": "wants to join instantly from an invite link and know what to do next"
+    },
+    {
+      "name": "Competitive Singer",
+      "details": "wants scoring, stats, and bragging rights (optional mode)"
+    },
+    {
+      "name": "Social Sharer",
+      "details": "wants clips/screenshots/results to share after the session"
+    },
+    {
+      "name": "Privacy-Conscious User",
+      "details": "wants control over microphone use and recording, with clear consent"
+    }
+  ],
+  "requirements": {
+    "functional": [
+      "App must support live audio sessions with a tutor",
+      "App must support ultra-short sessions (30s–5min)",
+      "App must allow users to ask a single question or practice a phrase",
+      "App must display minimal visual cues optimized for watch screens",
+      "App must support push-to-talk and hands-free modes",
+      "App must gracefully handle poor or intermittent connectivity",
+      "App must allow users to switch to phone for longer sessions",
+      "App must request microphone permission just-in-time with explanation",
+      "App must allow practice without recording by default",
+      "App must show tutor availability in near real-time",
+      "App must provide lightweight session summaries after completion",
+      "Karaoke mode must display real-time synchronized lyrics with highlighting",
+      "Karaoke mode must support Solo mode",
+      "Karaoke mode must support With Friends mode (real-time session)",
+      "Host can create a karaoke session from a song",
+      "Host can invite friends using a shareable link",
+      "Participant can join session from invite link",
+      "Lobby must show who joined and who is ready",
+      "Session must have a clear Start action controlled by the host",
+      "Users can mute/unmute themselves during the session",
+      "Users can leave session at any time without breaking the session",
+      "App must request microphone permission only when needed and explain why",
+      "Karaoke should be usable even if mic permission is denied (lyrics-only mode)",
+      "App must handle network latency gracefully (allow slight desync + reconnection)",
+      "App must show clear feedback for loading, syncing, and connection issues",
+      "Competitive scoring mode is optional and can be enabled per session",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "Karaoke mode must display real-time synchronized lyrics with highlighting",
+      "Karaoke mode must support Solo mode",
+      "Karaoke mode must support With Friends mode (real-time session)",
+      "Host can create a karaoke session from a song",
+      "Host can invite friends using a shareable link",
+      "Participant can join session from invite link",
+      "Lobby must show who joined and who is ready",
+      "Session must have a clear Start action controlled by the host",
+      "Users can mute/unmute themselves during the session",
+      "Users can leave session at any time without breaking the session",
+      "App must request microphone permission only when needed and explain why",
+      "Karaoke should be usable even if mic permission is denied (lyrics-only mode)",
+      "App must handle network latency gracefully (allow slight desync + reconnection)",
+      "App must show clear feedback for loading, syncing, and connection issues",
+      "Competitive scoring mode is optional and can be enabled per session",
+      "App must support live audio sessions with a tutor",
+      "App must support ultra-short sessions (30s–5min)",
+      "App must allow users to ask a single question or practice a phrase",
+      "App must display minimal visual cues optimized for watch screens",
+      "App must support push-to-talk and hands-free modes",
+      "App must gracefully handle poor or intermittent connectivity",
+      "App must allow users to switch to phone for longer sessions",
+      "App must request microphone permission just-in-time with explanation",
+      "App must allow practice without recording by default",
+      "App must show tutor availability in near real-time",
+      "App must provide lightweight session summaries after completion",
+      "Karaoke mode must display real-time synchronized lyrics with highlighting",
+      "Karaoke mode must support Solo mode",
+      "Karaoke mode must support With Friends mode (real-time session)",
+      "Host can create a karaoke session from a song",
+      "Host can invite friends using a shareable link",
+      "Participant can join session from invite link",
+      "Lobby must show who joined and who is ready",
+      "Session must have a clear Start action controlled by the host",
+      "Users can mute/unmute themselves during the session",
+      "Users can leave session at any time without breaking the session",
+      "App must request microphone permission only when needed and explain why",
+      "Karaoke should be usable even if mic permission is denied (lyrics-only mode)",
+      "App must handle network latency gracefully (allow slight desync + reconnection)",
+      "App must show clear feedback for loading, syncing, and connection issues",
+      "Competitive scoring mode is optional and can be enabled per session"
+    ],
+    "nonFunctional": []
+  },
+  "steps": [
+    {
+      "text": "User opens the language tutor app on smart watch",
+      "id": "S1"
+    },
+    {
+      "text": "User launches the app from a watch complication",
+      "id": "S2"
+    },
+    {
+      "text": "User selects “Practice a Phrase”",
+      "id": "S3"
+    },
+    {
+      "text": "User selects “Ask a Question”",
+      "id": "S4"
+    },
+    {
+      "text": "User selects “Join Scheduled Lesson”",
+      "id": "S5"
+    },
+    {
+      "text": "User speaks a phrase or question into the watch",
+      "id": "S6"
+    },
+    {
+      "text": "User reviews a suggested phrase or prompt",
+      "id": "S7"
+    },
+    {
+      "text": "User confirms intent to connect with a tutor",
+      "id": "S8"
+    },
+    {
+      "text": "User listens to tutor feedback or explanation",
+      "id": "S9"
+    },
+    {
+      "text": "User repeats a phrase after tutor guidance",
+      "id": "S10"
+    },
+    {
+      "text": "User chooses to continue session on mobile phone",
+      "id": "S11"
+    },
+    {
+      "text": "User ends or exits the session",
+      "id": "S12"
+    },
+    {
+      "text": "User opens language tutor app on smart watch",
+      "id": "QP1",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User"
+    },
+    {
+      "text": "Live audio session begins with tutor",
+      "id": "QP6",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User"
+    },
+    {
+      "text": "Tutor provides pronunciation correction",
+      "id": "QP8",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User"
+    },
+    {
+      "text": "User taps “Ask a Question”",
+      "id": "AQ1",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User"
+    },
+    {
+      "text": "Live audio session begins",
+      "id": "AQ5",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User"
+    },
+    {
+      "text": "App suggests switching to phone for extended help",
+      "id": "AQ7",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User"
+    },
+    {
+      "text": "User taps “Join Lesson”",
+      "id": "SM1",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User"
+    },
+    {
+      "text": "Tutor begins short structured exercise",
+      "id": "SM2",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User"
+    },
+    {
+      "text": "User responds verbally to prompts",
+      "id": "SM4",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User"
+    },
+    {
+      "text": "App suggests continuing lesson on phone",
+      "id": "SM6",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User"
+    },
+    {
+      "text": "User opens a song detail page",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S13"
+    },
+    {
+      "text": "User taps a new action called “Karaoke”",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S14"
+    },
+    {
+      "text": "App shows Karaoke setup screen with mode selection (Solo / With Friends)",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S15"
+    },
+    {
+      "text": "If Solo, user starts immediately and sees lyrics sync with playback",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S16"
+    },
+    {
+      "text": "If With Friends, user becomes Host and a lobby is created",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S17"
+    },
+    {
+      "text": "Lobby shows session status and invite button",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S18"
+    },
+    {
+      "text": "Host sends invite link via share sheet",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S19"
+    },
+    {
+      "text": "Friend opens invite link and joins as Participant",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S20"
+    },
+    {
+      "text": "Participants see lobby with song + readiness state",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S21"
+    },
+    {
+      "text": "Host taps Start to begin karaoke session",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S22"
+    },
+    {
+      "text": "During session, lyrics highlight and users can mute/unmute or leave",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S23"
+    },
+    {
+      "text": "At end, users see a summary screen with share / replay / new song options",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "S24"
+    },
+    {
+      "text": "User opens a song detail page",
+      "id": "S1",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "User taps “Karaoke”",
+      "id": "S2",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "User selects Solo Karaoke mode",
+      "id": "S3",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "Start Solo Karaoke with live lyrics + mic input",
+      "id": "S4",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "Start Solo Karaoke in lyrics-only mode",
+      "id": "S5",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "Host taps “Karaoke”",
+      "id": "H1",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host selects “With Friends”",
+      "id": "H2",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host enters lobby with mic enabled",
+      "id": "H3",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host enters lobby in lyrics-only mode",
+      "id": "H4",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host shares invite link",
+      "id": "H5",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host waits in lobby",
+      "id": "H8",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host starts Karaoke session",
+      "id": "H9",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Guest joins lobby",
+      "id": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "Guest joins with mic enabled",
+      "id": "G2",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "Guest joins in lyrics-only mode",
+      "id": "G3",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "Participate in karaoke session",
+      "id": "G4",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S25"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S26"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S27"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S28"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S29"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S30"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S31"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S32"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S33"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S34"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S35"
+    },
+    {
+      "text": "",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "S36"
+    },
+    {
+      "text": "(S1)",
+      "id": "S1",
+      "flowGroup": "flow_"
+    },
+    {
+      "text": "(S2)",
+      "id": "S2",
+      "flowGroup": "flow_"
+    },
+    {
+      "text": "(S3)",
+      "id": "S3",
+      "flowGroup": "flow_"
+    },
+    {
+      "text": "(S4)",
+      "id": "S4",
+      "flowGroup": "flow_"
+    },
+    {
+      "text": "(S5)",
+      "id": "S5",
+      "flowGroup": "flow_"
+    },
+    {
+      "text": "User opens a song detail page",
+      "flowGroup": "flow_",
+      "id": "S37"
+    },
+    {
+      "text": "User taps a new action called “Karaoke”",
+      "flowGroup": "flow_",
+      "id": "S38"
+    },
+    {
+      "text": "App shows Karaoke setup screen with mode selection (Solo / With Friends)",
+      "flowGroup": "flow_",
+      "id": "S39"
+    },
+    {
+      "text": "If Solo, user starts immediately and sees lyrics sync with playback",
+      "flowGroup": "flow_",
+      "id": "S40"
+    },
+    {
+      "text": "If With Friends, user becomes Host and a lobby is created",
+      "flowGroup": "flow_",
+      "id": "S41"
+    },
+    {
+      "text": "Lobby shows session status and invite button",
+      "flowGroup": "flow_",
+      "id": "S42"
+    },
+    {
+      "text": "Host sends invite link via share sheet",
+      "flowGroup": "flow_",
+      "id": "S43"
+    },
+    {
+      "text": "Friend opens invite link and joins as Participant",
+      "flowGroup": "flow_",
+      "id": "S44"
+    },
+    {
+      "text": "Participants see lobby with song + readiness state",
+      "flowGroup": "flow_",
+      "id": "S45"
+    },
+    {
+      "text": "Host taps Start to begin karaoke session",
+      "flowGroup": "flow_",
+      "id": "S46"
+    },
+    {
+      "text": "During session, lyrics highlight and users can mute/unmute or leave",
+      "flowGroup": "flow_",
+      "id": "S47"
+    },
+    {
+      "text": "At end, users see a summary screen with share / replay / new song options",
+      "flowGroup": "flow_",
+      "id": "S48"
+    },
+    {
+      "text": "User opens a song detail page",
+      "id": "S1",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "User taps “Karaoke”",
+      "id": "S2",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "User selects Solo Karaoke mode",
+      "id": "S3",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "Start Solo Karaoke with live lyrics + mic input",
+      "id": "S4",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "Start Solo Karaoke in lyrics-only mode",
+      "id": "S5",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "Host taps “Karaoke”",
+      "id": "H1",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host selects “With Friends”",
+      "id": "H2",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host enters lobby with mic enabled",
+      "id": "H3",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host enters lobby in lyrics-only mode",
+      "id": "H4",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host shares invite link",
+      "id": "H5",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host waits in lobby",
+      "id": "H8",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host starts Karaoke session",
+      "id": "H9",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Guest joins lobby",
+      "id": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "Guest joins with mic enabled",
+      "id": "G2",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "Guest joins in lyrics-only mode",
+      "id": "G3",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "Participate in karaoke session",
+      "id": "G4",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "User opens a song detail page",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S49"
+    },
+    {
+      "text": "User taps a new action called “Karaoke”",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S50"
+    },
+    {
+      "text": "App shows Karaoke setup screen with mode selection (Solo / With Friends)",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S51"
+    },
+    {
+      "text": "If Solo, user starts immediately and sees lyrics sync with playback",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S52"
+    },
+    {
+      "text": "If With Friends, user becomes Host and a lobby is created",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S53"
+    },
+    {
+      "text": "Lobby shows session status and invite button",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S54"
+    },
+    {
+      "text": "Host sends invite link via share sheet",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S55"
+    },
+    {
+      "text": "Friend opens invite link and joins as Participant",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S56"
+    },
+    {
+      "text": "Participants see lobby with song + readiness state",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S57"
+    },
+    {
+      "text": "Host taps Start to begin karaoke session",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S58"
+    },
+    {
+      "text": "During session, lyrics highlight and users can mute/unmute or leave",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S59"
+    },
+    {
+      "text": "At end, users see a summary screen with share / replay / new song options",
+      "flowGroup": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "lane": "Guest",
+      "id": "S60"
+    }
+  ],
+  "systemSteps": [
+    {
+      "text": "Offer text or repeat mode",
+      "lane": "System",
+      "id": "SYS1"
+    },
+    {
+      "text": "Switch to delayed audio or fallback suggestions",
+      "lane": "System",
+      "id": "SYS2"
+    },
+    {
+      "text": "Auto-retry or reassign",
+      "lane": "System",
+      "id": "SYS3"
+    },
+    {
+      "text": "Pause and resume session",
+      "lane": "System",
+      "id": "SYS4"
+    },
+    {
+      "text": "Allow read-only phrase review",
+      "lane": "System",
+      "id": "SYS5"
+    },
+    {
+      "text": "Enable hands-free mode only",
+      "lane": "System",
+      "id": "SYS6"
+    },
+    {
+      "text": "Provide summary and follow-up",
+      "lane": "System",
+      "id": "SYS7"
+    },
+    {
+      "text": "Match user with available tutor",
+      "lane": "System",
+      "flowGroup": "flow_quick_phrase_practice",
+      "id": "SYS8"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_quick_phrase_practice",
+      "id": "SYS9"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "id": "SYS10"
+    },
+    {
+      "text": "Attempt to connect to available tutor",
+      "lane": "System",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "id": "SYS11"
+    },
+    {
+      "text": "Provide haptic or visual cues for turn-taking",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS12"
+    },
+    {
+      "text": "Sync lyrics to current playback position",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS13"
+    },
+    {
+      "text": "Attempt resync and show connection status",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS14"
+    },
+    {
+      "text": "Pause session or transfer host",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS15"
+    },
+    {
+      "text": "Allow quick rejoin",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS16"
+    },
+    {
+      "text": "Show recovery message and exit",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS17"
+    },
+    {
+      "text": "Explain limitation and suggest alternatives",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS18"
+    },
+    {
+      "text": "Enforce a session cap and communicate why",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS19"
+    },
+    {
+      "text": "resume experience smoothly",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS20"
+    },
+    {
+      "text": "Allow report + leave + block actions",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS21"
+    },
+    {
+      "text": "Evaluate Karaoke availability for the song",
+      "lane": "System",
+      "flowGroup": "flow_solo_karaoke",
+      "id": "SYS22"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_solo_karaoke",
+      "id": "SYS23"
+    },
+    {
+      "text": "Create karaoke session and lobby",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS24"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS25"
+    },
+    {
+      "text": "Generate invite link",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS26"
+    },
+    {
+      "text": "Display joined participants and readiness state",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS27"
+    },
+    {
+      "text": "Sync lyrics and playback for all participants",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS28"
+    },
+    {
+      "text": "Validate invite link",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS29"
+    },
+    {
+      "text": "Display song, participants, and session status",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS30"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS31"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS32"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS33"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS34"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS35"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS36"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS37"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS38"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS39"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS40"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS41"
+    },
+    {
+      "text": "",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS42"
+    },
+    {
+      "text": "Sync lyrics to current playback position",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS43"
+    },
+    {
+      "text": "Attempt resync and show connection status",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS44"
+    },
+    {
+      "text": "Pause session or transfer host",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS45"
+    },
+    {
+      "text": "Allow quick rejoin",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS46"
+    },
+    {
+      "text": "Show recovery message and exit",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS47"
+    },
+    {
+      "text": "Explain limitation and suggest alternatives",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS48"
+    },
+    {
+      "text": "Enforce a session cap and communicate why",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS49"
+    },
+    {
+      "text": "resume experience smoothly",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS50"
+    },
+    {
+      "text": "Allow report + leave + block actions",
+      "lane": "System",
+      "flowGroup": "flow_",
+      "id": "SYS51"
+    },
+    {
+      "text": "Evaluate Karaoke availability for the song",
+      "lane": "System",
+      "flowGroup": "flow_solo_karaoke",
+      "id": "SYS52"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_solo_karaoke",
+      "id": "SYS53"
+    },
+    {
+      "text": "Create karaoke session and lobby",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS54"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS55"
+    },
+    {
+      "text": "Generate invite link",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS56"
+    },
+    {
+      "text": "Display joined participants and readiness state",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS57"
+    },
+    {
+      "text": "Sync lyrics and playback for all participants",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS58"
+    },
+    {
+      "text": "Validate invite link",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS59"
+    },
+    {
+      "text": "Display song, participants, and session status",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS60"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS61"
+    }
+  ],
+  "decisions": [
+    {
+      "question": "Is a tutor available?",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User",
+      "id": "D1"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User",
+      "id": "D2"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "D3"
+    },
+    {
+      "question": "Is a tutor available?",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "D4"
+    },
+    {
+      "question": "Does user need additional clarification?",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "D5"
+    },
+    {
+      "question": "Is network connection stable?",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "D6"
+    },
+    {
+      "question": "Is lesson exceeding watch-friendly duration?",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "D7"
+    },
+    {
+      "question": "Is Karaoke supported for this song?",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "D8"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "D9"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "D10"
+    },
+    {
+      "question": "How does host invite friends?",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "D11"
+    },
+    {
+      "question": "Are participants ready?",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "D12"
+    },
+    {
+      "question": "Is invite link valid?",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "D13"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "D14"
+    },
+    {
+      "question": "Has host started the session?",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "D15"
+    },
+    {
+      "question": "",
+      "flowGroup": "flow_",
+      "id": "D16"
+    },
+    {
+      "question": "",
+      "flowGroup": "flow_",
+      "id": "D17"
+    },
+    {
+      "question": "Is Karaoke supported for this song?",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "D18"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "D19"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "D20"
+    },
+    {
+      "question": "How does host invite friends?",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "D21"
+    },
+    {
+      "question": "Are participants ready?",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "D22"
+    },
+    {
+      "question": "Is invite link valid?",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "D23"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "D24"
+    },
+    {
+      "question": "Has host started the session?",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "D25"
+    }
+  ],
+  "choices": [],
+  "edges": [
+    {
+      "from": "D1",
+      "to": "S3",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "Yes"
+    },
+    {
+      "from": "D1",
+      "to": "END_EXIT",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "No"
+    },
+    {
+      "from": "D2",
+      "to": "S4",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "Yes"
+    },
+    {
+      "from": "D2",
+      "to": "S5",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "No"
+    },
+    {
+      "from": "D3",
+      "to": "H3",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Yes"
+    },
+    {
+      "from": "D3",
+      "to": "H4",
+      "flowGroup": "flow_host_with_friends",
+      "label": "No"
+    },
+    {
+      "from": "D4",
+      "to": "H6",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Share Sheet"
+    },
+    {
+      "from": "D4",
+      "to": "H7",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Copy Link"
+    },
+    {
+      "from": "D5",
+      "to": "H9",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Yes"
+    },
+    {
+      "from": "D5",
+      "to": "H8",
+      "flowGroup": "flow_host_with_friends",
+      "label": "No"
+    },
+    {
+      "from": "D6",
+      "to": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "Yes"
+    },
+    {
+      "from": "D6",
+      "to": "END_ERROR",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "No"
+    },
+    {
+      "from": "D7",
+      "to": "G2",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "Yes"
+    },
+    {
+      "from": "D7",
+      "to": "G3",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "No"
+    },
+    {
+      "from": "D8",
+      "to": "G4",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "Yes"
+    },
+    {
+      "from": "D8",
+      "to": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "No"
+    },
+    {
+      "from": "D1",
+      "to": "S3",
+      "flowGroup": "flow_",
+      "label": "Yes"
+    },
+    {
+      "from": "D1",
+      "to": "END_EXIT",
+      "flowGroup": "flow_",
+      "label": "No"
+    },
+    {
+      "from": "D2",
+      "to": "S4",
+      "flowGroup": "flow_",
+      "label": "Yes"
+    },
+    {
+      "from": "D2",
+      "to": "S5",
+      "flowGroup": "flow_",
+      "label": "No"
+    },
+    {
+      "from": "D1",
+      "to": "S3",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "Yes"
+    },
+    {
+      "from": "D1",
+      "to": "END_EXIT",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "No"
+    },
+    {
+      "from": "D2",
+      "to": "S4",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "Yes"
+    },
+    {
+      "from": "D2",
+      "to": "S5",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "No"
+    },
+    {
+      "from": "D3",
+      "to": "H3",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Yes"
+    },
+    {
+      "from": "D3",
+      "to": "H4",
+      "flowGroup": "flow_host_with_friends",
+      "label": "No"
+    },
+    {
+      "from": "D4",
+      "to": "H6",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Share Sheet"
+    },
+    {
+      "from": "D4",
+      "to": "H7",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Copy Link"
+    },
+    {
+      "from": "D5",
+      "to": "H9",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Yes"
+    },
+    {
+      "from": "D5",
+      "to": "H8",
+      "flowGroup": "flow_host_with_friends",
+      "label": "No"
+    },
+    {
+      "from": "D6",
+      "to": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "Yes"
+    },
+    {
+      "from": "D6",
+      "to": "END_ERROR",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "No"
+    },
+    {
+      "from": "D7",
+      "to": "G2",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "Yes"
+    },
+    {
+      "from": "D7",
+      "to": "G3",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "No"
+    },
+    {
+      "from": "D8",
+      "to": "G4",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "Yes"
+    },
+    {
+      "from": "D8",
+      "to": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "No"
+    }
+  ],
+  "startNodes": [
+    {
+      "label": "User initiates quick phrase practice from smart watch",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User",
+      "id": "START_1"
+    },
+    {
+      "label": "User initiates question flow from watch complication",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "START_2"
+    },
+    {
+      "label": "User receives scheduled lesson notification on watch",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "START_3"
+    },
+    {
+      "label": "User initiates Solo Karaoke from a song",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "START_4"
+    },
+    {
+      "label": "Host initiates Karaoke with Friends from a song",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "START_5"
+    },
+    {
+      "label": "Guest opens Karaoke invite link",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "START_6"
+    },
+    {
+      "label": "",
+      "flowGroup": "flow_",
+      "id": "START_7"
+    },
+    {
+      "label": "User initiates Solo Karaoke from a song",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "START_8"
+    },
+    {
+      "label": "Host initiates Karaoke with Friends from a song",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "START_9"
+    },
+    {
+      "label": "Guest opens Karaoke invite link",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "START_10"
+    }
+  ],
+  "endNodes": [
+    {
+      "label": "Phrase practice completed",
+      "isExit": false,
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User",
+      "id": "END_1"
+    },
+    {
+      "label": "Question resolved",
+      "isExit": false,
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "END_2"
+    },
+    {
+      "label": "Lesson completed",
+      "isExit": false,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "END_3"
+    },
+    {
+      "label": "Solo Karaoke session completed",
+      "isExit": false,
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "END_4"
+    },
+    {
+      "label": "User exits Solo Karaoke early",
+      "isExit": false,
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "END_5"
+    },
+    {
+      "label": "Group Karaoke session completed",
+      "isExit": false,
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "END_6"
+    },
+    {
+      "label": "Host leaves or ends session",
+      "isExit": false,
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "END_7"
+    },
+    {
+      "label": "Guest leaves session",
+      "isExit": false,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "END_8"
+    },
+    {
+      "label": "Session ends",
+      "isExit": false,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "END_9"
+    },
+    {
+      "label": "",
+      "isExit": false,
+      "flowGroup": "flow_",
+      "id": "END_10"
+    },
+    {
+      "label": "",
+      "isExit": false,
+      "flowGroup": "flow_",
+      "id": "END_11"
+    },
+    {
+      "label": "Solo Karaoke session completed",
+      "isExit": false,
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "END_12"
+    },
+    {
+      "label": "User exits Solo Karaoke early",
+      "isExit": false,
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "END_13"
+    },
+    {
+      "label": "Group Karaoke session completed",
+      "isExit": false,
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "END_14"
+    },
+    {
+      "label": "Host leaves or ends session",
+      "isExit": false,
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "END_15"
+    },
+    {
+      "label": "Guest leaves session",
+      "isExit": false,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "END_16"
+    },
+    {
+      "label": "Session ends",
+      "isExit": false,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "END_17"
+    }
+  ],
+  "exitNodes": [
+    {
+      "label": "User is in a noisy environment",
+      "isExit": true,
+      "id": "EXIT_1"
+    },
+    {
+      "label": "Poor network",
+      "isExit": true,
+      "id": "EXIT_2"
+    },
+    {
+      "label": "Tutor disconnects",
+      "isExit": true,
+      "id": "EXIT_3"
+    },
+    {
+      "label": "User receives phone call",
+      "isExit": true,
+      "id": "EXIT_4"
+    },
+    {
+      "label": "User denies microphone permission",
+      "isExit": true,
+      "id": "EXIT_5"
+    },
+    {
+      "label": "User is driving",
+      "isExit": true,
+      "id": "EXIT_6"
+    },
+    {
+      "label": "Time runs out mid-session",
+      "isExit": true,
+      "id": "EXIT_7"
+    },
+    {
+      "label": "User joins session mid-song",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_8"
+    },
+    {
+      "label": "Network interruption",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_9"
+    },
+    {
+      "label": "Host disconnects",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_10"
+    },
+    {
+      "label": "Participant disconnects",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_11"
+    },
+    {
+      "label": "Invite link expired",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_12"
+    },
+    {
+      "label": "Song unavailable in region",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_13"
+    },
+    {
+      "label": "Invite link expired or invalid SYS: Show friendly recovery path",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_14"
+    },
+    {
+      "label": "Too many participants —",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_15"
+    },
+    {
+      "label": "User receives a call/audio interruption",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_16"
+    },
+    {
+      "label": "Abusive participant",
+      "isExit": true,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "EXIT_17"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_18"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_19"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_20"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_21"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_22"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_23"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_24"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_25"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_26"
+    },
+    {
+      "label": "",
+      "isExit": true,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "EXIT_27"
+    },
+    {
+      "label": "User joins session mid-song",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_28"
+    },
+    {
+      "label": "Network interruption",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_29"
+    },
+    {
+      "label": "Host disconnects",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_30"
+    },
+    {
+      "label": "Participant disconnects",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_31"
+    },
+    {
+      "label": "Invite link expired",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_32"
+    },
+    {
+      "label": "Song unavailable in region",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_33"
+    },
+    {
+      "label": "Invite link expired or invalid SYS: Show friendly recovery path",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_34"
+    },
+    {
+      "label": "Too many participants —",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_35"
+    },
+    {
+      "label": "User receives a call/audio interruption",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_36"
+    },
+    {
+      "label": "Abusive participant",
+      "isExit": true,
+      "flowGroup": "flow_",
+      "id": "EXIT_37"
+    }
+  ],
+  "flowGroups": [
+    {
+      "id": "flow_quick_phrase_practice",
+      "name": "Quick Phrase Practice",
+      "steps": [
+        "QP1",
+        "QP6",
+        "QP8"
+      ],
+      "decisions": [
+        "D1",
+        "D2"
+      ],
+      "edges": []
+    },
+    {
+      "id": "flow_ask_a_contextual_question",
+      "name": "Ask a Contextual Question",
+      "steps": [
+        "AQ1",
+        "AQ5",
+        "AQ7"
+      ],
+      "decisions": [
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "edges": []
+    },
+    {
+      "id": "flow_scheduled_micro_lesson",
+      "name": "Scheduled Micro-Lesson",
+      "steps": [
+        "SM1",
+        "SM2",
+        "SM4",
+        "SM6",
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23",
+        "S24"
+      ],
+      "decisions": [
+        "D6",
+        "D7"
+      ],
+      "edges": []
+    },
+    {
+      "id": "flow_solo_karaoke",
+      "name": "Solo Karaoke",
+      "steps": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "decisions": [
+        "D8",
+        "D9"
+      ],
+      "edges": [
+        {
+          "from": "D1",
+          "to": "S3",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "Yes"
+        },
+        {
+          "from": "D1",
+          "to": "END_EXIT",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "No"
+        },
+        {
+          "from": "D2",
+          "to": "S4",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "Yes"
+        },
+        {
+          "from": "D2",
+          "to": "S5",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_host_with_friends",
+      "name": "Host With Friends",
+      "steps": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H8",
+        "H9"
+      ],
+      "decisions": [
+        "D10",
+        "D11",
+        "D12"
+      ],
+      "edges": [
+        {
+          "from": "D3",
+          "to": "H3",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Yes"
+        },
+        {
+          "from": "D3",
+          "to": "H4",
+          "flowGroup": "flow_host_with_friends",
+          "label": "No"
+        },
+        {
+          "from": "D4",
+          "to": "H6",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Share Sheet"
+        },
+        {
+          "from": "D4",
+          "to": "H7",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Copy Link"
+        },
+        {
+          "from": "D5",
+          "to": "H9",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Yes"
+        },
+        {
+          "from": "D5",
+          "to": "H8",
+          "flowGroup": "flow_host_with_friends",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_join_via_invite_link",
+      "name": "Join via Invite Link",
+      "steps": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "S25",
+        "S26",
+        "S27",
+        "S28",
+        "S29",
+        "S30",
+        "S31",
+        "S32",
+        "S33",
+        "S34",
+        "S35",
+        "S36"
+      ],
+      "decisions": [
+        "D13",
+        "D14",
+        "D15"
+      ],
+      "edges": [
+        {
+          "from": "D6",
+          "to": "G1",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "Yes"
+        },
+        {
+          "from": "D6",
+          "to": "END_ERROR",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "No"
+        },
+        {
+          "from": "D7",
+          "to": "G2",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "Yes"
+        },
+        {
+          "from": "D7",
+          "to": "G3",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "No"
+        },
+        {
+          "from": "D8",
+          "to": "G4",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "Yes"
+        },
+        {
+          "from": "D8",
+          "to": "G1",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_",
+      "name": "",
+      "steps": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S37",
+        "S38",
+        "S39",
+        "S40",
+        "S41",
+        "S42",
+        "S43",
+        "S44",
+        "S45",
+        "S46",
+        "S47",
+        "S48"
+      ],
+      "decisions": [
+        "D16",
+        "D17"
+      ],
+      "edges": [
+        {
+          "from": "D1",
+          "to": "S3",
+          "flowGroup": "flow_",
+          "label": "Yes"
+        },
+        {
+          "from": "D1",
+          "to": "END_EXIT",
+          "flowGroup": "flow_",
+          "label": "No"
+        },
+        {
+          "from": "D2",
+          "to": "S4",
+          "flowGroup": "flow_",
+          "label": "Yes"
+        },
+        {
+          "from": "D2",
+          "to": "S5",
+          "flowGroup": "flow_",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_solo_karaoke",
+      "name": "Solo Karaoke",
+      "steps": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "decisions": [
+        "D18",
+        "D19"
+      ],
+      "edges": [
+        {
+          "from": "D1",
+          "to": "S3",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "Yes"
+        },
+        {
+          "from": "D1",
+          "to": "END_EXIT",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "No"
+        },
+        {
+          "from": "D2",
+          "to": "S4",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "Yes"
+        },
+        {
+          "from": "D2",
+          "to": "S5",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_host_with_friends",
+      "name": "Host With Friends",
+      "steps": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H8",
+        "H9"
+      ],
+      "decisions": [
+        "D20",
+        "D21",
+        "D22"
+      ],
+      "edges": [
+        {
+          "from": "D3",
+          "to": "H3",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Yes"
+        },
+        {
+          "from": "D3",
+          "to": "H4",
+          "flowGroup": "flow_host_with_friends",
+          "label": "No"
+        },
+        {
+          "from": "D4",
+          "to": "H6",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Share Sheet"
+        },
+        {
+          "from": "D4",
+          "to": "H7",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Copy Link"
+        },
+        {
+          "from": "D5",
+          "to": "H9",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Yes"
+        },
+        {
+          "from": "D5",
+          "to": "H8",
+          "flowGroup": "flow_host_with_friends",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_join_via_invite_link",
+      "name": "Join via Invite Link",
+      "steps": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "decisions": [
+        "D23",
+        "D24",
+        "D25"
+      ],
+      "edges": [
+        {
+          "from": "D6",
+          "to": "G1",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "Yes"
+        },
+        {
+          "from": "D6",
+          "to": "END_ERROR",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "No"
+        },
+        {
+          "from": "D7",
+          "to": "G2",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "Yes"
+        },
+        {
+          "from": "D7",
+          "to": "G3",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "No"
+        },
+        {
+          "from": "D8",
+          "to": "G4",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "Yes"
+        },
+        {
+          "from": "D8",
+          "to": "G1",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_quick_phrase_practice_a_user_s_user_opens_the_language_tutor_app_on_smart_watch_s_user_taps_practice_a_phrase_s_app_prompts_user_to_speak_or_select_a_phrase_s_user_speaks_phrase_they_want_to_practice_sys_match_user_with_available_tutor_d_is_a_tutor_available_e_d1_s5_label_yes_e_d1_end_exit_label_no_s_live_audio_session_begins_s_tutor_corrects_pronunciation_and_provides_feedback_s_user_repeats_phrase_end_session_ends_automatically_after_short_duration_exit_user_cancels_session_early",
+      "name": "Quick Phrase Practice A: User  S: User opens the language tutor app on smart watch S: User taps “Practice a Phrase” S: App prompts user to speak or select a phrase S: User speaks phrase they want to practice SYS: Match user with available tutor  D: Is a tutor available? E: D1 -> S5 [label=Yes] E: D1 -> END_EXIT [label=No]  S: Live audio session begins S: Tutor corrects pronunciation and provides feedback S: User repeats phrase  END: Session ends automatically after short duration EXIT: User cancels session early",
+      "steps": [],
+      "decisions": [],
+      "edges": []
+    },
+    {
+      "id": "flow_ask_a_question_a_user_s_user_opens_app_from_watch_complication_s_user_taps_ask_a_question_s_app_prompts_user_to_speak_question_s_user_asks_contextual_question_e_g_ordering_food_sys_request_microphone_permission_if_not_granted_d_is_microphone_permission_granted_e_d2_s6_label_yes_e_d2_end_exit_label_no_sys_connect_user_to_tutor_s_tutor_responds_with_explanation_example_s_tutor_offers_optional_follow_up_d_does_user_want_more_help_e_d3_s9_label_yes_e_d3_end_label_no_s_app_suggests_continuing_on_phone_sys_hand_off_session_to_mobile_app_end_question_resolved_exit_network_interruption",
+      "name": "Ask a Question A: User  S: User opens app from watch complication S: User taps “Ask a Question” S: App prompts user to speak question S: User asks contextual question (e.g., ordering food)  SYS: Request microphone permission if not granted  D: Is microphone permission granted? E: D2 -> S6 [label=Yes] E: D2 -> END_EXIT [label=No]  SYS: Connect user to tutor S: Tutor responds with explanation + example S: Tutor offers optional follow-up  D: Does user want more help? E: D3 -> S9 [label=Yes] E: D3 -> END [label=No]  S: App suggests continuing on phone SYS: Hand off session to mobile app  END: Question resolved EXIT: Network interruption",
+      "steps": [],
+      "decisions": [],
+      "edges": []
+    },
+    {
+      "id": "flow_scheduled_micro_lesson_a_user_s_user_receives_watch_notification_for_scheduled_session_s_user_taps_join_lesson_sys_connect_to_tutor_session_d_is_connection_stable_e_d4_s4_label_yes_e_d4_s5_label_no_s_tutor_leads_short_structured_exercise_s_user_responds_verbally_sys_provide_haptic_or_visual_cues_for_turns_d_is_session_exceeding_watch_friendly_duration_e_d5_s8_label_yes_e_d5_end_label_no_s_app_suggests_switching_to_phone_sys_transition_session_to_mobile_app_end_lesson_completed_exit_user_skips_or_postpones_lesson",
+      "name": "Scheduled Micro-Lesson A: User  S: User receives watch notification for scheduled session S: User taps “Join Lesson” SYS: Connect to tutor session  D: Is connection stable? E: D4 -> S4 [label=Yes] E: D4 -> S5 [label=No]  S: Tutor leads short structured exercise S: User responds verbally SYS: Provide haptic or visual cues for turns  D: Is session exceeding watch-friendly duration? E: D5 -> S8 [label=Yes] E: D5 -> END [label=No]  S: App suggests switching to phone SYS: Transition session to mobile app  END: Lesson completed EXIT: User skips or postpones lesson",
+      "steps": [
+        "S49",
+        "S50",
+        "S51",
+        "S52",
+        "S53",
+        "S54",
+        "S55",
+        "S56",
+        "S57",
+        "S58",
+        "S59",
+        "S60"
+      ],
+      "decisions": [],
+      "edges": []
+    }
+  ],
+  "actors": [
+    "User",
+    "Host",
+    "Guest",
+    ""
+  ],
+  "assumptions": [
+    "Users are willing to engage in very short (30s–5min) live tutor interactions on a smart watch without prior preparation.",
+    "Tutors are available frequently enough across time zones to support near-real-time connections for micro-sessions.",
+    "Lyrics licensing allows karaoke-style display",
+    "Small latency is acceptable in group sessions",
+    "",
+    "",
+    "Lyrics licensing allows karaoke-style display",
+    "Small latency is acceptable in group sessions"
+  ],
+  "acceptanceCriteria": [],
+  "notes": [
+    "BluePrints – Project Input",
+    "Project: Smart Watch Language Tutor  Client: Preply (conceptual)  OutputSlug: smartwatch_language_tutor  Version: v1  Date: 2026-01-26  Owner: Blue  Platform: Smart Watch (Apple Watch + Wear OS) + Companion Mobile App  Goal: Practice a foreign language with a live tutor through quick, on-the-go interactions  Constraints: Small screen, limited attention span, variable connectivity, hands-free usage",
+    "PERSONAS:",
+    "GOALS:",
+    "REQUIREMENTS:",
+    "USER FLOW NOTES:",
+    "(3 Primary Flows)",
+    "FLOW 1: Quick Phrase Practice (On-the-Go)",
+    "FLOW 2: Ask a Contextual Question While Traveling",
+    "FLOW 3: Scheduled Micro-Lesson with Tutor",
+    "EDGE CASES:",
+    "[Unparsed E:] User is in a noisy environment — offer text or repeat mode",
+    "[Unparsed E:] Poor network — switch to delayed audio or fallback suggestions",
+    "[Unparsed E:] Tutor disconnects — auto-retry or reassign",
+    "[Unparsed E:] User receives phone call — pause and resume session",
+    "[Unparsed E:] User denies microphone permission — allow read-only phrase review",
+    "[Unparsed E:] User is driving — enable hands-free mode only",
+    "[Unparsed E:] Time runs out mid-session — provide summary and follow-up",
+    "OPEN QUESTIONS:",
+    "BluePrints - Project Input",
+    "Project: Spotify Karaoke",
+    "Client: Spotify",
+    "OutputSlug: spotify_karaoke",
+    "Version: v1",
+    "Date: 2026-01-26",
+    "Owner: Blue",
+    "Platform: Mobile (iOS + Android)",
+    "Constraints: Privacy-first, low friction entry, works with imperfect network",
+    "PERSONAS:",
+    "GOALS:",
+    "REQUIREMENTS:",
+    "USER FLOW NOTES:",
+    "(Steps)",
+    "EDGE CASES:",
+    "[Unparsed E:] User joins session late (mid-song) — should sync to current lyric position",
+    "[Unparsed E:] Microphone permission denied — user can still continue in lyrics-only mode",
+    "[Unparsed E:] Host disconnects — session should either pause, transfer host, or end gracefully",
+    "[Unparsed E:] Participant disconnects — they should be able to rejoin quickly",
+    "[Unparsed E:] Bad network causes lyric desync — show “resync” option and continue playback",
+    "[Unparsed E:] Song unavailable in region — Karaoke entry should explain and offer alternatives",
+    "[Unparsed E:] Invite link expired or invalid — show friendly recovery path",
+    "[Unparsed E:] Too many participants — enforce a session cap and communicate why",
+    "[Unparsed E:] User receives a call/audio interruption — resume experience smoothly",
+    "[Unparsed E:] Abusive participant — allow report + leave + block actions",
+    "OPEN QUESTIONS:"
+  ],
+  "problems": [],
+  "uiElements": [],
+  "dataObjects": [],
+  "rules": [],
+  "risks": [
+    "Network instability may interrupt live audio sessions, degrading the learning experience or causing frequent exits.",
+    "Smart watch screen and input constraints may limit users’ ability to understand feedback or corrections from tutors.",
+    "Low tutor availability during peak travel hours could result in repeated failed connection attempts, increasing user frustration.",
+    "Audio desync on low-end devices",
+    "Abuse in group sessions",
+    "Privacy concerns around microphone usage",
+    "",
+    "",
+    "",
+    "Audio desync on low-end devices",
+    "Abuse in group sessions",
+    "Privacy concerns around microphone usage"
+  ],
+  "questions": [
+    "Are sessions recorded or ephemeral by default?",
+    "Do tutors see user location/context (city, country)?",
+    "Can users request the same tutor repeatedly for micro-sessions?",
+    "What is the max recommended session length on watch?",
+    "Do we support text input at all on watch?",
+    "How do we price or meter ultra-short tutor interactions?",
+    "What happens if tutor availability is low?",
+    "How much context should persist between sessions?",
+    "Is audio recorded or purely live?",
+    "Is group playback strict-sync or best-effort?",
+    "Is a host required at all times?",
+    "Do we support duets or rotating solos?",
+    "Should sessions support video, or audio-only, or lyrics-only?",
+    "Do we support scoring in v1? If yes, what model and what feedback UI?",
+    "Where does Karaoke live in the Spotify IA (song page, now playing, search)?",
+    "How do we handle explicit lyrics / content controls in group sessions?",
+    "What is the max participant count for a good experience?",
+    "What is the max participant count for a good experience?",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "Is audio recorded or purely live?",
+    "Is group playback strict-sync or best-effort?",
+    "Is a host required at all times?",
+    "Do we support duets or rotating solos?",
+    "Should sessions support video, or audio-only, or lyrics-only?",
+    "Do we support scoring in v1? If yes, what model and what feedback UI?",
+    "Where does Karaoke live in the Spotify IA (song page, now playing, search)?",
+    "How do we handle explicit lyrics / content controls in group sessions?",
+    "What is the max participant count for a good experience?",
+    "What is the max participant count for a good experience?",
+    "Are sessions recorded or ephemeral by default?",
+    "Do tutors see user location/context (city, country)?",
+    "Can users request the same tutor repeatedly for micro-sessions?",
+    "What is the max recommended session length on watch?",
+    "Do we support text input at all on watch?",
+    "How do we price or meter ultra-short tutor interactions?",
+    "What happens if tutor availability is low?",
+    "How much context should persist between sessions?",
+    "Do we record audio at all, or is it a purely live sing-along experience?",
+    "Is With Friends playback truly synchronized or “best-effort” with tolerance?",
+    "Do we need a host at all times, or can sessions be hostless?",
+    "Do we support duets / rotating solo lines, or everyone sings everything?",
+    "Should sessions support video, or audio-only, or lyrics-only?",
+    "Do we support scoring in v1? If yes, what model and what feedback UI?",
+    "Where does Karaoke live in the Spotify IA (song page, now playing, search)?",
+    "How do we handle explicit lyrics / content controls in group sessions?",
+    "What is the max participant count for a good experience?"
+  ],
+  "outputs": []
+}

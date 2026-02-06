@@ -1,0 +1,1702 @@
+{
+  "meta": {
+    "project": "BluePrints",
+    "feature": "Preply",
+    "generatedAt": "2026-02-06T04:38:02.889Z",
+    "sourceFileKey": "HYxtgE7EARWuvTskijY7xa",
+    "specKitVersion": "2.0.0"
+  },
+  "flows": [
+    {
+      "id": "flow_quick_phrase_practice",
+      "name": "Quick Phrase Practice",
+      "starts": [
+        "START_1"
+      ],
+      "ends": [
+        "END_1"
+      ],
+      "nodes": [
+        {
+          "id": "START_1",
+          "type": "start",
+          "lane": "User",
+          "label": "User initiates quick phrase practice from smart watch",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "id": "QP1",
+          "type": "step",
+          "lane": "User",
+          "label": "User opens language tutor app on smart watch",
+          "sourceText": "User opens language tutor app on smart watch",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "id": "QP6",
+          "type": "step",
+          "lane": "User",
+          "label": "Live audio session begins with tutor",
+          "sourceText": "Live audio session begins with tutor",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "id": "QP8",
+          "type": "step",
+          "lane": "User",
+          "label": "Tutor provides pronunciation correction",
+          "sourceText": "Tutor provides pronunciation correction",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "id": "SYS8",
+          "type": "system",
+          "lane": "System",
+          "label": "Match user with available tutor",
+          "sourceText": "Match user with available tutor",
+          "flowGroup": "flow_quick_phrase_practice",
+          "inferred": false
+        },
+        {
+          "id": "SYS9",
+          "type": "system",
+          "lane": "System",
+          "label": "Request microphone permission (just-in-time)",
+          "sourceText": "Request microphone permission (just-in-time)",
+          "flowGroup": "flow_quick_phrase_practice",
+          "inferred": false
+        },
+        {
+          "id": "D1",
+          "type": "decision",
+          "lane": "User",
+          "label": "Is a tutor available?",
+          "sourceText": "Is a tutor available?",
+          "flowGroup": "flow_quick_phrase_practice",
+          "branches": {
+            "condition": "Is a tutor available",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "D2",
+          "type": "decision",
+          "lane": "User",
+          "label": "Is microphone permission granted?",
+          "sourceText": "Is microphone permission granted?",
+          "flowGroup": "flow_quick_phrase_practice",
+          "branches": {
+            "condition": "Is microphone permission granted",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "END_1",
+          "type": "end",
+          "lane": "User",
+          "label": "Phrase practice completed",
+          "flowGroup": "flow_quick_phrase_practice",
+          "isExit": false
+        }
+      ],
+      "edges": [
+        {
+          "from": "START_1",
+          "to": "QP1",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "from": "QP1",
+          "to": "QP6",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "from": "QP6",
+          "to": "QP8",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "from": "QP8",
+          "to": "SYS8",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "from": "SYS8",
+          "to": "SYS9",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "from": "SYS9",
+          "to": "D1",
+          "flowGroup": "flow_quick_phrase_practice"
+        },
+        {
+          "from": "D1",
+          "to": "D2",
+          "flowGroup": "flow_quick_phrase_practice",
+          "label": "Yes"
+        },
+        {
+          "from": "D1",
+          "to": "END_1",
+          "flowGroup": "flow_quick_phrase_practice",
+          "label": "No"
+        },
+        {
+          "from": "D2",
+          "to": "END_1",
+          "flowGroup": "flow_quick_phrase_practice",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_ask_a_contextual_question",
+      "name": "Ask a Contextual Question",
+      "starts": [
+        "START_2"
+      ],
+      "ends": [
+        "END_2"
+      ],
+      "nodes": [
+        {
+          "id": "START_2",
+          "type": "start",
+          "lane": "User",
+          "label": "User initiates question flow from watch complication",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "id": "AQ1",
+          "type": "step",
+          "lane": "User",
+          "label": "User taps “Ask a Question”",
+          "sourceText": "User taps “Ask a Question”",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "id": "AQ5",
+          "type": "step",
+          "lane": "User",
+          "label": "Live audio session begins",
+          "sourceText": "Live audio session begins",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "id": "AQ7",
+          "type": "step",
+          "lane": "User",
+          "label": "App suggests switching to phone for extended help",
+          "sourceText": "App suggests switching to phone for extended help",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "id": "SYS10",
+          "type": "system",
+          "lane": "System",
+          "label": "Request microphone permission (just-in-time)",
+          "sourceText": "Request microphone permission (just-in-time)",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "inferred": false
+        },
+        {
+          "id": "SYS11",
+          "type": "system",
+          "lane": "System",
+          "label": "Attempt to connect to available tutor",
+          "sourceText": "Attempt to connect to available tutor",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "inferred": false
+        },
+        {
+          "id": "D3",
+          "type": "decision",
+          "lane": "User",
+          "label": "Is microphone permission granted?",
+          "sourceText": "Is microphone permission granted?",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "branches": {
+            "condition": "Is microphone permission granted",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "D4",
+          "type": "decision",
+          "lane": "User",
+          "label": "Is a tutor available?",
+          "sourceText": "Is a tutor available?",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "branches": {
+            "condition": "Is a tutor available",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "D5",
+          "type": "decision",
+          "lane": "User",
+          "label": "Does user need additional clarification?",
+          "sourceText": "Does user need additional clarification?",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "branches": {
+            "condition": "Does user need additional clarification",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "END_2",
+          "type": "end",
+          "lane": "User",
+          "label": "Question resolved",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "isExit": false
+        }
+      ],
+      "edges": [
+        {
+          "from": "START_2",
+          "to": "AQ1",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "from": "AQ1",
+          "to": "AQ5",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "from": "AQ5",
+          "to": "AQ7",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "from": "AQ7",
+          "to": "SYS10",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "from": "SYS10",
+          "to": "SYS11",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "from": "SYS11",
+          "to": "D3",
+          "flowGroup": "flow_ask_a_contextual_question"
+        },
+        {
+          "from": "D3",
+          "to": "D4",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "label": "Yes"
+        },
+        {
+          "from": "D3",
+          "to": "END_2",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "label": "No"
+        },
+        {
+          "from": "D4",
+          "to": "D5",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "label": "Yes"
+        },
+        {
+          "from": "D4",
+          "to": "END_2",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "label": "No"
+        },
+        {
+          "from": "D5",
+          "to": "END_2",
+          "flowGroup": "flow_ask_a_contextual_question",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_scheduled_micro_lesson",
+      "name": "Scheduled Micro-Lesson",
+      "starts": [
+        "START_3"
+      ],
+      "ends": [
+        "END_3"
+      ],
+      "nodes": [
+        {
+          "id": "START_3",
+          "type": "start",
+          "lane": "User",
+          "label": "User receives scheduled lesson notification on watch",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "id": "SM1",
+          "type": "step",
+          "lane": "User",
+          "label": "User taps “Join Lesson”",
+          "sourceText": "User taps “Join Lesson”",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "id": "SM2",
+          "type": "step",
+          "lane": "User",
+          "label": "Tutor begins short structured exercise",
+          "sourceText": "Tutor begins short structured exercise",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "id": "SM4",
+          "type": "step",
+          "lane": "User",
+          "label": "User responds verbally to prompts",
+          "sourceText": "User responds verbally to prompts",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "id": "SM6",
+          "type": "step",
+          "lane": "User",
+          "label": "App suggests continuing lesson on phone",
+          "sourceText": "App suggests continuing lesson on phone",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "id": "SYS12",
+          "type": "system",
+          "lane": "System",
+          "label": "Provide haptic or visual cues for turn-taking",
+          "sourceText": "Provide haptic or visual cues for turn-taking",
+          "flowGroup": "flow_scheduled_micro_lesson",
+          "inferred": false
+        },
+        {
+          "id": "D6",
+          "type": "decision",
+          "lane": "User",
+          "label": "Is network connection stable?",
+          "sourceText": "Is network connection stable?",
+          "flowGroup": "flow_scheduled_micro_lesson",
+          "branches": {
+            "condition": "Is network connection stable",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "D7",
+          "type": "decision",
+          "lane": "User",
+          "label": "Is lesson exceeding watch-friendly duration?",
+          "sourceText": "Is lesson exceeding watch-friendly duration?",
+          "flowGroup": "flow_scheduled_micro_lesson",
+          "branches": {
+            "condition": "Is lesson exceeding watch-friendly duration",
+            "ifTrue": null,
+            "ifFalse": null
+          }
+        },
+        {
+          "id": "END_3",
+          "type": "end",
+          "lane": "User",
+          "label": "Lesson completed",
+          "flowGroup": "flow_scheduled_micro_lesson",
+          "isExit": false
+        }
+      ],
+      "edges": [
+        {
+          "from": "START_3",
+          "to": "SM1",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "from": "SM1",
+          "to": "SM2",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "from": "SM2",
+          "to": "SM4",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "from": "SM4",
+          "to": "SM6",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "from": "SM6",
+          "to": "SYS12",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "from": "SYS12",
+          "to": "D6",
+          "flowGroup": "flow_scheduled_micro_lesson"
+        },
+        {
+          "from": "D6",
+          "to": "D7",
+          "flowGroup": "flow_scheduled_micro_lesson",
+          "label": "Yes"
+        },
+        {
+          "from": "D6",
+          "to": "END_3",
+          "flowGroup": "flow_scheduled_micro_lesson",
+          "label": "No"
+        },
+        {
+          "from": "D7",
+          "to": "END_3",
+          "flowGroup": "flow_scheduled_micro_lesson",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "main",
+      "name": "Main Flow",
+      "starts": [
+        "START"
+      ],
+      "ends": [
+        "EXIT_1",
+        "EXIT_2",
+        "EXIT_3",
+        "EXIT_4",
+        "EXIT_5",
+        "EXIT_6",
+        "EXIT_7"
+      ],
+      "nodes": [
+        {
+          "id": "START",
+          "type": "start",
+          "lane": "User",
+          "label": "Start",
+          "flowGroup": "",
+          "inferred": true
+        },
+        {
+          "id": "S1",
+          "type": "step",
+          "lane": "User",
+          "label": "User opens the language tutor app on smart watch",
+          "sourceText": "User opens the language tutor app on smart watch",
+          "flowGroup": ""
+        },
+        {
+          "id": "S2",
+          "type": "step",
+          "lane": "User",
+          "label": "User launches the app from a watch complication",
+          "sourceText": "User launches the app from a watch complication",
+          "flowGroup": ""
+        },
+        {
+          "id": "S3",
+          "type": "step",
+          "lane": "User",
+          "label": "User selects “Practice a Phrase”",
+          "sourceText": "User selects “Practice a Phrase”",
+          "flowGroup": ""
+        },
+        {
+          "id": "S4",
+          "type": "step",
+          "lane": "User",
+          "label": "User selects “Ask a Question”",
+          "sourceText": "User selects “Ask a Question”",
+          "flowGroup": ""
+        },
+        {
+          "id": "S5",
+          "type": "step",
+          "lane": "User",
+          "label": "User selects “Join Scheduled Lesson”",
+          "sourceText": "User selects “Join Scheduled Lesson”",
+          "flowGroup": ""
+        },
+        {
+          "id": "S6",
+          "type": "step",
+          "lane": "User",
+          "label": "User speaks a phrase or question into the watch",
+          "sourceText": "User speaks a phrase or question into the watch",
+          "flowGroup": ""
+        },
+        {
+          "id": "S7",
+          "type": "step",
+          "lane": "User",
+          "label": "User reviews a suggested phrase or prompt",
+          "sourceText": "User reviews a suggested phrase or prompt",
+          "flowGroup": ""
+        },
+        {
+          "id": "S8",
+          "type": "step",
+          "lane": "User",
+          "label": "User confirms intent to connect with a tutor",
+          "sourceText": "User confirms intent to connect with a tutor",
+          "flowGroup": ""
+        },
+        {
+          "id": "S9",
+          "type": "step",
+          "lane": "User",
+          "label": "User listens to tutor feedback or explanation",
+          "sourceText": "User listens to tutor feedback or explanation",
+          "flowGroup": ""
+        },
+        {
+          "id": "S10",
+          "type": "step",
+          "lane": "User",
+          "label": "User repeats a phrase after tutor guidance",
+          "sourceText": "User repeats a phrase after tutor guidance",
+          "flowGroup": ""
+        },
+        {
+          "id": "S11",
+          "type": "step",
+          "lane": "User",
+          "label": "User chooses to continue session on mobile phone",
+          "sourceText": "User chooses to continue session on mobile phone",
+          "flowGroup": ""
+        },
+        {
+          "id": "S12",
+          "type": "step",
+          "lane": "User",
+          "label": "User ends or exits the session",
+          "sourceText": "User ends or exits the session",
+          "flowGroup": ""
+        },
+        {
+          "id": "SYS1",
+          "type": "system",
+          "lane": "System",
+          "label": "Offer text or repeat mode",
+          "sourceText": "Offer text or repeat mode",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS2",
+          "type": "system",
+          "lane": "System",
+          "label": "Switch to delayed audio or fallback suggestions",
+          "sourceText": "Switch to delayed audio or fallback suggestions",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS3",
+          "type": "system",
+          "lane": "System",
+          "label": "Auto-retry or reassign",
+          "sourceText": "Auto-retry or reassign",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS4",
+          "type": "system",
+          "lane": "System",
+          "label": "Pause and resume session",
+          "sourceText": "Pause and resume session",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS5",
+          "type": "system",
+          "lane": "System",
+          "label": "Allow read-only phrase review",
+          "sourceText": "Allow read-only phrase review",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS6",
+          "type": "system",
+          "lane": "System",
+          "label": "Enable hands-free mode only",
+          "sourceText": "Enable hands-free mode only",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "SYS7",
+          "type": "system",
+          "lane": "System",
+          "label": "Provide summary and follow-up",
+          "sourceText": "Provide summary and follow-up",
+          "flowGroup": "",
+          "inferred": false
+        },
+        {
+          "id": "EXIT_1",
+          "type": "exit",
+          "lane": "User",
+          "label": "User is in a noisy environment",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_2",
+          "type": "exit",
+          "lane": "User",
+          "label": "Poor network",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_3",
+          "type": "exit",
+          "lane": "User",
+          "label": "Tutor disconnects",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_4",
+          "type": "exit",
+          "lane": "User",
+          "label": "User receives phone call",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_5",
+          "type": "exit",
+          "lane": "User",
+          "label": "User denies microphone permission",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_6",
+          "type": "exit",
+          "lane": "User",
+          "label": "User is driving",
+          "flowGroup": "",
+          "isExit": true
+        },
+        {
+          "id": "EXIT_7",
+          "type": "exit",
+          "lane": "User",
+          "label": "Time runs out mid-session",
+          "flowGroup": "",
+          "isExit": true
+        }
+      ],
+      "edges": [
+        {
+          "from": "START",
+          "to": "S1",
+          "flowGroup": ""
+        },
+        {
+          "from": "S1",
+          "to": "S2",
+          "flowGroup": ""
+        },
+        {
+          "from": "S2",
+          "to": "S3",
+          "flowGroup": ""
+        },
+        {
+          "from": "S3",
+          "to": "S4",
+          "flowGroup": ""
+        },
+        {
+          "from": "S4",
+          "to": "S5",
+          "flowGroup": ""
+        },
+        {
+          "from": "S5",
+          "to": "S6",
+          "flowGroup": ""
+        },
+        {
+          "from": "S6",
+          "to": "S7",
+          "flowGroup": ""
+        },
+        {
+          "from": "S7",
+          "to": "S8",
+          "flowGroup": ""
+        },
+        {
+          "from": "S8",
+          "to": "S9",
+          "flowGroup": ""
+        },
+        {
+          "from": "S9",
+          "to": "S10",
+          "flowGroup": ""
+        },
+        {
+          "from": "S10",
+          "to": "S11",
+          "flowGroup": ""
+        },
+        {
+          "from": "S11",
+          "to": "S12",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "SYS1",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS1",
+          "to": "SYS2",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS2",
+          "to": "SYS3",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS3",
+          "to": "SYS4",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS4",
+          "to": "SYS5",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS5",
+          "to": "SYS6",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS6",
+          "to": "SYS7",
+          "flowGroup": ""
+        },
+        {
+          "from": "SYS7",
+          "to": "EXIT_1",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_2",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_3",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_4",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_5",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_6",
+          "flowGroup": ""
+        },
+        {
+          "from": "S12",
+          "to": "EXIT_7",
+          "flowGroup": ""
+        }
+      ]
+    }
+  ],
+  "lanes": [
+    "User",
+    "Traveler Learner",
+    "Busy Professional",
+    "Language Beginner",
+    "Advanced Learner",
+    "Tutor",
+    "Privacy-Conscious User",
+    "System"
+  ],
+  "personas": [
+    {
+      "name": "Traveler Learner",
+      "details": "wants quick language help while navigating a foreign country"
+    },
+    {
+      "name": "Busy Professional",
+      "details": "wants short, focused practice sessions between meetings"
+    },
+    {
+      "name": "Language Beginner",
+      "details": "wants reassurance, corrections, and simple explanations"
+    },
+    {
+      "name": "Advanced Learner",
+      "details": "wants nuanced phrasing, pronunciation feedback, and cultural tips"
+    },
+    {
+      "name": "Tutor",
+      "details": "wants to deliver helpful micro-lessons without context switching"
+    },
+    {
+      "name": "Privacy-Conscious User",
+      "details": "wants control over audio recording and session history"
+    }
+  ],
+  "starts": [
+    "START_1",
+    "START_2",
+    "START_3",
+    "START"
+  ],
+  "ends": [
+    "END_1",
+    "END_2",
+    "END_3",
+    "EXIT_1",
+    "EXIT_2",
+    "EXIT_3",
+    "EXIT_4",
+    "EXIT_5",
+    "EXIT_6",
+    "EXIT_7"
+  ],
+  "nodes": [
+    {
+      "id": "START_1",
+      "type": "start",
+      "lane": "User",
+      "label": "User initiates quick phrase practice from smart watch",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "id": "QP1",
+      "type": "step",
+      "lane": "User",
+      "label": "User opens language tutor app on smart watch",
+      "sourceText": "User opens language tutor app on smart watch",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "id": "QP6",
+      "type": "step",
+      "lane": "User",
+      "label": "Live audio session begins with tutor",
+      "sourceText": "Live audio session begins with tutor",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "id": "QP8",
+      "type": "step",
+      "lane": "User",
+      "label": "Tutor provides pronunciation correction",
+      "sourceText": "Tutor provides pronunciation correction",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "id": "SYS8",
+      "type": "system",
+      "lane": "System",
+      "label": "Match user with available tutor",
+      "sourceText": "Match user with available tutor",
+      "flowGroup": "flow_quick_phrase_practice",
+      "inferred": false
+    },
+    {
+      "id": "SYS9",
+      "type": "system",
+      "lane": "System",
+      "label": "Request microphone permission (just-in-time)",
+      "sourceText": "Request microphone permission (just-in-time)",
+      "flowGroup": "flow_quick_phrase_practice",
+      "inferred": false
+    },
+    {
+      "id": "D1",
+      "type": "decision",
+      "lane": "User",
+      "label": "Is a tutor available?",
+      "sourceText": "Is a tutor available?",
+      "flowGroup": "flow_quick_phrase_practice",
+      "branches": {
+        "condition": "Is a tutor available",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "D2",
+      "type": "decision",
+      "lane": "User",
+      "label": "Is microphone permission granted?",
+      "sourceText": "Is microphone permission granted?",
+      "flowGroup": "flow_quick_phrase_practice",
+      "branches": {
+        "condition": "Is microphone permission granted",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "END_1",
+      "type": "end",
+      "lane": "User",
+      "label": "Phrase practice completed",
+      "flowGroup": "flow_quick_phrase_practice",
+      "isExit": false
+    },
+    {
+      "id": "START_2",
+      "type": "start",
+      "lane": "User",
+      "label": "User initiates question flow from watch complication",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "id": "AQ1",
+      "type": "step",
+      "lane": "User",
+      "label": "User taps “Ask a Question”",
+      "sourceText": "User taps “Ask a Question”",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "id": "AQ5",
+      "type": "step",
+      "lane": "User",
+      "label": "Live audio session begins",
+      "sourceText": "Live audio session begins",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "id": "AQ7",
+      "type": "step",
+      "lane": "User",
+      "label": "App suggests switching to phone for extended help",
+      "sourceText": "App suggests switching to phone for extended help",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "id": "SYS10",
+      "type": "system",
+      "lane": "System",
+      "label": "Request microphone permission (just-in-time)",
+      "sourceText": "Request microphone permission (just-in-time)",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "inferred": false
+    },
+    {
+      "id": "SYS11",
+      "type": "system",
+      "lane": "System",
+      "label": "Attempt to connect to available tutor",
+      "sourceText": "Attempt to connect to available tutor",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "inferred": false
+    },
+    {
+      "id": "D3",
+      "type": "decision",
+      "lane": "User",
+      "label": "Is microphone permission granted?",
+      "sourceText": "Is microphone permission granted?",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "branches": {
+        "condition": "Is microphone permission granted",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "D4",
+      "type": "decision",
+      "lane": "User",
+      "label": "Is a tutor available?",
+      "sourceText": "Is a tutor available?",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "branches": {
+        "condition": "Is a tutor available",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "D5",
+      "type": "decision",
+      "lane": "User",
+      "label": "Does user need additional clarification?",
+      "sourceText": "Does user need additional clarification?",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "branches": {
+        "condition": "Does user need additional clarification",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "END_2",
+      "type": "end",
+      "lane": "User",
+      "label": "Question resolved",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "isExit": false
+    },
+    {
+      "id": "START_3",
+      "type": "start",
+      "lane": "User",
+      "label": "User receives scheduled lesson notification on watch",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "id": "SM1",
+      "type": "step",
+      "lane": "User",
+      "label": "User taps “Join Lesson”",
+      "sourceText": "User taps “Join Lesson”",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "id": "SM2",
+      "type": "step",
+      "lane": "User",
+      "label": "Tutor begins short structured exercise",
+      "sourceText": "Tutor begins short structured exercise",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "id": "SM4",
+      "type": "step",
+      "lane": "User",
+      "label": "User responds verbally to prompts",
+      "sourceText": "User responds verbally to prompts",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "id": "SM6",
+      "type": "step",
+      "lane": "User",
+      "label": "App suggests continuing lesson on phone",
+      "sourceText": "App suggests continuing lesson on phone",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "id": "SYS12",
+      "type": "system",
+      "lane": "System",
+      "label": "Provide haptic or visual cues for turn-taking",
+      "sourceText": "Provide haptic or visual cues for turn-taking",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "inferred": false
+    },
+    {
+      "id": "D6",
+      "type": "decision",
+      "lane": "User",
+      "label": "Is network connection stable?",
+      "sourceText": "Is network connection stable?",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "branches": {
+        "condition": "Is network connection stable",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "D7",
+      "type": "decision",
+      "lane": "User",
+      "label": "Is lesson exceeding watch-friendly duration?",
+      "sourceText": "Is lesson exceeding watch-friendly duration?",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "branches": {
+        "condition": "Is lesson exceeding watch-friendly duration",
+        "ifTrue": null,
+        "ifFalse": null
+      }
+    },
+    {
+      "id": "END_3",
+      "type": "end",
+      "lane": "User",
+      "label": "Lesson completed",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "isExit": false
+    },
+    {
+      "id": "START",
+      "type": "start",
+      "lane": "User",
+      "label": "Start",
+      "flowGroup": "",
+      "inferred": true
+    },
+    {
+      "id": "S1",
+      "type": "step",
+      "lane": "User",
+      "label": "User opens the language tutor app on smart watch",
+      "sourceText": "User opens the language tutor app on smart watch",
+      "flowGroup": ""
+    },
+    {
+      "id": "S2",
+      "type": "step",
+      "lane": "User",
+      "label": "User launches the app from a watch complication",
+      "sourceText": "User launches the app from a watch complication",
+      "flowGroup": ""
+    },
+    {
+      "id": "S3",
+      "type": "step",
+      "lane": "User",
+      "label": "User selects “Practice a Phrase”",
+      "sourceText": "User selects “Practice a Phrase”",
+      "flowGroup": ""
+    },
+    {
+      "id": "S4",
+      "type": "step",
+      "lane": "User",
+      "label": "User selects “Ask a Question”",
+      "sourceText": "User selects “Ask a Question”",
+      "flowGroup": ""
+    },
+    {
+      "id": "S5",
+      "type": "step",
+      "lane": "User",
+      "label": "User selects “Join Scheduled Lesson”",
+      "sourceText": "User selects “Join Scheduled Lesson”",
+      "flowGroup": ""
+    },
+    {
+      "id": "S6",
+      "type": "step",
+      "lane": "User",
+      "label": "User speaks a phrase or question into the watch",
+      "sourceText": "User speaks a phrase or question into the watch",
+      "flowGroup": ""
+    },
+    {
+      "id": "S7",
+      "type": "step",
+      "lane": "User",
+      "label": "User reviews a suggested phrase or prompt",
+      "sourceText": "User reviews a suggested phrase or prompt",
+      "flowGroup": ""
+    },
+    {
+      "id": "S8",
+      "type": "step",
+      "lane": "User",
+      "label": "User confirms intent to connect with a tutor",
+      "sourceText": "User confirms intent to connect with a tutor",
+      "flowGroup": ""
+    },
+    {
+      "id": "S9",
+      "type": "step",
+      "lane": "User",
+      "label": "User listens to tutor feedback or explanation",
+      "sourceText": "User listens to tutor feedback or explanation",
+      "flowGroup": ""
+    },
+    {
+      "id": "S10",
+      "type": "step",
+      "lane": "User",
+      "label": "User repeats a phrase after tutor guidance",
+      "sourceText": "User repeats a phrase after tutor guidance",
+      "flowGroup": ""
+    },
+    {
+      "id": "S11",
+      "type": "step",
+      "lane": "User",
+      "label": "User chooses to continue session on mobile phone",
+      "sourceText": "User chooses to continue session on mobile phone",
+      "flowGroup": ""
+    },
+    {
+      "id": "S12",
+      "type": "step",
+      "lane": "User",
+      "label": "User ends or exits the session",
+      "sourceText": "User ends or exits the session",
+      "flowGroup": ""
+    },
+    {
+      "id": "SYS1",
+      "type": "system",
+      "lane": "System",
+      "label": "Offer text or repeat mode",
+      "sourceText": "Offer text or repeat mode",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS2",
+      "type": "system",
+      "lane": "System",
+      "label": "Switch to delayed audio or fallback suggestions",
+      "sourceText": "Switch to delayed audio or fallback suggestions",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS3",
+      "type": "system",
+      "lane": "System",
+      "label": "Auto-retry or reassign",
+      "sourceText": "Auto-retry or reassign",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS4",
+      "type": "system",
+      "lane": "System",
+      "label": "Pause and resume session",
+      "sourceText": "Pause and resume session",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS5",
+      "type": "system",
+      "lane": "System",
+      "label": "Allow read-only phrase review",
+      "sourceText": "Allow read-only phrase review",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS6",
+      "type": "system",
+      "lane": "System",
+      "label": "Enable hands-free mode only",
+      "sourceText": "Enable hands-free mode only",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "SYS7",
+      "type": "system",
+      "lane": "System",
+      "label": "Provide summary and follow-up",
+      "sourceText": "Provide summary and follow-up",
+      "flowGroup": "",
+      "inferred": false
+    },
+    {
+      "id": "EXIT_1",
+      "type": "exit",
+      "lane": "User",
+      "label": "User is in a noisy environment",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_2",
+      "type": "exit",
+      "lane": "User",
+      "label": "Poor network",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_3",
+      "type": "exit",
+      "lane": "User",
+      "label": "Tutor disconnects",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_4",
+      "type": "exit",
+      "lane": "User",
+      "label": "User receives phone call",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_5",
+      "type": "exit",
+      "lane": "User",
+      "label": "User denies microphone permission",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_6",
+      "type": "exit",
+      "lane": "User",
+      "label": "User is driving",
+      "flowGroup": "",
+      "isExit": true
+    },
+    {
+      "id": "EXIT_7",
+      "type": "exit",
+      "lane": "User",
+      "label": "Time runs out mid-session",
+      "flowGroup": "",
+      "isExit": true
+    }
+  ],
+  "edges": [
+    {
+      "from": "START_1",
+      "to": "QP1",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "from": "QP1",
+      "to": "QP6",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "from": "QP6",
+      "to": "QP8",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "from": "QP8",
+      "to": "SYS8",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "from": "SYS8",
+      "to": "SYS9",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "from": "SYS9",
+      "to": "D1",
+      "flowGroup": "flow_quick_phrase_practice"
+    },
+    {
+      "from": "D1",
+      "to": "D2",
+      "flowGroup": "flow_quick_phrase_practice",
+      "label": "Yes"
+    },
+    {
+      "from": "D1",
+      "to": "END_1",
+      "flowGroup": "flow_quick_phrase_practice",
+      "label": "No"
+    },
+    {
+      "from": "D2",
+      "to": "END_1",
+      "flowGroup": "flow_quick_phrase_practice",
+      "label": "No"
+    },
+    {
+      "from": "START_2",
+      "to": "AQ1",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "from": "AQ1",
+      "to": "AQ5",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "from": "AQ5",
+      "to": "AQ7",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "from": "AQ7",
+      "to": "SYS10",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "from": "SYS10",
+      "to": "SYS11",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "from": "SYS11",
+      "to": "D3",
+      "flowGroup": "flow_ask_a_contextual_question"
+    },
+    {
+      "from": "D3",
+      "to": "D4",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "label": "Yes"
+    },
+    {
+      "from": "D3",
+      "to": "END_2",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "label": "No"
+    },
+    {
+      "from": "D4",
+      "to": "D5",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "label": "Yes"
+    },
+    {
+      "from": "D4",
+      "to": "END_2",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "label": "No"
+    },
+    {
+      "from": "D5",
+      "to": "END_2",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "label": "No"
+    },
+    {
+      "from": "START_3",
+      "to": "SM1",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "from": "SM1",
+      "to": "SM2",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "from": "SM2",
+      "to": "SM4",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "from": "SM4",
+      "to": "SM6",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "from": "SM6",
+      "to": "SYS12",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "from": "SYS12",
+      "to": "D6",
+      "flowGroup": "flow_scheduled_micro_lesson"
+    },
+    {
+      "from": "D6",
+      "to": "D7",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "label": "Yes"
+    },
+    {
+      "from": "D6",
+      "to": "END_3",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "label": "No"
+    },
+    {
+      "from": "D7",
+      "to": "END_3",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "label": "No"
+    },
+    {
+      "from": "START",
+      "to": "S1",
+      "flowGroup": ""
+    },
+    {
+      "from": "S1",
+      "to": "S2",
+      "flowGroup": ""
+    },
+    {
+      "from": "S2",
+      "to": "S3",
+      "flowGroup": ""
+    },
+    {
+      "from": "S3",
+      "to": "S4",
+      "flowGroup": ""
+    },
+    {
+      "from": "S4",
+      "to": "S5",
+      "flowGroup": ""
+    },
+    {
+      "from": "S5",
+      "to": "S6",
+      "flowGroup": ""
+    },
+    {
+      "from": "S6",
+      "to": "S7",
+      "flowGroup": ""
+    },
+    {
+      "from": "S7",
+      "to": "S8",
+      "flowGroup": ""
+    },
+    {
+      "from": "S8",
+      "to": "S9",
+      "flowGroup": ""
+    },
+    {
+      "from": "S9",
+      "to": "S10",
+      "flowGroup": ""
+    },
+    {
+      "from": "S10",
+      "to": "S11",
+      "flowGroup": ""
+    },
+    {
+      "from": "S11",
+      "to": "S12",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "SYS1",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS1",
+      "to": "SYS2",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS2",
+      "to": "SYS3",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS3",
+      "to": "SYS4",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS4",
+      "to": "SYS5",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS5",
+      "to": "SYS6",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS6",
+      "to": "SYS7",
+      "flowGroup": ""
+    },
+    {
+      "from": "SYS7",
+      "to": "EXIT_1",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_2",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_3",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_4",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_5",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_6",
+      "flowGroup": ""
+    },
+    {
+      "from": "S12",
+      "to": "EXIT_7",
+      "flowGroup": ""
+    }
+  ],
+  "assumptions": [
+    "Users are willing to engage in very short (30s–5min) live tutor interactions on a smart watch without prior preparation.",
+    "Tutors are available frequently enough across time zones to support near-real-time connections for micro-sessions.",
+    "---",
+    "SpecKit v2.0.0 expansion",
+    "4 flow group(s) identified",
+    "8 swimlanes: User, Traveler Learner, Busy Professional, Language Beginner, Advanced Learner, Tutor, Privacy-Conscious User, System",
+    "4 entry point(s)",
+    "10 end state(s)",
+    "Sequential edges auto-generated",
+    "Explicit start nodes used (START:)",
+    "Explicit end/exit nodes used (END:/EXIT:)",
+    "Explicit system steps used (SYS:)",
+    "1 node(s) inferred by SpecKit"
+  ],
+  "openQuestions": [
+    "Are sessions recorded or ephemeral by default?",
+    "Do tutors see user location/context (city, country)?",
+    "Can users request the same tutor repeatedly for micro-sessions?",
+    "What is the max recommended session length on watch?",
+    "Do we support text input at all on watch?",
+    "How do we price or meter ultra-short tutor interactions?",
+    "What happens if tutor availability is low?",
+    "How much context should persist between sessions?"
+  ],
+  "risks": [
+    "Network instability may interrupt live audio sessions, degrading the learning experience or causing frequent exits.",
+    "Smart watch screen and input constraints may limit users’ ability to understand feedback or corrections from tutors.",
+    "Low tutor availability during peak travel hours could result in repeated failed connection attempts, increasing user frustration."
+  ],
+  "acceptanceCriteria": []
+}

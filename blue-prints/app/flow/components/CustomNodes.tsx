@@ -28,6 +28,76 @@ interface CustomNodeData {
 }
 
 // ============================================================================
+// Persona Icon Component
+// ============================================================================
+
+interface PersonaIconProps {
+  lane: string;
+  size?: 'sm' | 'md';
+}
+
+function PersonaIcon({ lane, size = 'md' }: PersonaIconProps) {
+  const colors = LANE_COLORS[lane] || LANE_COLORS.User;
+  const iconSize = size === 'sm' ? 'w-5 h-5' : 'w-6 h-6';
+  const svgSize = size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5';
+
+  // Determine icon based on lane type
+  const getIcon = () => {
+    const lowerLane = lane.toLowerCase();
+
+    // Host icon - star/crown
+    if (lowerLane === 'host' || lowerLane.includes('host')) {
+      return (
+        <svg className={svgSize} viewBox="0 0 24 24" fill={colors.accent}>
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      );
+    }
+
+    // Guest icon - person with badge
+    if (lowerLane === 'guest' || lowerLane.includes('guest') || lowerLane.includes('visitor')) {
+      return (
+        <svg className={svgSize} viewBox="0 0 24 24" fill={colors.accent}>
+          <circle cx="12" cy="7" r="4" />
+          <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+          <circle cx="18" cy="8" r="3" fill="white" stroke={colors.accent} strokeWidth="1.5" />
+          <text x="18" y="10" textAnchor="middle" fontSize="6" fill={colors.accent} fontWeight="bold">?</text>
+        </svg>
+      );
+    }
+
+    // System icon - gear
+    if (lowerLane === 'system') {
+      return (
+        <svg className={svgSize} viewBox="0 0 24 24" fill={colors.accent}>
+          <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+        </svg>
+      );
+    }
+
+    // Default: User icon - person
+    return (
+      <svg className={svgSize} viewBox="0 0 24 24" fill={colors.accent}>
+        <circle cx="12" cy="7" r="4" />
+        <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+      </svg>
+    );
+  };
+
+  return (
+    <div
+      className={`${iconSize} rounded-full flex items-center justify-center flex-shrink-0`}
+      style={{
+        backgroundColor: 'white',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+      }}
+    >
+      {getIcon()}
+    </div>
+  );
+}
+
+// ============================================================================
 // Edit Button Component
 // ============================================================================
 
@@ -104,20 +174,15 @@ export const StepNode = memo(function StepNode({ id, data }: NodeProps) {
         onEdit={nodeData.onEdit}
         className="top-2 right-2 opacity-0 group-hover:opacity-100"
       />
-      <div className="flex items-start gap-2">
-        <span
-          className="text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
-          style={{ backgroundColor: colors.accent, color: 'white' }}
+      <div className="flex items-start gap-3">
+        <PersonaIcon lane={nodeData.lane} />
+        <p
+          className="text-sm font-medium leading-relaxed break-words flex-1"
+          style={{ color: colors.text, wordWrap: 'break-word' }}
         >
-          {nodeData.lane}
-        </span>
+          {nodeData.label}
+        </p>
       </div>
-      <p
-        className="mt-3 text-sm font-medium leading-relaxed break-words"
-        style={{ color: colors.text, wordWrap: 'break-word', maxWidth: 260 }}
-      >
-        {nodeData.label}
-      </p>
       <Handle type="source" position={Position.Bottom} id="bottom" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
       <Handle type="source" position={Position.Right} id="right" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
     </div>
@@ -155,12 +220,15 @@ export const DecisionNode = memo(function DecisionNode({ id, data }: NodeProps) 
             boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2)',
           }}
         >
-          <p
-            className="text-sm font-semibold text-center px-6 py-2 leading-snug break-words"
-            style={{ color: colors.text, maxWidth: 160, wordWrap: 'break-word' }}
-          >
-            {nodeData.label}
-          </p>
+          <div className="flex flex-col items-center gap-1">
+            <PersonaIcon lane={nodeData.lane} size="sm" />
+            <p
+              className="text-sm font-semibold text-center px-4 leading-snug break-words"
+              style={{ color: colors.text, maxWidth: 140, wordWrap: 'break-word' }}
+            >
+              {nodeData.label}
+            </p>
+          </div>
         </div>
       </div>
       <Handle
@@ -272,11 +340,12 @@ export const StartNode = memo(function StartNode({ id, data }: NodeProps) {
         onEdit={nodeData.onEdit}
         className="-top-1 -right-1 opacity-0 group-hover:opacity-100"
       />
-      <div className="flex items-center gap-3">
-        <span style={{ color: colors.accent }} className="text-lg flex-shrink-0">▶</span>
+      <div className="flex items-center gap-2">
+        <PersonaIcon lane={nodeData.lane} size="sm" />
+        <span style={{ color: colors.accent }} className="text-base flex-shrink-0">▶</span>
         <p
           className="text-sm font-bold text-center leading-snug break-words"
-          style={{ color: colors.text, wordWrap: 'break-word', maxWidth: 150 }}
+          style={{ color: colors.text, wordWrap: 'break-word', maxWidth: 120 }}
         >
           {nodeData.label}
         </p>

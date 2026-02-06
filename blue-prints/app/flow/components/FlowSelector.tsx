@@ -20,8 +20,13 @@ export default function FlowSelector({ flows, activeFlowId, onSelectFlow }: Flow
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Deduplicate flows by ID (keep first occurrence)
+  const uniqueFlows = flows.filter((flow, index, self) =>
+    index === self.findIndex(f => f.id === flow.id)
+  );
+
   // Get the active flow's name
-  const activeFlow = flows.find(f => f.id === activeFlowId);
+  const activeFlow = uniqueFlows.find(f => f.id === activeFlowId);
   const activeFlowName = activeFlow?.name || 'Select Flow';
 
   // Close dropdown when clicking outside
@@ -39,7 +44,7 @@ export default function FlowSelector({ flows, activeFlowId, onSelectFlow }: Flow
   }, [isOpen]);
 
   // Don't render if there's only one flow or no flows
-  if (flows.length <= 1) {
+  if (uniqueFlows.length <= 1) {
     return null;
   }
 
@@ -81,7 +86,7 @@ export default function FlowSelector({ flows, activeFlowId, onSelectFlow }: Flow
           }}
         >
           <div className="p-1">
-            {flows.map((flow) => {
+            {uniqueFlows.map((flow) => {
               const isActive = flow.id === activeFlowId;
               return (
                 <button

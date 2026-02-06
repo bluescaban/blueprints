@@ -5,6 +5,9 @@
  * Extracts TEXT nodes (including STICKY notes) from a raw Figma/FigJam JSON file
  * and outputs them in a structured format for parsing.
  *
+ * IMPORTANT: Only extracts from pages matching "Engine" (case-insensitive).
+ * Other pages (archived projects, etc.) are ignored.
+ *
  * Usage:
  *   node scripts/figma-extract.mjs <path_to_figma_json>
  *   node scripts/figma-extract.mjs output/flowspec/HYxtgE7EARWuvTskijY7xa.json
@@ -26,6 +29,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Node types to extract text from
 const TEXT_NODE_TYPES = ['TEXT', 'STICKY'];
+
+// Page name to extract from (case-insensitive match)
+// Only extract from pages containing this name; ignore archived/other project pages
+const TARGET_PAGE_NAME = 'Engine';
 
 // Section names to ignore during extraction (case-insensitive)
 const IGNORED_SECTIONS = ['README'];
@@ -145,6 +152,37 @@ function rgbToHex(r, g, b) {
 }
 
 /**
+ * Find target pages in the Figma document.
+ * Pages in Figma are CANVAS nodes that are direct children of the document.
+ *
+ * @param {Object} document - Figma document node
+ * @returns {Object[]} Array of matching page nodes
+ */
+function findTargetPages(document) {
+  const pages = [];
+
+  if (!document.children) {
+    return pages;
+  }
+
+  for (const child of document.children) {
+    // Pages are CANVAS nodes in Figma
+    if (child.type === 'CANVAS') {
+      const pageName = child.name || '';
+      // Case-insensitive match for target page name
+      if (pageName.toLowerCase().includes(TARGET_PAGE_NAME.toLowerCase())) {
+        pages.push(child);
+        console.log(`  Found target page: "${pageName}"`);
+      } else {
+        console.log(`  Skipping page: "${pageName}" (not matching "${TARGET_PAGE_NAME}")`);
+      }
+    }
+  }
+
+  return pages;
+}
+
+/**
  * Extract all text nodes from a Figma JSON file.
  *
  * @param {string} filePath - Path to the Figma JSON file
@@ -163,9 +201,20 @@ function extractFromFile(filePath) {
   /** @type {ExtractedNode[]} */
   const extracted = [];
 
-  // Start from document root
+  // Start from document root, but filter by target page
   if (figmaData.document) {
-    walkAndExtract(figmaData.document, extracted);
+    const targetPages = findTargetPages(figmaData.document);
+
+    if (targetPages.length === 0) {
+      console.warn(`  Warning: No pages found matching "${TARGET_PAGE_NAME}". Falling back to all pages.`);
+      // Fallback: extract from all pages if no match found
+      walkAndExtract(figmaData.document, extracted);
+    } else {
+      // Only extract from matching pages
+      for (const page of targetPages) {
+        walkAndExtract(page, extracted);
+      }
+    }
   } else {
     // Maybe it's already the document node
     walkAndExtract(figmaData, extracted);
@@ -246,6 +295,8 @@ function main() {
   const inputPath = args[0];
 
   console.log(`Extracting TEXT nodes from: ${inputPath}`);
+  console.log(`Target page filter: "${TARGET_PAGE_NAME}"`);
+  console.log('');
 
   try {
     // Extract nodes

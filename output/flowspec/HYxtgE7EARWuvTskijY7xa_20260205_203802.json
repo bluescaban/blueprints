@@ -1,0 +1,448 @@
+{
+  "meta": {
+    "fileKey": "HYxtgE7EARWuvTskijY7xa",
+    "generatedAt": "2026-02-06T04:38:02.836Z",
+    "grammarVersion": "2.0.0"
+  },
+  "context": [
+    "Project = Smart Watch Language Tutor",
+    "Client = Preply",
+    "OutputSlug = smartwatch_language_tutor",
+    "Version = v1",
+    "Platform = Smart Watch (Apple Watch + Wear OS) + Companion Mobile App",
+    "Owner = Blue"
+  ],
+  "goals": [
+    "Enable bite-sized live language practice sessions from a smart watch",
+    "Allow users to quickly ask a tutor a question or practice a phrase",
+    "Minimize time-to-connection with a tutor",
+    "Support hands-free and glanceable interactions",
+    "Allow seamless escalation from watch → phone when needed",
+    "Respect privacy, consent, and recording transparency",
+    "Practice a foreign language with a live tutor through quick, on-the-go interactions",
+    "Enable users to get immediate, situational language help at the exact moment they need it.",
+    "Make live language practice feel lightweight, approachable, and non-disruptive to daily life.",
+    "Allow users to confidently communicate in real-world situations without committing to long lessons.",
+    "Seamlessly bridge micro-interactions on a smart watch into deeper learning experiences on mobile when needed."
+  ],
+  "personas": [
+    {
+      "name": "Traveler Learner",
+      "details": "wants quick language help while navigating a foreign country"
+    },
+    {
+      "name": "Busy Professional",
+      "details": "wants short, focused practice sessions between meetings"
+    },
+    {
+      "name": "Language Beginner",
+      "details": "wants reassurance, corrections, and simple explanations"
+    },
+    {
+      "name": "Advanced Learner",
+      "details": "wants nuanced phrasing, pronunciation feedback, and cultural tips"
+    },
+    {
+      "name": "Tutor",
+      "details": "wants to deliver helpful micro-lessons without context switching"
+    },
+    {
+      "name": "Privacy-Conscious User",
+      "details": "wants control over audio recording and session history"
+    }
+  ],
+  "requirements": {
+    "functional": [
+      "App must support live audio sessions with a tutor",
+      "App must support ultra-short sessions (30s–5min)",
+      "App must allow users to ask a single question or practice a phrase",
+      "App must display minimal visual cues optimized for watch screens",
+      "App must support push-to-talk and hands-free modes",
+      "App must gracefully handle poor or intermittent connectivity",
+      "App must allow users to switch to phone for longer sessions",
+      "App must request microphone permission just-in-time with explanation",
+      "App must allow practice without recording by default",
+      "App must show tutor availability in near real-time",
+      "App must provide lightweight session summaries after completion"
+    ],
+    "nonFunctional": []
+  },
+  "steps": [
+    {
+      "text": "User opens the language tutor app on smart watch",
+      "id": "S1"
+    },
+    {
+      "text": "User launches the app from a watch complication",
+      "id": "S2"
+    },
+    {
+      "text": "User selects “Practice a Phrase”",
+      "id": "S3"
+    },
+    {
+      "text": "User selects “Ask a Question”",
+      "id": "S4"
+    },
+    {
+      "text": "User selects “Join Scheduled Lesson”",
+      "id": "S5"
+    },
+    {
+      "text": "User speaks a phrase or question into the watch",
+      "id": "S6"
+    },
+    {
+      "text": "User reviews a suggested phrase or prompt",
+      "id": "S7"
+    },
+    {
+      "text": "User confirms intent to connect with a tutor",
+      "id": "S8"
+    },
+    {
+      "text": "User listens to tutor feedback or explanation",
+      "id": "S9"
+    },
+    {
+      "text": "User repeats a phrase after tutor guidance",
+      "id": "S10"
+    },
+    {
+      "text": "User chooses to continue session on mobile phone",
+      "id": "S11"
+    },
+    {
+      "text": "User ends or exits the session",
+      "id": "S12"
+    },
+    {
+      "text": "User opens language tutor app on smart watch",
+      "id": "QP1",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User"
+    },
+    {
+      "text": "Live audio session begins with tutor",
+      "id": "QP6",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User"
+    },
+    {
+      "text": "Tutor provides pronunciation correction",
+      "id": "QP8",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User"
+    },
+    {
+      "text": "User taps “Ask a Question”",
+      "id": "AQ1",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User"
+    },
+    {
+      "text": "Live audio session begins",
+      "id": "AQ5",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User"
+    },
+    {
+      "text": "App suggests switching to phone for extended help",
+      "id": "AQ7",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User"
+    },
+    {
+      "text": "User taps “Join Lesson”",
+      "id": "SM1",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User"
+    },
+    {
+      "text": "Tutor begins short structured exercise",
+      "id": "SM2",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User"
+    },
+    {
+      "text": "User responds verbally to prompts",
+      "id": "SM4",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User"
+    },
+    {
+      "text": "App suggests continuing lesson on phone",
+      "id": "SM6",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User"
+    }
+  ],
+  "systemSteps": [
+    {
+      "text": "Offer text or repeat mode",
+      "lane": "System",
+      "id": "SYS1"
+    },
+    {
+      "text": "Switch to delayed audio or fallback suggestions",
+      "lane": "System",
+      "id": "SYS2"
+    },
+    {
+      "text": "Auto-retry or reassign",
+      "lane": "System",
+      "id": "SYS3"
+    },
+    {
+      "text": "Pause and resume session",
+      "lane": "System",
+      "id": "SYS4"
+    },
+    {
+      "text": "Allow read-only phrase review",
+      "lane": "System",
+      "id": "SYS5"
+    },
+    {
+      "text": "Enable hands-free mode only",
+      "lane": "System",
+      "id": "SYS6"
+    },
+    {
+      "text": "Provide summary and follow-up",
+      "lane": "System",
+      "id": "SYS7"
+    },
+    {
+      "text": "Match user with available tutor",
+      "lane": "System",
+      "flowGroup": "flow_quick_phrase_practice",
+      "id": "SYS8"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_quick_phrase_practice",
+      "id": "SYS9"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "id": "SYS10"
+    },
+    {
+      "text": "Attempt to connect to available tutor",
+      "lane": "System",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "id": "SYS11"
+    },
+    {
+      "text": "Provide haptic or visual cues for turn-taking",
+      "lane": "System",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "id": "SYS12"
+    }
+  ],
+  "decisions": [
+    {
+      "question": "Is a tutor available?",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User",
+      "id": "D1"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User",
+      "id": "D2"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "D3"
+    },
+    {
+      "question": "Is a tutor available?",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "D4"
+    },
+    {
+      "question": "Does user need additional clarification?",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "D5"
+    },
+    {
+      "question": "Is network connection stable?",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "D6"
+    },
+    {
+      "question": "Is lesson exceeding watch-friendly duration?",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "D7"
+    }
+  ],
+  "choices": [],
+  "edges": [],
+  "startNodes": [
+    {
+      "label": "User initiates quick phrase practice from smart watch",
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User",
+      "id": "START_1"
+    },
+    {
+      "label": "User initiates question flow from watch complication",
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "START_2"
+    },
+    {
+      "label": "User receives scheduled lesson notification on watch",
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "START_3"
+    }
+  ],
+  "endNodes": [
+    {
+      "label": "Phrase practice completed",
+      "isExit": false,
+      "flowGroup": "flow_quick_phrase_practice",
+      "lane": "User",
+      "id": "END_1"
+    },
+    {
+      "label": "Question resolved",
+      "isExit": false,
+      "flowGroup": "flow_ask_a_contextual_question",
+      "lane": "User",
+      "id": "END_2"
+    },
+    {
+      "label": "Lesson completed",
+      "isExit": false,
+      "flowGroup": "flow_scheduled_micro_lesson",
+      "lane": "User",
+      "id": "END_3"
+    }
+  ],
+  "exitNodes": [
+    {
+      "label": "User is in a noisy environment",
+      "isExit": true,
+      "id": "EXIT_1"
+    },
+    {
+      "label": "Poor network",
+      "isExit": true,
+      "id": "EXIT_2"
+    },
+    {
+      "label": "Tutor disconnects",
+      "isExit": true,
+      "id": "EXIT_3"
+    },
+    {
+      "label": "User receives phone call",
+      "isExit": true,
+      "id": "EXIT_4"
+    },
+    {
+      "label": "User denies microphone permission",
+      "isExit": true,
+      "id": "EXIT_5"
+    },
+    {
+      "label": "User is driving",
+      "isExit": true,
+      "id": "EXIT_6"
+    },
+    {
+      "label": "Time runs out mid-session",
+      "isExit": true,
+      "id": "EXIT_7"
+    }
+  ],
+  "flowGroups": [
+    {
+      "id": "flow_quick_phrase_practice",
+      "name": "Quick Phrase Practice",
+      "steps": [
+        "QP1",
+        "QP6",
+        "QP8"
+      ],
+      "decisions": [
+        "D1",
+        "D2"
+      ],
+      "edges": []
+    },
+    {
+      "id": "flow_ask_a_contextual_question",
+      "name": "Ask a Contextual Question",
+      "steps": [
+        "AQ1",
+        "AQ5",
+        "AQ7"
+      ],
+      "decisions": [
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "edges": []
+    },
+    {
+      "id": "flow_scheduled_micro_lesson",
+      "name": "Scheduled Micro-Lesson",
+      "steps": [
+        "SM1",
+        "SM2",
+        "SM4",
+        "SM6"
+      ],
+      "decisions": [
+        "D6",
+        "D7"
+      ],
+      "edges": []
+    }
+  ],
+  "actors": [
+    "User"
+  ],
+  "assumptions": [
+    "Users are willing to engage in very short (30s–5min) live tutor interactions on a smart watch without prior preparation.",
+    "Tutors are available frequently enough across time zones to support near-real-time connections for micro-sessions."
+  ],
+  "acceptanceCriteria": [],
+  "notes": [],
+  "problems": [],
+  "uiElements": [],
+  "dataObjects": [],
+  "rules": [],
+  "risks": [
+    "Network instability may interrupt live audio sessions, degrading the learning experience or causing frequent exits.",
+    "Smart watch screen and input constraints may limit users’ ability to understand feedback or corrections from tutors.",
+    "Low tutor availability during peak travel hours could result in repeated failed connection attempts, increasing user frustration."
+  ],
+  "questions": [
+    "Are sessions recorded or ephemeral by default?",
+    "Do tutors see user location/context (city, country)?",
+    "Can users request the same tutor repeatedly for micro-sessions?",
+    "What is the max recommended session length on watch?",
+    "Do we support text input at all on watch?",
+    "How do we price or meter ultra-short tutor interactions?",
+    "What happens if tutor availability is low?",
+    "How much context should persist between sessions?"
+  ],
+  "outputs": []
+}

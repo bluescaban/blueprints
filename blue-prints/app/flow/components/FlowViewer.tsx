@@ -366,7 +366,9 @@ function convertEdges(edges: FlowEdge[], nodes: FlowNode[]): Edge[] {
       target: edge.to,
       label: edge.label,
       type: edgeType,
-      markerEnd: { type: MarkerType.ArrowClosed, color: strokeColor },
+      // Arrow only at the destination (end), not the source (start)
+      markerEnd: { type: MarkerType.ArrowClosed, color: strokeColor, width: 20, height: 20 },
+      markerStart: undefined,
       style: { strokeWidth, stroke: strokeColor },
       labelStyle: { fontSize: 12, fontWeight: 700, fill: '#1e3a5f' },
       labelBgStyle: { fill: 'white', fillOpacity: 1 },
@@ -417,7 +419,56 @@ interface LegendProps {
   lanes: string[];
 }
 
+/**
+ * Get the icon SVG for a lane/persona type
+ */
+function getPersonaIcon(lane: string, accentColor: string) {
+  const lowerLane = lane.toLowerCase();
+
+  // Host icon - star
+  if (lowerLane === 'host' || lowerLane.includes('host')) {
+    return (
+      <svg className="w-3 h-3" viewBox="0 0 24 24" fill={accentColor}>
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+      </svg>
+    );
+  }
+
+  // Guest icon - person with badge
+  if (lowerLane === 'guest' || lowerLane.includes('guest') || lowerLane.includes('visitor')) {
+    return (
+      <svg className="w-3 h-3" viewBox="0 0 24 24" fill={accentColor}>
+        <circle cx="12" cy="7" r="4" />
+        <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+        <circle cx="18" cy="6" r="2.5" fill="white" stroke={accentColor} strokeWidth="1" />
+      </svg>
+    );
+  }
+
+  // System icon - gear
+  if (lowerLane === 'system') {
+    return (
+      <svg className="w-3 h-3" viewBox="0 0 24 24" fill={accentColor}>
+        <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+      </svg>
+    );
+  }
+
+  // Default: User icon - person
+  return (
+    <svg className="w-3 h-3" viewBox="0 0 24 24" fill={accentColor}>
+      <circle cx="12" cy="7" r="4" />
+      <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+    </svg>
+  );
+}
+
 function Legend({ lanes }: LegendProps) {
+  // Filter out empty lanes and deduplicate
+  const uniqueLanes = lanes.filter((lane, index, self) =>
+    lane && self.indexOf(lane) === index
+  );
+
   return (
     <div
       className="absolute top-4 right-4 z-20 w-56 rounded-xl border border-white/30 overflow-hidden"
@@ -474,24 +525,25 @@ function Legend({ lanes }: LegendProps) {
           </div>
         </div>
 
-        {/* Lanes/Actors */}
-        <div className="pt-2 border-t border-gray-100">
-          <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Actors</p>
-          <div className="space-y-1.5">
-            {lanes.map(lane => {
-              const colors = LANE_COLORS[lane] || LANE_COLORS.User;
-              return (
-                <div key={lane} className="flex items-center gap-2">
-                  <div
-                    className="w-4 h-4 rounded-full border border-white shadow-sm"
-                    style={{ backgroundColor: colors.accent }}
-                  />
-                  <span className="text-xs text-gray-700">{lane}</span>
-                </div>
-              );
-            })}
+        {/* Personas - Dynamic based on lanes */}
+        {uniqueLanes.length > 0 && (
+          <div className="pt-2 border-t border-gray-100">
+            <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Personas</p>
+            <div className="space-y-1.5">
+              {uniqueLanes.map((lane) => {
+                const colors = LANE_COLORS[lane] || LANE_COLORS.User;
+                return (
+                  <div key={lane} className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center">
+                      {getPersonaIcon(lane, colors.accent)}
+                    </div>
+                    <span className="text-xs text-gray-700">{lane}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Edge Labels */}
         <div className="pt-2 border-t border-gray-100">
@@ -1114,6 +1166,7 @@ export default function FlowViewer({
   }, []);
 
   // Create the actual edge after user provides label
+  // Arrow only points to the destination (target) node, not the source
   const handleCreateEdge = useCallback((connection: Connection, label: string) => {
     const newEdge: Edge = {
       id: `e-${connection.source}-${connection.target}-${Date.now()}`,
@@ -1123,7 +1176,10 @@ export default function FlowViewer({
       targetHandle: connection.targetHandle || undefined,
       label: label || undefined,
       type: 'smoothstep',
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#ffffff' },
+      // Arrow only at the end (destination node)
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#ffffff', width: 20, height: 20 },
+      // Explicitly no arrow at the start (source node)
+      markerStart: undefined,
       style: { strokeWidth: 3, stroke: '#ffffff' },
       labelStyle: { fontSize: 12, fontWeight: 700, fill: '#1e3a5f' },
       labelBgStyle: { fill: 'white', fillOpacity: 1 },
@@ -1254,7 +1310,9 @@ export default function FlowViewer({
           deleteKeyCode={['Backspace', 'Delete']}
           defaultEdgeOptions={{
             type: 'smoothstep',
-            markerEnd: { type: MarkerType.ArrowClosed },
+            // Arrow only at the destination (end), not the source (start)
+            markerEnd: { type: MarkerType.ArrowClosed, color: '#ffffff', width: 20, height: 20 },
+            markerStart: undefined,
           }}
           connectionLineStyle={{ stroke: '#ffffff', strokeWidth: 3 }}
         >
