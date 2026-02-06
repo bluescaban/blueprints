@@ -166,8 +166,15 @@ export const StepNode = memo(function StepNode({ id, data }: NodeProps) {
         boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
       }}
     >
-      <Handle type="target" position={Position.Top} id="top" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
-      <Handle type="target" position={Position.Left} id="left" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      {/* Bidirectional handles - each position has both source and target */}
+      <Handle type="target" position={Position.Top} id="top-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Top} id="top-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Left} id="left-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Left} id="left-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Bottom} id="bottom-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Right} id="right-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Right} id="right-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
       <EditButton
         nodeId={id}
         label={nodeData.label}
@@ -183,8 +190,6 @@ export const StepNode = memo(function StepNode({ id, data }: NodeProps) {
           {nodeData.label}
         </p>
       </div>
-      <Handle type="source" position={Position.Bottom} id="bottom" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
-      <Handle type="source" position={Position.Right} id="right" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
     </div>
   );
 });
@@ -231,31 +236,60 @@ export const DecisionNode = memo(function DecisionNode({ id, data }: NodeProps) 
           </div>
         </div>
       </div>
+      {/* Bidirectional handles - each position has both source and target */}
       <Handle
         type="target"
         position={Position.Top}
-        id="top"
+        id="top-target"
+        className="!bg-white !border-2 !border-gray-300 !w-3 !h-3"
+        style={{ top: 6, left: '50%', transform: 'translateX(-50%)' }}
+      />
+      <Handle
+        type="source"
+        position={Position.Top}
+        id="top-source"
         className="!bg-white !border-2 !border-gray-300 !w-3 !h-3"
         style={{ top: 6, left: '50%', transform: 'translateX(-50%)' }}
       />
       <Handle
         type="target"
         position={Position.Left}
-        id="left"
+        id="left-target"
         className="!bg-white !border-2 !border-gray-300 !w-3 !h-3"
         style={{ left: 16, top: '50%', transform: 'translateY(-50%)' }}
       />
       <Handle
         type="source"
+        position={Position.Left}
+        id="left-source"
+        className="!bg-white !border-2 !border-gray-300 !w-3 !h-3"
+        style={{ left: 16, top: '50%', transform: 'translateY(-50%)' }}
+      />
+      <Handle
+        type="target"
         position={Position.Bottom}
-        id="bottom"
+        id="bottom-target"
         className="!bg-white !border-2 !border-gray-300 !w-3 !h-3"
         style={{ bottom: 6, left: '50%', transform: 'translateX(-50%)' }}
       />
       <Handle
         type="source"
+        position={Position.Bottom}
+        id="bottom-source"
+        className="!bg-white !border-2 !border-gray-300 !w-3 !h-3"
+        style={{ bottom: 6, left: '50%', transform: 'translateX(-50%)' }}
+      />
+      <Handle
+        type="target"
         position={Position.Right}
-        id="right"
+        id="right-target"
+        className="!bg-white !border-2 !border-gray-300 !w-3 !h-3"
+        style={{ right: 16, top: '50%', transform: 'translateY(-50%)' }}
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right-source"
         className="!bg-white !border-2 !border-gray-300 !w-3 !h-3"
         style={{ right: 16, top: '50%', transform: 'translateY(-50%)' }}
       />
@@ -284,8 +318,15 @@ export const SystemNode = memo(function SystemNode({ id, data }: NodeProps) {
         boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
       }}
     >
-      <Handle type="target" position={Position.Top} id="top" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
-      <Handle type="target" position={Position.Left} id="left" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      {/* Bidirectional handles - each position has both source and target */}
+      <Handle type="target" position={Position.Top} id="top-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Top} id="top-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Left} id="left-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Left} id="left-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Bottom} id="bottom-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Right} id="right-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Right} id="right-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
       <EditButton
         nodeId={id}
         label={nodeData.label}
@@ -307,8 +348,6 @@ export const SystemNode = memo(function SystemNode({ id, data }: NodeProps) {
       >
         {nodeData.label}
       </p>
-      <Handle type="source" position={Position.Bottom} id="bottom" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
-      <Handle type="source" position={Position.Right} id="right" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
     </div>
   );
 });
@@ -334,6 +373,15 @@ export const StartNode = memo(function StartNode({ id, data }: NodeProps) {
         boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
       }}
     >
+      {/* Bidirectional handles - each position has both source and target */}
+      <Handle type="target" position={Position.Top} id="top-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Top} id="top-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Left} id="left-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Left} id="left-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Bottom} id="bottom-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Right} id="right-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Right} id="right-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
       <EditButton
         nodeId={id}
         label={nodeData.label}
@@ -350,8 +398,6 @@ export const StartNode = memo(function StartNode({ id, data }: NodeProps) {
           {nodeData.label}
         </p>
       </div>
-      <Handle type="source" position={Position.Bottom} id="bottom" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
-      <Handle type="source" position={Position.Right} id="right" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
     </div>
   );
 });
@@ -394,8 +440,15 @@ export const EndNode = memo(function EndNode({ id, data }: NodeProps) {
         boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
       }}
     >
-      <Handle type="target" position={Position.Top} id="top" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
-      <Handle type="target" position={Position.Left} id="left" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      {/* Bidirectional handles - each position has both source and target */}
+      <Handle type="target" position={Position.Top} id="top-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Top} id="top-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Left} id="left-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Left} id="left-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Bottom} id="bottom-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="target" position={Position.Right} id="right-target" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
+      <Handle type="source" position={Position.Right} id="right-source" className="!bg-white !border-2 !border-gray-300 !w-3 !h-3" />
       <EditButton
         nodeId={id}
         label={nodeData.label}

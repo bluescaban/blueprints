@@ -596,6 +596,7 @@ interface SavedEdgeData {
   sourceHandle?: string;
   targetHandle?: string;
   label?: string;
+  styleType?: EdgeStyleType;
 }
 
 /**
@@ -630,6 +631,7 @@ function saveLayout(key: string, nodes: Node[], edges: Edge[]): void {
     sourceHandle: edge.sourceHandle || undefined,
     targetHandle: edge.targetHandle || undefined,
     label: typeof edge.label === 'string' ? edge.label : undefined,
+    styleType: (edge.data as { styleType?: EdgeStyleType } | undefined)?.styleType,
   }));
 
   const layoutData: SavedLayoutData = {
@@ -708,26 +710,36 @@ function applyNodeLabels(nodes: Node[], labels: Record<string, string>): Node[] 
  */
 function applySavedEdges(savedEdges: SavedEdgeData[], displayNodes: FlowNode[]): Edge[] {
   // Create lookup for node lanes and types
-  const nodeTypes = new Map<string, string>();
+  const nodeTypesMap = new Map<string, string>();
   for (const node of displayNodes) {
-    nodeTypes.set(node.id, node.type);
+    nodeTypesMap.set(node.id, node.type);
   }
 
   return savedEdges.map((savedEdge) => {
-    const sourceType = nodeTypes.get(savedEdge.source);
-    const isFromDecision = sourceType === 'decision';
-    const isYesBranch = savedEdge.label?.toLowerCase() === 'yes';
-    const isNoBranch = savedEdge.label?.toLowerCase() === 'no';
+    // Use saved styleType if available, otherwise infer from label
+    let styleType: EdgeStyleType = savedEdge.styleType || 'default';
+    let animated = false;
 
-    // Determine edge styling
-    let strokeColor = '#ffffff';
-    if (isFromDecision) {
-      if (isNoBranch) {
-        strokeColor = '#ffb3b3';
-      } else if (isYesBranch) {
-        strokeColor = '#b3ffb3';
+    // If no saved styleType, try to infer from label (for backward compatibility)
+    if (!savedEdge.styleType) {
+      const sourceType = nodeTypesMap.get(savedEdge.source);
+      const isFromDecision = sourceType === 'decision';
+      const isYesBranch = savedEdge.label?.toLowerCase() === 'yes';
+      const isNoBranch = savedEdge.label?.toLowerCase() === 'no';
+
+      if (isFromDecision || isYesBranch || isNoBranch) {
+        if (isNoBranch) {
+          styleType = 'no';
+        } else if (isYesBranch) {
+          styleType = 'yes';
+        }
       }
     }
+
+    // Get style config
+    const styleConfig = EDGE_STYLES[styleType];
+    const strokeColor = styleConfig.strokeColor;
+    animated = styleConfig.animated;
 
     return {
       id: savedEdge.id,
@@ -744,7 +756,8 @@ function applySavedEdges(savedEdges: SavedEdgeData[], displayNodes: FlowNode[]):
       labelBgStyle: { fill: 'white', fillOpacity: 1 },
       labelBgPadding: [8, 4] as [number, number],
       labelBgBorderRadius: 6,
-      animated: isYesBranch,
+      animated,
+      data: { styleType },
     };
   });
 }
@@ -906,21 +919,53 @@ function NodeEditModal({ nodeId, initialLabel, onSave, onClose }: NodeEditModalP
 }
 
 // ============================================================================
+// Edge Style Types
+// ============================================================================
+
+type EdgeStyleType = 'default' | 'yes' | 'no';
+
+interface EdgeStyleConfig {
+  strokeColor: string;
+  animated: boolean;
+  label?: string;
+}
+
+const EDGE_STYLES: Record<EdgeStyleType, EdgeStyleConfig> = {
+  default: { strokeColor: '#ffffff', animated: false },
+  yes: { strokeColor: '#b3ffb3', animated: true, label: 'Yes' },
+  no: { strokeColor: '#ffb3b3', animated: false, label: 'No' },
+};
+
+// ============================================================================
 // Edge Label Modal Component (for creating new edges)
 // ============================================================================
 
 interface EdgeLabelModalProps {
   connection: Connection;
-  onSave: (connection: Connection, label: string) => void;
+  onSave: (connection: Connection, label: string, styleType: EdgeStyleType) => void;
   onClose: () => void;
 }
 
 function EdgeLabelModal({ connection, onSave, onClose }: EdgeLabelModalProps) {
   const [label, setLabel] = useState('');
+  const [styleType, setStyleType] = useState<EdgeStyleType>('default');
+
+  // Update label when style type changes (for Yes/No presets)
+  const handleStyleChange = (newStyle: EdgeStyleType) => {
+    setStyleType(newStyle);
+    if (newStyle === 'yes') {
+      setLabel('Yes');
+    } else if (newStyle === 'no') {
+      setLabel('No');
+    } else if (label === 'Yes' || label === 'No') {
+      // Clear preset labels when switching back to default
+      setLabel('');
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(connection, label.trim());
+    onSave(connection, label.trim(), styleType);
     onClose();
   };
 
@@ -965,6 +1010,68 @@ function EdgeLabelModal({ connection, onSave, onClose }: EdgeLabelModalProps) {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-5">
+          {/* Edge Style Selection */}
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Connection Style
+          </label>
+          <div className="flex gap-2 mb-4">
+            {/* Default (White) */}
+            <button
+              type="button"
+              onClick={() => handleStyleChange('default')}
+              className={`flex-1 p-3 rounded-xl border-2 transition-all ${
+                styleType === 'default'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-12 h-1 rounded bg-gray-400 relative">
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[6px] border-l-gray-400 border-y-[4px] border-y-transparent" />
+                </div>
+                <span className="text-xs font-medium text-gray-600">Default</span>
+              </div>
+            </button>
+
+            {/* Yes (Green Animated) */}
+            <button
+              type="button"
+              onClick={() => handleStyleChange('yes')}
+              className={`flex-1 p-3 rounded-xl border-2 transition-all ${
+                styleType === 'yes'
+                  ? 'border-green-500 bg-green-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-12 h-1 rounded relative overflow-hidden" style={{ backgroundColor: '#b3ffb3' }}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-pulse" />
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[6px] border-y-[4px] border-y-transparent" style={{ borderLeftColor: '#b3ffb3' }} />
+                </div>
+                <span className="text-xs font-medium text-green-700">Yes</span>
+              </div>
+            </button>
+
+            {/* No (Red) */}
+            <button
+              type="button"
+              onClick={() => handleStyleChange('no')}
+              className={`flex-1 p-3 rounded-xl border-2 transition-all ${
+                styleType === 'no'
+                  ? 'border-red-400 bg-red-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-12 h-1 rounded relative" style={{ backgroundColor: '#ffb3b3' }}>
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[6px] border-y-[4px] border-y-transparent" style={{ borderLeftColor: '#ffb3b3' }} />
+                </div>
+                <span className="text-xs font-medium text-red-700">No</span>
+              </div>
+            </button>
+          </div>
+
+          {/* Edge Label */}
           <label className="block mb-2 text-sm font-medium text-gray-700">
             Edge Label (optional)
           </label>
@@ -1302,9 +1409,12 @@ export default function FlowViewer({
     setPendingConnection(connection);
   }, []);
 
-  // Create the actual edge after user provides label
+  // Create the actual edge after user provides label and style
   // Arrow only points to the destination (target) node, not the source
-  const handleCreateEdge = useCallback((connection: Connection, label: string) => {
+  const handleCreateEdge = useCallback((connection: Connection, label: string, styleType: EdgeStyleType) => {
+    const styleConfig = EDGE_STYLES[styleType];
+    const strokeColor = styleConfig.strokeColor;
+
     const newEdge: Edge = {
       id: `e-${connection.source}-${connection.target}-${Date.now()}`,
       source: connection.source!,
@@ -1314,14 +1424,17 @@ export default function FlowViewer({
       label: label || undefined,
       type: 'smoothstep',
       // Arrow only at the end (destination node)
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#ffffff', width: 20, height: 20 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: strokeColor, width: 20, height: 20 },
       // Explicitly no arrow at the start (source node)
       markerStart: undefined,
-      style: { strokeWidth: 3, stroke: '#ffffff' },
+      style: { strokeWidth: 3, stroke: strokeColor },
       labelStyle: { fontSize: 12, fontWeight: 700, fill: '#1e3a5f' },
       labelBgStyle: { fill: 'white', fillOpacity: 1 },
       labelBgPadding: [8, 4] as [number, number],
       labelBgBorderRadius: 6,
+      animated: styleConfig.animated,
+      // Store style type in data for persistence
+      data: { styleType },
     };
     setEdges((eds) => addEdge(newEdge, eds));
     setHasChanges(true);
