@@ -577,6 +577,28 @@ function Legend({ lanes }: LegendProps) {
 // ============================================================================
 
 /**
+ * Saved layout data structure (includes both nodes and edges)
+ */
+interface SavedLayoutData {
+  version: number;
+  positions: Record<string, { x: number; y: number }>;
+  edges?: SavedEdgeData[];
+  nodeLabels?: Record<string, string>;
+}
+
+/**
+ * Saved edge data (simplified for storage)
+ */
+interface SavedEdgeData {
+  id: string;
+  source: string;
+  target: string;
+  sourceHandle?: string;
+  targetHandle?: string;
+  label?: string;
+}
+
+/**
  * Generate a storage key for the flowgraph layout.
  */
 function getStorageKey(flowGraph: FlowGraph, flowId: string): string {
@@ -586,28 +608,62 @@ function getStorageKey(flowGraph: FlowGraph, flowId: string): string {
 }
 
 /**
- * Save node positions to localStorage.
+ * Save layout (node positions, node labels, and edges) to localStorage.
  */
-function saveNodePositions(key: string, nodes: Node[]): void {
+function saveLayout(key: string, nodes: Node[], edges: Edge[]): void {
   const positions: Record<string, { x: number; y: number }> = {};
+  const nodeLabels: Record<string, string> = {};
+
   for (const node of nodes) {
     positions[node.id] = { x: node.position.x, y: node.position.y };
+    // Save node labels if they've been edited
+    if (node.data?.label) {
+      nodeLabels[node.id] = node.data.label as string;
+    }
   }
+
+  // Save edge data (simplified)
+  const savedEdges: SavedEdgeData[] = edges.map(edge => ({
+    id: edge.id,
+    source: edge.source,
+    target: edge.target,
+    sourceHandle: edge.sourceHandle || undefined,
+    targetHandle: edge.targetHandle || undefined,
+    label: typeof edge.label === 'string' ? edge.label : undefined,
+  }));
+
+  const layoutData: SavedLayoutData = {
+    version: 2, // Version 2 includes edges
+    positions,
+    edges: savedEdges,
+    nodeLabels,
+  };
+
   try {
-    localStorage.setItem(key, JSON.stringify(positions));
+    localStorage.setItem(key, JSON.stringify(layoutData));
   } catch {
     console.warn('Failed to save layout to localStorage');
   }
 }
 
 /**
- * Load saved node positions from localStorage.
+ * Load saved layout from localStorage.
+ * Returns null if no saved layout exists.
  */
-function loadNodePositions(key: string): Record<string, { x: number; y: number }> | null {
+function loadLayout(key: string): SavedLayoutData | null {
   try {
     const saved = localStorage.getItem(key);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // Handle legacy format (version 1 was just positions object)
+      if (!parsed.version) {
+        // Convert old format to new format
+        return {
+          version: 1,
+          positions: parsed,
+        };
+      }
+      return parsed as SavedLayoutData;
     }
   } catch {
     console.warn('Failed to load layout from localStorage');
@@ -625,6 +681,71 @@ function applyPositions(nodes: Node[], positions: Record<string, { x: number; y:
       return { ...node, position: savedPos };
     }
     return node;
+  });
+}
+
+/**
+ * Apply saved node labels to nodes.
+ */
+function applyNodeLabels(nodes: Node[], labels: Record<string, string>): Node[] {
+  return nodes.map(node => {
+    const savedLabel = labels[node.id];
+    if (savedLabel && node.data) {
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          label: savedLabel,
+        },
+      };
+    }
+    return node;
+  });
+}
+
+/**
+ * Convert saved edge data back to React Flow edges with proper styling.
+ */
+function applySavedEdges(savedEdges: SavedEdgeData[], displayNodes: FlowNode[]): Edge[] {
+  // Create lookup for node lanes and types
+  const nodeTypes = new Map<string, string>();
+  for (const node of displayNodes) {
+    nodeTypes.set(node.id, node.type);
+  }
+
+  return savedEdges.map((savedEdge) => {
+    const sourceType = nodeTypes.get(savedEdge.source);
+    const isFromDecision = sourceType === 'decision';
+    const isYesBranch = savedEdge.label?.toLowerCase() === 'yes';
+    const isNoBranch = savedEdge.label?.toLowerCase() === 'no';
+
+    // Determine edge styling
+    let strokeColor = '#ffffff';
+    if (isFromDecision) {
+      if (isNoBranch) {
+        strokeColor = '#ffb3b3';
+      } else if (isYesBranch) {
+        strokeColor = '#b3ffb3';
+      }
+    }
+
+    return {
+      id: savedEdge.id,
+      source: savedEdge.source,
+      target: savedEdge.target,
+      sourceHandle: savedEdge.sourceHandle,
+      targetHandle: savedEdge.targetHandle,
+      label: savedEdge.label,
+      type: 'smoothstep',
+      markerEnd: { type: MarkerType.ArrowClosed, color: strokeColor, width: 20, height: 20 },
+      markerStart: undefined,
+      style: { strokeWidth: 3, stroke: strokeColor },
+      labelStyle: { fontSize: 12, fontWeight: 700, fill: '#1e3a5f' },
+      labelBgStyle: { fill: 'white', fillOpacity: 1 },
+      labelBgPadding: [8, 4] as [number, number],
+      labelBgBorderRadius: 6,
+      animated: isYesBranch,
+    };
   });
 }
 
@@ -1071,17 +1192,32 @@ export default function FlowViewer({
 
   // Check for saved layout on mount/flow change
   useEffect(() => {
-    const saved = loadNodePositions(storageKey);
+    const saved = loadLayout(storageKey);
     setHasSavedLayout(!!saved);
     setHasChanges(false);
   }, [storageKey]);
 
   // Update nodes/edges when active flow changes
   useEffect(() => {
-    const saved = loadNodePositions(storageKey);
-    const newNodes = saved ? applyPositions(defaultNodes, saved) : defaultNodes;
+    const saved = loadLayout(storageKey);
+    let newNodes = defaultNodes;
+    let newEdges = convertEdges(displayEdges, displayNodes);
+
+    if (saved) {
+      // Apply saved positions
+      newNodes = applyPositions(defaultNodes, saved.positions);
+      // Apply saved node labels if available
+      if (saved.nodeLabels) {
+        newNodes = applyNodeLabels(newNodes, saved.nodeLabels);
+      }
+      // Apply saved edges if available (version 2+)
+      if (saved.edges && saved.edges.length > 0) {
+        newEdges = applySavedEdges(saved.edges, displayNodes);
+      }
+    }
+
     setNodes(newNodes);
-    setEdges(convertEdges(displayEdges, displayNodes));
+    setEdges(newEdges);
     setHasChanges(false);
   }, [activeFlowId, defaultNodes, displayEdges, displayNodes, storageKey, setNodes, setEdges]);
 
@@ -1097,14 +1233,14 @@ export default function FlowViewer({
     }
   }, [onNodesChange]);
 
-  // Save current layout
+  // Save current layout (nodes, edges, and labels)
   const handleSave = useCallback(() => {
-    saveNodePositions(storageKey, nodes);
+    saveLayout(storageKey, nodes, edges);
     setHasChanges(false);
     setHasSavedLayout(true);
-  }, [storageKey, nodes]);
+  }, [storageKey, nodes, edges]);
 
-  // Reset to default layout
+  // Reset to default layout (nodes and edges)
   const handleReset = useCallback(() => {
     try {
       localStorage.removeItem(storageKey);
@@ -1112,9 +1248,10 @@ export default function FlowViewer({
       // Ignore errors
     }
     setNodes(defaultNodes);
+    setEdges(convertEdges(displayEdges, displayNodes));
     setHasChanges(false);
     setHasSavedLayout(false);
-  }, [storageKey, defaultNodes, setNodes]);
+  }, [storageKey, defaultNodes, displayEdges, displayNodes, setNodes, setEdges]);
 
   // Register callbacks for external control (menu shelf)
   useEffect(() => {

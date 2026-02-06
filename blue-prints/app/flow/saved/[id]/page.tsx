@@ -7,24 +7,58 @@
  * Renders at /flow/saved/[id]
  */
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getSavedFlow, SavedFlow } from '@/lib/flow-storage';
 import FlowViewer from '../../components/FlowViewer';
 import FlowSelector from '../../components/FlowSelector';
+import MenuShelf from '../../components/MenuShelf';
 
 export default function SavedFlowPage() {
   const params = useParams();
-  const router = useRouter();
   const flowId = params.id as string;
 
   const [savedFlow, setSavedFlow] = useState<SavedFlow | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Menu state
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   // Flow selection state
   const [activeFlowId, setActiveFlowId] = useState<string>('main');
+
+  // Layout state (for MenuShelf compatibility - saved flows don't persist layout changes)
+  const [hasChanges, setHasChanges] = useState(false);
+  const [hasSavedLayout, setHasSavedLayout] = useState(false);
+  const saveCallbackRef = useRef<(() => void) | null>(null);
+  const resetCallbackRef = useRef<(() => void) | null>(null);
+
+  const onRegisterSave = useCallback((callback: () => void) => {
+    saveCallbackRef.current = callback;
+  }, []);
+
+  const onRegisterReset = useCallback((callback: () => void) => {
+    resetCallbackRef.current = callback;
+  }, []);
+
+  const onLayoutStateChange = useCallback((changes: boolean, saved: boolean) => {
+    setHasChanges(changes);
+    setHasSavedLayout(saved);
+  }, []);
+
+  const handleSaveLayout = useCallback(() => {
+    if (saveCallbackRef.current) {
+      saveCallbackRef.current();
+    }
+  }, []);
+
+  const handleResetLayout = useCallback(() => {
+    if (resetCallbackRef.current) {
+      resetCallbackRef.current();
+    }
+  }, []);
 
   useEffect(() => {
     if (!flowId) {
@@ -102,6 +136,18 @@ export default function SavedFlowPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#4A85C8' }}>
+      {/* Menu Shelf */}
+      <MenuShelf
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        onSaveLayout={handleSaveLayout}
+        onResetLayout={handleResetLayout}
+        onRegenerate={() => {}} // Not available for saved flows
+        hasChanges={hasChanges}
+        hasSavedLayout={hasSavedLayout}
+        flowGraph={flowGraph}
+      />
+
       {/* Header - Glassmorphism */}
       <header
         className="sticky top-0 z-30 px-6 py-3 border-b border-white/30"
@@ -113,18 +159,19 @@ export default function SavedFlowPage() {
         }}
       >
         <div className="flex items-center justify-between">
-          {/* Left: Back button and Title */}
+          {/* Left: Logo (opens menu) and Title */}
           <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+            {/* Logo - Clickable to open menu */}
+            <button
+              onClick={() => setIsMenuOpen(true)}
+              className="flex items-center gap-3 group"
+              title="Open menu"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="text-3xl font-bold text-white drop-shadow-lg">青</span>
-            </Link>
-            <div className="h-8 w-px bg-white/30" />
+              <span className="text-3xl font-bold text-white drop-shadow-lg transition-transform group-hover:scale-110">
+                青
+              </span>
+              <div className="h-8 w-px bg-white/30" />
+            </button>
 
             <div>
               <div className="flex items-center gap-2">
@@ -174,6 +221,9 @@ export default function SavedFlowPage() {
       <main className="relative">
         <FlowViewer
           flowGraph={flowGraph}
+          onRegisterSave={onRegisterSave}
+          onRegisterReset={onRegisterReset}
+          onLayoutStateChange={onLayoutStateChange}
           showLayoutToolbar={false}
           activeFlowId={activeFlowId}
           onSelectFlow={setActiveFlowId}
