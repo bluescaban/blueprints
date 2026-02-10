@@ -22,6 +22,7 @@ import { LANE_COLORS, NodeType } from '@/lib/flowgraph-types';
 interface CustomNodeData {
   label: string;
   lane: string;
+  lanes?: string[]; // Multiple personas/lanes support
   nodeType: NodeType;
   description?: string;
   onEdit?: (nodeId: string, label: string) => void;
@@ -94,6 +95,61 @@ function PersonaIcon({ lane, size = 'md' }: PersonaIconProps) {
       }}
     >
       {getIcon()}
+    </div>
+  );
+}
+
+// ============================================================================
+// Multi-Persona Icons Component
+// ============================================================================
+
+interface MultiPersonaIconsProps {
+  lanes: string[];
+  primaryLane: string;
+  size?: 'sm' | 'md';
+  maxDisplay?: number;
+}
+
+/**
+ * Renders multiple persona icons with overlap styling.
+ * Falls back to single icon if only one lane.
+ */
+function MultiPersonaIcons({ lanes, primaryLane, size = 'md', maxDisplay = 3 }: MultiPersonaIconsProps) {
+  // Use lanes array if provided, otherwise fall back to primary lane
+  const displayLanes = lanes && lanes.length > 0 ? lanes : [primaryLane];
+  const visibleLanes = displayLanes.slice(0, maxDisplay);
+  const extraCount = displayLanes.length - maxDisplay;
+
+  if (visibleLanes.length === 1) {
+    return <PersonaIcon lane={visibleLanes[0]} size={size} />;
+  }
+
+  const iconSize = size === 'sm' ? 'w-5 h-5' : 'w-6 h-6';
+  const overlap = size === 'sm' ? '-ml-2' : '-ml-2.5';
+
+  return (
+    <div className="flex items-center flex-shrink-0">
+      {visibleLanes.map((lane, index) => (
+        <div
+          key={lane}
+          className={index > 0 ? overlap : ''}
+          style={{ zIndex: visibleLanes.length - index }}
+        >
+          <PersonaIcon lane={lane} size={size} />
+        </div>
+      ))}
+      {extraCount > 0 && (
+        <div
+          className={`${iconSize} ${overlap} rounded-full flex items-center justify-center text-[10px] font-bold text-gray-600`}
+          style={{
+            backgroundColor: 'white',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+            zIndex: 0,
+          }}
+        >
+          +{extraCount}
+        </div>
+      )}
     </div>
   );
 }
@@ -186,7 +242,7 @@ export const StepNode = memo(function StepNode({ id, data }: NodeProps) {
         className="top-2 right-2 opacity-0 group-hover:opacity-100"
       />
       <div className="flex items-start gap-3">
-        <PersonaIcon lane={nodeData.lane} />
+        <MultiPersonaIcons lanes={nodeData.lanes || []} primaryLane={nodeData.lane} />
         <p
           className="text-sm font-medium leading-relaxed break-words flex-1"
           style={{ color: colors.text, wordWrap: 'break-word' }}
@@ -239,7 +295,7 @@ export const DecisionNode = memo(function DecisionNode({ id, data }: NodeProps) 
           }}
         >
           <div className="flex flex-col items-center gap-1">
-            <PersonaIcon lane={nodeData.lane} size="sm" />
+            <MultiPersonaIcons lanes={nodeData.lanes || []} primaryLane={nodeData.lane} size="sm" />
             <p
               className="text-sm font-semibold text-center px-4 leading-snug break-words"
               style={{ color: colors.text, maxWidth: 140, wordWrap: 'break-word' }}
@@ -408,7 +464,7 @@ export const StartNode = memo(function StartNode({ id, data }: NodeProps) {
         className="-top-1 -right-1 opacity-0 group-hover:opacity-100"
       />
       <div className="flex items-center gap-2">
-        <PersonaIcon lane={nodeData.lane} size="sm" />
+        <MultiPersonaIcons lanes={nodeData.lanes || []} primaryLane={nodeData.lane} size="sm" />
         <span style={{ color: colors.accent }} className="text-base flex-shrink-0">▶</span>
         <p
           className="text-sm font-bold text-center leading-snug break-words"

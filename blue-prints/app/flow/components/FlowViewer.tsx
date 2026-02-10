@@ -935,18 +935,32 @@ function LayoutToolbar({ onSave, onReset, hasChanges, hasSavedLayout }: LayoutTo
 interface NodeEditModalProps {
   nodeId: string;
   initialLabel: string;
-  onSave: (nodeId: string, newLabel: string) => void;
+  initialLanes: string[];
+  availableLanes: string[];
+  onSave: (nodeId: string, newLabel: string, newLanes: string[]) => void;
   onDelete: (nodeId: string) => void;
   onClose: () => void;
 }
 
-function NodeEditModal({ nodeId, initialLabel, onSave, onDelete, onClose }: NodeEditModalProps) {
+function NodeEditModal({ nodeId, initialLabel, initialLanes, availableLanes, onSave, onDelete, onClose }: NodeEditModalProps) {
   const [label, setLabel] = useState(initialLabel);
+  const [selectedLanes, setSelectedLanes] = useState<string[]>(initialLanes);
+
+  const toggleLane = (lane: string) => {
+    setSelectedLanes((prev) => {
+      if (prev.includes(lane)) {
+        // Don't allow removing the last lane
+        if (prev.length === 1) return prev;
+        return prev.filter((l) => l !== lane);
+      }
+      return [...prev, lane];
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (label.trim()) {
-      onSave(nodeId, label.trim());
+    if (label.trim() && selectedLanes.length > 0) {
+      onSave(nodeId, label.trim(), selectedLanes);
       onClose();
     }
   };
@@ -1013,6 +1027,37 @@ function NodeEditModal({ nodeId, initialLabel, onSave, onDelete, onClose }: Node
             autoFocus
             placeholder="Enter node label..."
           />
+
+          {/* Lane Selection (Multi-select) */}
+          <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+            Assigned Personas
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {availableLanes.map((lane) => {
+              const isSelected = selectedLanes.includes(lane);
+              return (
+                <button
+                  key={lane}
+                  type="button"
+                  onClick={() => toggleLane(lane)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium border-2 transition-all ${
+                    isSelected
+                      ? 'border-blue-500 bg-blue-50 text-blue-700'
+                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    {isSelected && (
+                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    {lane}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
           <div className="flex gap-3 mt-5">
             <button
@@ -1409,18 +1454,29 @@ const NODE_TYPE_OPTIONS: NodeTypeInfo[] = [
 ];
 
 interface NodeCreateModalProps {
-  onCreateNode: (type: NodeTypeOption, lane: string) => void;
+  onCreateNode: (type: NodeTypeOption, lanes: string[]) => void;
   onClose: () => void;
   availableLanes: string[];
 }
 
 function NodeCreateModal({ onCreateNode, onClose, availableLanes }: NodeCreateModalProps) {
   const [selectedType, setSelectedType] = useState<NodeTypeOption | null>(null);
-  const [selectedLane, setSelectedLane] = useState<string>(availableLanes[0] || 'User');
+  const [selectedLanes, setSelectedLanes] = useState<string[]>([availableLanes[0] || 'User']);
+
+  const toggleLane = (lane: string) => {
+    setSelectedLanes((prev) => {
+      if (prev.includes(lane)) {
+        // Don't allow removing the last lane
+        if (prev.length === 1) return prev;
+        return prev.filter((l) => l !== lane);
+      }
+      return [...prev, lane];
+    });
+  };
 
   const handleCreate = () => {
-    if (selectedType) {
-      onCreateNode(selectedType, selectedLane);
+    if (selectedType && selectedLanes.length > 0) {
+      onCreateNode(selectedType, selectedLanes);
       onClose();
     }
   };
@@ -1492,19 +1548,39 @@ function NodeCreateModal({ onCreateNode, onClose, availableLanes }: NodeCreateMo
             ))}
           </div>
 
-          {/* Lane Selection */}
+          {/* Lane Selection (Multi-select) */}
           <label className="block mb-2 text-sm font-medium text-gray-700">
-            Assign to Lane (Persona)
+            Assign to Personas (select one or more)
           </label>
-          <select
-            value={selectedLane}
-            onChange={(e) => setSelectedLane(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-gray-800 bg-white"
-          >
-            {availableLanes.map((lane) => (
-              <option key={lane} value={lane}>{lane}</option>
-            ))}
-          </select>
+          <div className="flex flex-wrap gap-2">
+            {availableLanes.map((lane) => {
+              const isSelected = selectedLanes.includes(lane);
+              return (
+                <button
+                  key={lane}
+                  type="button"
+                  onClick={() => toggleLane(lane)}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium border-2 transition-all ${
+                    isSelected
+                      ? 'border-blue-500 bg-blue-50 text-blue-700'
+                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    {isSelected && (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    {lane}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            {selectedLanes.length} persona{selectedLanes.length !== 1 ? 's' : ''} selected
+          </p>
 
           {/* Actions */}
           <div className="flex gap-3 mt-6">
@@ -1608,7 +1684,7 @@ export default function FlowViewer({
   const [hasSavedLayout, setHasSavedLayout] = useState(false);
 
   // Edit modal state
-  const [editingNode, setEditingNode] = useState<{ id: string; label: string } | null>(null);
+  const [editingNode, setEditingNode] = useState<{ id: string; label: string; lanes: string[] } | null>(null);
 
   // Edge creation state
   const [pendingConnection, setPendingConnection] = useState<Connection | null>(null);
@@ -1734,11 +1810,15 @@ export default function FlowViewer({
 
   // Handle node edit request
   const handleNodeEdit = useCallback((nodeId: string, label: string) => {
-    setEditingNode({ id: nodeId, label });
-  }, []);
+    // Find the node to get its current lanes
+    const node = nodes.find(n => n.id === nodeId);
+    const nodeLanes = (node?.data as { lanes?: string[]; lane?: string })?.lanes ||
+                      [(node?.data as { lane?: string })?.lane || 'User'];
+    setEditingNode({ id: nodeId, label, lanes: nodeLanes });
+  }, [nodes]);
 
-  // Handle node label save
-  const handleNodeLabelSave = useCallback((nodeId: string, newLabel: string) => {
+  // Handle node label and lanes save
+  const handleNodeLabelSave = useCallback((nodeId: string, newLabel: string, newLanes: string[]) => {
     setNodes((nds) =>
       nds.map((node) => {
         if (node.id === nodeId) {
@@ -1747,6 +1827,8 @@ export default function FlowViewer({
             data: {
               ...node.data,
               label: newLabel,
+              lane: newLanes[0] || 'User', // Primary lane for backward compatibility
+              lanes: newLanes,
             },
           };
         }
@@ -1852,7 +1934,7 @@ export default function FlowViewer({
   }, [setEdges]);
 
   // Handle creating a new node
-  const handleCreateNode = useCallback((type: NodeTypeOption, lane: string) => {
+  const handleCreateNode = useCallback((type: NodeTypeOption, lanes: string[]) => {
     // Generate a unique ID
     const newId = `node-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
@@ -1869,13 +1951,18 @@ export default function FlowViewer({
       newY = avgY;
     }
 
+    // For system nodes, always use 'System' lane
+    const nodeLanes = type === 'system' ? ['System'] : lanes;
+    const primaryLane = nodeLanes[0] || 'User';
+
     const newNode: Node = {
       id: newId,
       type: type,
       position: { x: newX, y: newY },
       data: {
         label: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
-        lane: type === 'system' ? 'System' : lane,
+        lane: primaryLane,
+        lanes: nodeLanes,
         nodeType: type,
         inferred: false,
         onEdit: handleNodeEdit,
@@ -1933,6 +2020,8 @@ export default function FlowViewer({
         <NodeEditModal
           nodeId={editingNode.id}
           initialLabel={editingNode.label}
+          initialLanes={editingNode.lanes}
+          availableLanes={flowGraph.lanes.length > 0 ? flowGraph.lanes : ['User', 'System']}
           onSave={handleNodeLabelSave}
           onDelete={handleNodeDelete}
           onClose={() => setEditingNode(null)}

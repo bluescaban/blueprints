@@ -120,13 +120,13 @@
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": -1663,
+                      "x": -1639,
                       "y": -512,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": -1673,
+                      "x": -1649,
                       "y": -514,
                       "width": 436,
                       "height": 260
@@ -480,13 +480,13 @@
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
                     "absoluteBoundingBox": {
-                      "x": -1639,
+                      "x": -1651,
                       "y": 640,
                       "width": 416,
                       "height": 240
                     },
                     "absoluteRenderBounds": {
-                      "x": -1649,
+                      "x": -1661,
                       "y": 638,
                       "width": 436,
                       "height": 260
@@ -11661,7 +11661,7 @@
               },
               {
                 "id": "217:1960",
-                "name": "What is SpecKit? SpecKit is the \"brain\" of BluePrints - it's the transformation engine that converts your FigJam sticky notes into structured, interactive flow diagrams. The Simple Explanation Think of SpecKit like a translator: You write sticky notes in FigJam using a simple labeling system (like S: for steps, D: for decisions) SpecKit reads those labels and understands the structure of your user journey SpecKit creates a complete flow diagram with all the connections, even filling in gaps you didn't explicitly define What Problem Does It Solve? When you design a user flow in FigJam, you're focused on the what - what steps users take, what decisions they make. But a proper flow diagram needs: All the connections between steps System actions that happen automatically Start and end points for each flow Multiple user roles (lanes/swimlanes) SpecKit automatically infers all of this from your simple sticky notes. How It Works (The Pipeline) 📝 FigJam Sticky Notes  ↓  Card Grammar (parsing your labels: S:, D:, G:, etc.)  ↓  FlowSpec (structured data about your flow)  ↓  SpecKit (expansion & inference) ← THIS IS SPECKIT  ↓  FlowGraph (complete flow diagram)  ↓ 📊 Interactive React Flow Canvas  What SpecKit Actually Does InputSpecKit DoesOutputS: User clicks loginCreates a step nodeStep node with label and laneD: Is password correct?Creates a decision diamondDecision node with Yes/No branchesNo explicit connectionsInfers edges between sequential stepsAutomatic connectionsA: Host, GuestCreates swimlanesSeparate lanes for each actorMissing START nodeAuto-generates entry pointSTART → First step connectionMissing END nodeAuto-generates exit pointLast step → END connection The Card Grammar (Your Input) You write sticky notes with prefixes like: S: - A user step (\"S: User enters email\") D: - A decision point (\"D: Is user logged in?\") SYS: - A system action (\"SYS: Send verification email\") A: - Actors/roles (\"A: Host, Guest, System\") F: - Flow name (\"F: Login Flow\") START: / END: / EXIT: - Flow boundaries Example Your FigJam notes: F: Login Flow A: User, System S: User enters credentials D: Valid credentials? S: User sees dashboard SYS: Log authentication event END: Success  SpecKit produces: A complete flow with START → steps → END Connections inferred (credentials → decision → dashboard) System action connected appropriately Yes/No branches from the decision Swimlanes for User and System Why \"SpecKit\"? The name comes from Specification Kit - it's the toolkit that generates complete specifications from minimal input. The output includes: Specs - Technical flow specifications Plans - Structured user journeys Tasks - Implementation guidance In short: SpecKit lets you sketch rough ideas in FigJam, and it builds the complete, structured flow diagram for you.",
+                "name": "What is SpecKit? SpecKit is the \"brain\" of BluePrints - it's the transformation engine that converts your FigJam sticky notes into structured, interactive flow diagrams. The Simple Explanation Think of SpecKit like a translator: You write sticky notes in FigJam using a simple labeling system (like S: for steps, D: for decisions) SpecKit reads those labels and understands the structure of your user journey SpecKit creates a complete flow diagram with all the connections, even filling in gaps you didn't explicitly define What Problem Does It Solve? When you design a user flow in FigJam, you're focused on the what - what steps users take, what decisions they make. But a proper flow diagram needs: All the connections between steps System actions that happen automatically Start and end points for each flow Multiple user roles (lanes/swimlanes) SpecKit automatically infers all of this from your simple sticky notes. How It Works (The Pipeline) 📝 FigJam Sticky Notes  ↓  Card Grammar (parsing your labels: S:, D:, G:, etc.)  ↓  FlowSpec (structured data about your flow)  ↓  SpecKit (expansion & inference) ← THIS IS SPECKIT  ↓  FlowGraph (complete flow diagram)  ↓ 📊 Interactive React Flow Canvas  What SpecKit Actually Does InputSpecKit DoesOutputS: User clicks loginCreates a step nodeStep node with label and laneD: Is password correct? Creates a decision diamondDecision node with Yes/No branches No explicit connectionsInfers edges between sequential stepsAutomatic connectionsA: Host, GuestCreates swimlanesSeparate lanes for each actorMissing START nodeAuto-generates entry pointSTART → First step connectionMissing END nodeAuto-generates exit pointLast step → END connection The Card Grammar (Your Input) You write sticky notes with prefixes like: S: - A user step (\"S: User enters email\") D: - A decision point (\"D: Is user logged in?\") SYS: - A system action (\"SYS: Send verification email\") A: - Actors/roles (\"A: Host, Guest, System\") F: - Flow name (\"F: Login Flow\") START: / END: / EXIT: - Flow boundaries Example Your FigJam notes: F: Login Flow A: User, System S: User enters credentials D: Valid credentials? S: User sees dashboard SYS: Log authentication event END: Success  SpecKit produces: A complete flow with START → steps → END Connections inferred (credentials → decision → dashboard) System action connected appropriately Yes/No branches from the decision Swimlanes for User and System Why \"SpecKit\"? The name comes from Specification Kit - it's the toolkit that generates complete specifications from minimal input. The output includes: Specs - Technical flow specifications Plans - Structured user journeys Tasks - Implementation guidance In short: SpecKit lets you sketch rough ideas in FigJam, and it builds the complete, structured flow diagram for you.",
                 "type": "TEXT",
                 "scrollBehavior": "SCROLLS",
                 "blendMode": "PASS_THROUGH",
@@ -11684,19 +11684,19 @@
                   "x": 3968,
                   "y": -3408,
                   "width": 1616,
-                  "height": 7968
+                  "height": 8352
                 },
                 "absoluteRenderBounds": {
                   "x": 3968,
                   "y": -3385.4091796875,
-                  "width": 1610.69189453125,
-                  "height": 7933.5
+                  "width": 1607.59423828125,
+                  "height": 8317.5
                 },
                 "constraints": {
                   "vertical": "TOP",
                   "horizontal": "LEFT"
                 },
-                "characters": "What is SpecKit?\nSpecKit is the \"brain\" of BluePrints - it's the transformation engine that converts your FigJam sticky notes into structured, interactive flow diagrams.\nThe Simple Explanation\nThink of SpecKit like a translator:\nYou write sticky notes in FigJam using a simple labeling system (like S: for steps, D: for decisions)\nSpecKit reads those labels and understands the structure of your user journey\nSpecKit creates a complete flow diagram with all the connections, even filling in gaps you didn't explicitly define\nWhat Problem Does It Solve?\nWhen you design a user flow in FigJam, you're focused on the what - what steps users take, what decisions they make. But a proper flow diagram needs:\nAll the connections between steps\nSystem actions that happen automatically\nStart and end points for each flow\nMultiple user roles (lanes/swimlanes)\nSpecKit automatically infers all of this from your simple sticky notes.\nHow It Works (The Pipeline)\n📝 FigJam Sticky Notes         ↓     Card Grammar (parsing your labels: S:, D:, G:, etc.)         ↓     FlowSpec (structured data about your flow)         ↓     SpecKit (expansion & inference)   ← THIS IS SPECKIT         ↓     FlowGraph (complete flow diagram)         ↓ 📊 Interactive React Flow Canvas \nWhat SpecKit Actually Does\nInputSpecKit DoesOutputS: User clicks loginCreates a step nodeStep node with label and laneD: Is password correct?Creates a decision diamondDecision node with Yes/No branchesNo explicit connectionsInfers edges between sequential stepsAutomatic connectionsA: Host, GuestCreates swimlanesSeparate lanes for each actorMissing START nodeAuto-generates entry pointSTART → First step connectionMissing END nodeAuto-generates exit pointLast step → END connection\nThe Card Grammar (Your Input)\nYou write sticky notes with prefixes like:\nS: - A user step (\"S: User enters email\")\nD: - A decision point (\"D: Is user logged in?\")\nSYS: - A system action (\"SYS: Send verification email\")\nA: - Actors/roles (\"A: Host, Guest, System\")\nF: - Flow name (\"F: Login Flow\")\nSTART: / END: / EXIT: - Flow boundaries\nExample\nYour FigJam notes:\nF: Login Flow A: User, System S: User enters credentials D: Valid credentials? S: User sees dashboard SYS: Log authentication event END: Success \nSpecKit produces:\nA complete flow with START → steps → END\nConnections inferred (credentials → decision → dashboard)\nSystem action connected appropriately\nYes/No branches from the decision\nSwimlanes for User and System\nWhy \"SpecKit\"?\nThe name comes from Specification Kit - it's the toolkit that generates complete specifications from minimal input. The output includes:\nSpecs - Technical flow specifications\nPlans - Structured user journeys\nTasks - Implementation guidance\nIn short: SpecKit lets you sketch rough ideas in FigJam, and it builds the complete, structured flow diagram for you.",
+                "characters": "What is SpecKit?\nSpecKit is the \"brain\" of BluePrints - it's the transformation engine that converts your FigJam sticky notes into structured, interactive flow diagrams.\nThe Simple Explanation\nThink of SpecKit like a translator:\nYou write sticky notes in FigJam using a simple labeling system (like S: for steps, D: for decisions)\nSpecKit reads those labels and understands the structure of your user journey\nSpecKit creates a complete flow diagram with all the connections, even filling in gaps you didn't explicitly define\nWhat Problem Does It Solve?\nWhen you design a user flow in FigJam, you're focused on the what - what steps users take, what decisions they make. But a proper flow diagram needs:\nAll the connections between steps\nSystem actions that happen automatically\nStart and end points for each flow\nMultiple user roles (lanes/swimlanes)\nSpecKit automatically infers all of this from your simple sticky notes.\nHow It Works (The Pipeline)\n📝 FigJam Sticky Notes         ↓     Card Grammar (parsing your labels: S:, D:, G:, etc.)         ↓     FlowSpec (structured data about your flow)         ↓     SpecKit (expansion & inference)   ← THIS IS SPECKIT         ↓     FlowGraph (complete flow diagram)         ↓ 📊 Interactive React Flow Canvas \nWhat SpecKit Actually Does\nInputSpecKit DoesOutputS: User clicks loginCreates a step nodeStep node with label and laneD: Is password correct?\n\nCreates a decision diamondDecision node with Yes/No branches\n\nNo explicit connectionsInfers edges between sequential stepsAutomatic connectionsA: Host, GuestCreates swimlanesSeparate lanes for each actorMissing START nodeAuto-generates entry pointSTART → First step connectionMissing END nodeAuto-generates exit pointLast step → END connection\nThe Card Grammar (Your Input)\nYou write sticky notes with prefixes like:\nS: - A user step (\"S: User enters email\")\nD: - A decision point (\"D: Is user logged in?\")\nSYS: - A system action (\"SYS: Send verification email\")\nA: - Actors/roles (\"A: Host, Guest, System\")\nF: - Flow name (\"F: Login Flow\")\nSTART: / END: / EXIT: - Flow boundaries\nExample\nYour FigJam notes:\nF: Login Flow A: User, System S: User enters credentials D: Valid credentials? S: User sees dashboard SYS: Log authentication event END: Success \nSpecKit produces:\nA complete flow with START → steps → END\nConnections inferred (credentials → decision → dashboard)\nSystem action connected appropriately\nYes/No branches from the decision\nSwimlanes for User and System\nWhy \"SpecKit\"?\nThe name comes from Specification Kit - it's the toolkit that generates complete specifications from minimal input. The output includes:\nSpecs - Technical flow specifications\nPlans - Structured user journeys\nTasks - Implementation guidance\nIn short: SpecKit lets you sketch rough ideas in FigJam, and it builds the complete, structured flow diagram for you.",
                 "characterStyleOverrides": [],
                 "styleOverrideTable": {},
                 "lineTypes": [
@@ -11713,6 +11713,10 @@
                   "UNORDERED",
                   "UNORDERED",
                   "UNORDERED",
+                  "NONE",
+                  "NONE",
+                  "NONE",
+                  "NONE",
                   "NONE",
                   "NONE",
                   "NONE",
@@ -11756,6 +11760,10 @@
                   1,
                   1,
                   1,
+                  0,
+                  0,
+                  0,
+                  0,
                   0,
                   0,
                   0,
@@ -11844,7 +11852,7 @@
               "x": -3360,
               "y": -3568,
               "width": 11024,
-              "height": 8320
+              "height": 8500.0908203125
             },
             "sectionContentsHidden": false
           }
@@ -11882,7 +11890,7 @@
                 "children": [
                   {
                     "id": "190:559",
-                    "name": "P:",
+                    "name": "P: -",
                     "type": "STICKY",
                     "scrollBehavior": "SCROLLS",
                     "blendMode": "PASS_THROUGH",
@@ -11968,7 +11976,7 @@
                       }
                     ],
                     "authorVisible": true,
-                    "characters": "P:"
+                    "characters": "P: -"
                   },
                   {
                     "id": "190:560",
@@ -32319,9 +32327,9 @@
   "schemaVersion": 0,
   "styles": {},
   "name": "BluePrints",
-  "lastModified": "2026-02-06T22:10:45Z",
-  "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/21b79b68-6ac9-4bea-8980-9c22247ba3b1?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCRJS3YS53%2F20260208%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260208T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=08f053b6e5db2067413400c0b30cd2542f8a411bd7e08b491e45546b7e02a091",
-  "version": "2317569244914931888",
+  "lastModified": "2026-02-10T21:31:23Z",
+  "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/124278d9-ffbf-4586-b88d-64f3ca47548f?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCRJS3YS53%2F20260208%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260208T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=cca7e4bc26badea6ebd9c421c9696182337597b152414c51effba58a1e6eb82f",
+  "version": "2319045984568760289",
   "role": "owner",
   "editorType": "figjam",
   "linkAccess": "view"

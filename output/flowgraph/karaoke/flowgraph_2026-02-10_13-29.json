@@ -2,7 +2,7 @@
   "meta": {
     "project": "BluePrints",
     "feature": "Karaoke",
-    "generatedAt": "2026-02-10T21:31:24.235Z",
+    "generatedAt": "2026-02-10T21:29:14.684Z",
     "sourceFileKey": "HYxtgE7EARWuvTskijY7xa",
     "specKitVersion": "2.0.0"
   },
@@ -1231,6 +1231,7 @@
     "Competitive Singer",
     "Social Sharer",
     "Privacy-Conscious User",
+    "Professional Listener",
     "System"
   ],
   "personas": [
@@ -1257,6 +1258,10 @@
     {
       "name": "Privacy-Conscious User",
       "details": "wants control over mic usage and recording"
+    },
+    {
+      "name": "Professional Listener",
+      "details": "Is very serious about listening to music"
     }
   ],
   "starts": [
@@ -2378,7 +2383,7 @@
     "---",
     "SpecKit v2.0.0 expansion",
     "4 flow group(s) identified",
-    "10 swimlanes: User, Host, Guest, Casual Listener, Karaoke Host, Friend Participant, Competitive Singer, Social Sharer, Privacy-Conscious User, System",
+    "11 swimlanes: User, Host, Guest, Casual Listener, Karaoke Host, Friend Participant, Competitive Singer, Social Sharer, Privacy-Conscious User, Professional Listener, System",
     "4 entry point(s)",
     "16 end state(s)",
     "Explicit edges used (E:)",
