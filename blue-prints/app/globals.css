@@ -24,3 +24,15 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+
+/* Highlight animation for newly created nodes */
+@keyframes pulse-highlight {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.9;
+  }
+}

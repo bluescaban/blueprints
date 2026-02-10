@@ -56,6 +56,53 @@ const NODE_HEIGHTS: Record<string, number> = {
 };
 
 // ============================================================================
+// Smart Handle Selection
+// ============================================================================
+
+/**
+ * Calculate optimal source and target handles based on node positions.
+ * This prevents edges from overlapping by routing outgoing edges from
+ * different handles than incoming edges arrive at.
+ *
+ * Strategy:
+ * - Horizontal flow (target to right): right-source → left-target
+ * - Horizontal flow (target to left): left-source → right-target
+ * - Vertical flow (target below): bottom-source → top-target
+ * - Vertical flow (target above): top-source → bottom-target
+ */
+function getSmartHandles(
+  sourcePos: { x: number; y: number },
+  targetPos: { x: number; y: number }
+): { sourceHandle: string; targetHandle: string } {
+  const dx = targetPos.x - sourcePos.x;
+  const dy = targetPos.y - sourcePos.y;
+
+  // Determine the dominant direction
+  const absDx = Math.abs(dx);
+  const absDy = Math.abs(dy);
+
+  // If horizontal movement is dominant (or equal), use left/right handles
+  if (absDx >= absDy) {
+    if (dx >= 0) {
+      // Target is to the right: source right → target left
+      return { sourceHandle: 'right-source', targetHandle: 'left-target' };
+    } else {
+      // Target is to the left: source left → target right
+      return { sourceHandle: 'left-source', targetHandle: 'right-target' };
+    }
+  } else {
+    // Vertical movement is dominant
+    if (dy >= 0) {
+      // Target is below: source bottom → target top
+      return { sourceHandle: 'bottom-source', targetHandle: 'top-target' };
+    } else {
+      // Target is above: source top → target bottom
+      return { sourceHandle: 'top-source', targetHandle: 'bottom-target' };
+    }
+  }
+}
+
+// ============================================================================
 // Types
 // ============================================================================
 
@@ -309,13 +356,20 @@ function layoutNodes(nodes: FlowNode[], edges: FlowEdge[]): Node[] {
 /**
  * Convert FlowGraph edges to React Flow edges.
  * Uses different routing for Yes/No branches to improve visibility.
+ * Uses smart handle selection to prevent overlapping edges.
  */
-function convertEdges(edges: FlowEdge[], nodes: FlowNode[]): Edge[] {
+function convertEdges(edges: FlowEdge[], nodes: FlowNode[], layoutedNodes: Node[]): Edge[] {
   const nodeLanes = new Map<string, string>();
   const nodeTypes = new Map<string, string>();
   for (const node of nodes) {
     nodeLanes.set(node.id, node.type === 'system' ? 'System' : node.lane);
     nodeTypes.set(node.id, node.type);
+  }
+
+  // Build position lookup from layouted nodes
+  const nodePositions = new Map<string, { x: number; y: number }>();
+  for (const node of layoutedNodes) {
+    nodePositions.set(node.id, node.position);
   }
 
   // Count edges from each source to detect branching nodes
@@ -340,9 +394,8 @@ function convertEdges(edges: FlowEdge[], nodes: FlowNode[]): Edge[] {
     const isYesBranch = edge.label?.toLowerCase() === 'yes';
     const isNoBranch = edge.label?.toLowerCase() === 'no';
 
-    // Use smoothstep for all decision branches and cross-lane edges
-    // This creates curved paths that are easier to follow
-    const edgeType = (isFromDecision || !isSameLane) ? 'smoothstep' : 'straight';
+    // Use smoothstep for all edges - it works better with explicit handles
+    const edgeType = 'smoothstep';
 
     // Different styling for Yes vs No branches to help distinguish them
     let strokeColor = '#ffffff';
@@ -360,10 +413,24 @@ function convertEdges(edges: FlowEdge[], nodes: FlowNode[]): Edge[] {
       }
     }
 
+    // Calculate smart handles based on node positions
+    const sourcePos = nodePositions.get(edge.from);
+    const targetPos = nodePositions.get(edge.to);
+    let sourceHandle: string | undefined;
+    let targetHandle: string | undefined;
+
+    if (sourcePos && targetPos) {
+      const handles = getSmartHandles(sourcePos, targetPos);
+      sourceHandle = handles.sourceHandle;
+      targetHandle = handles.targetHandle;
+    }
+
     return {
       id: `e-${edge.from}-${edge.to}-${index}`,
       source: edge.from,
       target: edge.to,
+      sourceHandle,
+      targetHandle,
       label: edge.label,
       type: edgeType,
       // Arrow only at the destination (end), not the source (start)
@@ -464,6 +531,8 @@ function getPersonaIcon(lane: string, accentColor: string) {
 }
 
 function Legend({ lanes }: LegendProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   // Filter out empty lanes and deduplicate
   const uniqueLanes = lanes.filter((lane, index, self) =>
     lane && self.indexOf(lane) === index
@@ -471,103 +540,125 @@ function Legend({ lanes }: LegendProps) {
 
   return (
     <div
-      className="absolute top-4 right-4 z-20 w-56 rounded-xl border border-white/30 overflow-hidden"
+      className="absolute top-4 right-4 z-20 rounded-xl border border-white/30 overflow-hidden transition-all duration-300"
       style={{
+        width: isExpanded ? '14rem' : 'auto',
         background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
       }}
     >
-      <div className="px-4 py-3 border-b border-gray-200/50 bg-gradient-to-r from-blue-50 to-white">
-        <h4 className="text-sm font-bold text-gray-800">Legend</h4>
-      </div>
-      <div className="p-3 space-y-3">
-        {/* Node Types */}
-        <div>
-          <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Node Types</p>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-5 rounded-md border-2 border-white bg-blue-100 shadow-sm" />
-              <span className="text-xs text-gray-700">Step (User Action)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-5 rounded-md border-2 border-white border-dashed bg-slate-100 shadow-sm flex items-center justify-center">
-                <span className="text-[8px]">⚙️</span>
+      {/* Header - Always visible, clickable to toggle */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full px-3 py-2.5 flex items-center justify-between gap-2 bg-gradient-to-r from-blue-50 to-white hover:from-blue-100 hover:to-blue-50 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <span className="text-sm font-bold text-gray-800">Legend</span>
+        </div>
+        <svg
+          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {/* Expandable Content */}
+      {isExpanded && (
+        <div className="p-3 space-y-3 border-t border-gray-200/50">
+          {/* Node Types */}
+          <div>
+            <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Node Types</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-5 rounded-md border-2 border-white bg-blue-100 shadow-sm" />
+                <span className="text-xs text-gray-700">Step (User Action)</span>
               </div>
-              <span className="text-xs text-gray-700">System Action</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div
-                className="w-5 h-5 border-2 border-white bg-blue-100 shadow-sm"
-                style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
-              />
-              <span className="text-xs text-gray-700">Decision Point</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-full border-2 border-white bg-blue-100 shadow-sm flex items-center justify-center">
-                <span className="text-[8px] text-blue-600">▶</span>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-5 rounded-md border-2 border-white border-dashed bg-slate-100 shadow-sm flex items-center justify-center">
+                  <span className="text-[8px]">⚙️</span>
+                </div>
+                <span className="text-xs text-gray-700">System Action</span>
               </div>
-              <span className="text-xs text-gray-700">Start</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-full border-2 border-white bg-green-100 shadow-sm flex items-center justify-center">
-                <span className="text-[8px] text-green-600">✓</span>
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-5 h-5 border-2 border-white bg-blue-100 shadow-sm"
+                  style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
+                />
+                <span className="text-xs text-gray-700">Decision Point</span>
               </div>
-              <span className="text-xs text-gray-700">End / Complete</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-full border-2 border-white bg-amber-100 shadow-sm flex items-center justify-center">
-                <span className="text-[8px] text-amber-600">↩</span>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full border-2 border-white bg-blue-100 shadow-sm flex items-center justify-center">
+                  <span className="text-[8px] text-blue-600">▶</span>
+                </div>
+                <span className="text-xs text-gray-700">Start</span>
               </div>
-              <span className="text-xs text-gray-700">Exit / Alternative</span>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full border-2 border-white bg-green-100 shadow-sm flex items-center justify-center">
+                  <span className="text-[8px] text-green-600">✓</span>
+                </div>
+                <span className="text-xs text-gray-700">End / Complete</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full border-2 border-white bg-amber-100 shadow-sm flex items-center justify-center">
+                  <span className="text-[8px] text-amber-600">↩</span>
+                </div>
+                <span className="text-xs text-gray-700">Exit / Alternative</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Personas - Dynamic based on lanes */}
-        {uniqueLanes.length > 0 && (
-          <div className="pt-2 border-t border-gray-100">
-            <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Personas</p>
-            <div className="space-y-1.5">
-              {uniqueLanes.map((lane) => {
-                const colors = LANE_COLORS[lane] || LANE_COLORS.User;
-                return (
-                  <div key={lane} className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center">
-                      {getPersonaIcon(lane, colors.accent)}
+          {/* Personas - Dynamic based on lanes */}
+          {uniqueLanes.length > 0 && (
+            <div className="pt-2 border-t border-gray-100">
+              <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Personas</p>
+              <div className="space-y-1.5">
+                {uniqueLanes.map((lane) => {
+                  const colors = LANE_COLORS[lane] || LANE_COLORS.User;
+                  return (
+                    <div key={lane} className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center">
+                        {getPersonaIcon(lane, colors.accent)}
+                      </div>
+                      <span className="text-xs text-gray-700">{lane}</span>
                     </div>
-                    <span className="text-xs text-gray-700">{lane}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Edge Labels */}
-        <div className="pt-2 border-t border-gray-100">
-          <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Edges</p>
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-white rounded shadow-sm relative">
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-l-4 border-l-white border-y-2 border-y-transparent" />
+                  );
+                })}
               </div>
-              <span className="text-xs text-gray-700">Flow direction</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-1 rounded" style={{ backgroundColor: '#b3ffb3' }} />
-              <span className="text-[10px] px-1.5 py-0.5 bg-green-100 rounded font-semibold text-green-700">Yes</span>
-              <span className="text-xs text-gray-700">Success</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-1 rounded" style={{ backgroundColor: '#ffb3b3' }} />
-              <span className="text-[10px] px-1.5 py-0.5 bg-red-100 rounded font-semibold text-red-700">No</span>
-              <span className="text-xs text-gray-700">Alternative</span>
+          )}
+
+          {/* Edge Labels */}
+          <div className="pt-2 border-t border-gray-100">
+            <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Edges</p>
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-0.5 bg-white rounded shadow-sm relative">
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-l-4 border-l-white border-y-2 border-y-transparent" />
+                </div>
+                <span className="text-xs text-gray-700">Flow direction</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-1 rounded" style={{ backgroundColor: '#b3ffb3' }} />
+                <span className="text-[10px] px-1.5 py-0.5 bg-green-100 rounded font-semibold text-green-700">Yes</span>
+                <span className="text-xs text-gray-700">Success</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-1 rounded" style={{ backgroundColor: '#ffb3b3' }} />
+                <span className="text-[10px] px-1.5 py-0.5 bg-red-100 rounded font-semibold text-red-700">No</span>
+                <span className="text-xs text-gray-700">Alternative</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -707,12 +798,19 @@ function applyNodeLabels(nodes: Node[], labels: Record<string, string>): Node[] 
 
 /**
  * Convert saved edge data back to React Flow edges with proper styling.
+ * Uses smart handles when no handles are saved (backward compatibility).
  */
-function applySavedEdges(savedEdges: SavedEdgeData[], displayNodes: FlowNode[]): Edge[] {
+function applySavedEdges(savedEdges: SavedEdgeData[], displayNodes: FlowNode[], layoutedNodes: Node[]): Edge[] {
   // Create lookup for node lanes and types
   const nodeTypesMap = new Map<string, string>();
   for (const node of displayNodes) {
     nodeTypesMap.set(node.id, node.type);
+  }
+
+  // Build position lookup from layouted nodes
+  const nodePositions = new Map<string, { x: number; y: number }>();
+  for (const node of layoutedNodes) {
+    nodePositions.set(node.id, node.position);
   }
 
   return savedEdges.map((savedEdge) => {
@@ -741,12 +839,26 @@ function applySavedEdges(savedEdges: SavedEdgeData[], displayNodes: FlowNode[]):
     const strokeColor = styleConfig.strokeColor;
     animated = styleConfig.animated;
 
+    // Use saved handles if available, otherwise calculate smart handles
+    let sourceHandle = savedEdge.sourceHandle;
+    let targetHandle = savedEdge.targetHandle;
+
+    if (!sourceHandle || !targetHandle) {
+      const sourcePos = nodePositions.get(savedEdge.source);
+      const targetPos = nodePositions.get(savedEdge.target);
+      if (sourcePos && targetPos) {
+        const handles = getSmartHandles(sourcePos, targetPos);
+        sourceHandle = sourceHandle || handles.sourceHandle;
+        targetHandle = targetHandle || handles.targetHandle;
+      }
+    }
+
     return {
       id: savedEdge.id,
       source: savedEdge.source,
       target: savedEdge.target,
-      sourceHandle: savedEdge.sourceHandle,
-      targetHandle: savedEdge.targetHandle,
+      sourceHandle,
+      targetHandle,
       label: savedEdge.label,
       type: 'smoothstep',
       markerEnd: { type: MarkerType.ArrowClosed, color: strokeColor, width: 20, height: 20 },
@@ -824,10 +936,11 @@ interface NodeEditModalProps {
   nodeId: string;
   initialLabel: string;
   onSave: (nodeId: string, newLabel: string) => void;
+  onDelete: (nodeId: string) => void;
   onClose: () => void;
 }
 
-function NodeEditModal({ nodeId, initialLabel, onSave, onClose }: NodeEditModalProps) {
+function NodeEditModal({ nodeId, initialLabel, onSave, onDelete, onClose }: NodeEditModalProps) {
   const [label, setLabel] = useState(initialLabel);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -836,6 +949,11 @@ function NodeEditModal({ nodeId, initialLabel, onSave, onClose }: NodeEditModalP
       onSave(nodeId, label.trim());
       onClose();
     }
+  };
+
+  const handleDelete = () => {
+    onDelete(nodeId);
+    onClose();
   };
 
   return (
@@ -897,6 +1015,16 @@ function NodeEditModal({ nodeId, initialLabel, onSave, onClose }: NodeEditModalP
           />
 
           <div className="flex gap-3 mt-5">
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="px-4 py-2.5 rounded-xl text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+              title="Delete this node"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
             <button
               type="button"
               onClick={onClose}
@@ -1222,6 +1350,219 @@ function EdgeEditModal({ edgeId, initialLabel, onSave, onDelete, onClose }: Edge
 }
 
 // ============================================================================
+// Node Create Modal Component
+// ============================================================================
+
+type NodeTypeOption = 'step' | 'decision' | 'system' | 'start' | 'end' | 'exit';
+
+interface NodeTypeInfo {
+  type: NodeTypeOption;
+  label: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+}
+
+const NODE_TYPE_OPTIONS: NodeTypeInfo[] = [
+  {
+    type: 'step',
+    label: 'Step',
+    description: 'User action or task',
+    icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="18" height="14" rx="2" /></svg>,
+    color: 'bg-blue-100 text-blue-600 border-blue-300',
+  },
+  {
+    type: 'decision',
+    label: 'Decision',
+    description: 'Conditional branch point',
+    icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L22 12 L12 22 L2 12 Z" /></svg>,
+    color: 'bg-purple-100 text-purple-600 border-purple-300',
+  },
+  {
+    type: 'system',
+    label: 'System',
+    description: 'Automated system action',
+    icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" /></svg>,
+    color: 'bg-slate-100 text-slate-600 border-slate-300',
+  },
+  {
+    type: 'start',
+    label: 'Start',
+    description: 'Flow entry point',
+    icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8" /><path d="M10 8 L16 12 L10 16 Z" fill="white" /></svg>,
+    color: 'bg-blue-100 text-blue-600 border-blue-300',
+  },
+  {
+    type: 'end',
+    label: 'End',
+    description: 'Successful completion',
+    icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8" /><path d="M8 12 L11 15 L16 9" stroke="white" strokeWidth="2" fill="none" /></svg>,
+    color: 'bg-green-100 text-green-600 border-green-300',
+  },
+  {
+    type: 'exit',
+    label: 'Exit',
+    description: 'Alternative exit path',
+    icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8" /><path d="M8 12 L16 12 M12 8 L16 12 L12 16" stroke="white" strokeWidth="2" fill="none" /></svg>,
+    color: 'bg-amber-100 text-amber-600 border-amber-300',
+  },
+];
+
+interface NodeCreateModalProps {
+  onCreateNode: (type: NodeTypeOption, lane: string) => void;
+  onClose: () => void;
+  availableLanes: string[];
+}
+
+function NodeCreateModal({ onCreateNode, onClose, availableLanes }: NodeCreateModalProps) {
+  const [selectedType, setSelectedType] = useState<NodeTypeOption | null>(null);
+  const [selectedLane, setSelectedLane] = useState<string>(availableLanes[0] || 'User');
+
+  const handleCreate = () => {
+    if (selectedType) {
+      onCreateNode(selectedType, selectedLane);
+      onClose();
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-md mx-4 rounded-2xl border border-white/30 overflow-hidden"
+        style={{
+          background: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between px-5 py-4 border-b border-gray-200/50"
+          style={{
+            background: 'linear-gradient(135deg, rgba(74, 133, 200, 0.1), rgba(74, 133, 200, 0.05))',
+          }}
+        >
+          <h3 className="font-bold text-gray-800 flex items-center gap-2">
+            <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Add New Node
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-5">
+          {/* Node Type Selection */}
+          <label className="block mb-3 text-sm font-medium text-gray-700">
+            Select Node Type
+          </label>
+          <div className="grid grid-cols-2 gap-2 mb-5">
+            {NODE_TYPE_OPTIONS.map((option) => (
+              <button
+                key={option.type}
+                onClick={() => setSelectedType(option.type)}
+                className={`p-3 rounded-xl border-2 text-left transition-all ${
+                  selectedType === option.type
+                    ? 'border-blue-500 bg-blue-50 shadow-md'
+                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <div className={`p-1.5 rounded-lg ${option.color} border`}>
+                    {option.icon}
+                  </div>
+                  <span className="font-semibold text-gray-800 text-sm">{option.label}</span>
+                </div>
+                <p className="text-xs text-gray-500 pl-9">{option.description}</p>
+              </button>
+            ))}
+          </div>
+
+          {/* Lane Selection */}
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Assign to Lane (Persona)
+          </label>
+          <select
+            value={selectedLane}
+            onChange={(e) => setSelectedLane(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-gray-800 bg-white"
+          >
+            {availableLanes.map((lane) => (
+              <option key={lane} value={lane}>{lane}</option>
+            ))}
+          </select>
+
+          {/* Actions */}
+          <div className="flex gap-3 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleCreate}
+              disabled={!selectedType}
+              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-md"
+            >
+              Create Node
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// Control Panel Component
+// ============================================================================
+
+interface ControlPanelProps {
+  onAddNode: () => void;
+}
+
+function ControlPanel({ onAddNode }: ControlPanelProps) {
+  return (
+    <div
+      className="absolute bottom-24 right-20 z-20 rounded-xl border border-white/30 overflow-hidden"
+      style={{
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+      }}
+    >
+      <button
+        onClick={onAddNode}
+        className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+        title="Add new node"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        Add Node
+      </button>
+    </div>
+  );
+}
+
+// ============================================================================
 // Main Component
 // ============================================================================
 
@@ -1275,6 +1616,12 @@ export default function FlowViewer({
   // Edge edit state
   const [editingEdge, setEditingEdge] = useState<{ id: string; label: string } | null>(null);
 
+  // Node creation state
+  const [showCreateNodeModal, setShowCreateNodeModal] = useState(false);
+
+  // Track newly created node for highlight animation
+  const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null);
+
   // Compute the default layout
   const defaultNodes = useMemo(
     () => layoutNodes(displayNodes, displayEdges),
@@ -1290,8 +1637,8 @@ export default function FlowViewer({
   );
 
   const initialEdges = useMemo(
-    () => convertEdges(displayEdges, displayNodes),
-    [displayEdges, displayNodes]
+    () => convertEdges(displayEdges, displayNodes, defaultNodes),
+    [displayEdges, displayNodes, defaultNodes]
   );
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -1308,7 +1655,6 @@ export default function FlowViewer({
   useEffect(() => {
     const saved = loadLayout(storageKey);
     let newNodes = defaultNodes;
-    let newEdges = convertEdges(displayEdges, displayNodes);
 
     if (saved) {
       // Apply saved positions
@@ -1317,9 +1663,15 @@ export default function FlowViewer({
       if (saved.nodeLabels) {
         newNodes = applyNodeLabels(newNodes, saved.nodeLabels);
       }
+    }
+
+    // Convert edges using the final node positions (after saved positions applied)
+    let newEdges = convertEdges(displayEdges, displayNodes, newNodes);
+
+    if (saved) {
       // Apply saved edges if available (version 2+)
       if (saved.edges && saved.edges.length > 0) {
-        newEdges = applySavedEdges(saved.edges, displayNodes);
+        newEdges = applySavedEdges(saved.edges, displayNodes, newNodes);
       }
     }
 
@@ -1355,7 +1707,7 @@ export default function FlowViewer({
       // Ignore errors
     }
     setNodes(defaultNodes);
-    setEdges(convertEdges(displayEdges, displayNodes));
+    setEdges(convertEdges(displayEdges, displayNodes, defaultNodes));
     setHasChanges(false);
     setHasSavedLayout(false);
   }, [storageKey, defaultNodes, displayEdges, displayNodes, setNodes, setEdges]);
@@ -1404,6 +1756,15 @@ export default function FlowViewer({
     setHasChanges(true);
   }, [setNodes]);
 
+  // Handle node delete
+  const handleNodeDelete = useCallback((nodeId: string) => {
+    // Remove the node
+    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+    // Also remove any edges connected to this node
+    setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
+    setHasChanges(true);
+  }, [setNodes, setEdges]);
+
   // Handle new edge connection - show modal to get label
   const handleConnect = useCallback((connection: Connection) => {
     setPendingConnection(connection);
@@ -1411,16 +1772,31 @@ export default function FlowViewer({
 
   // Create the actual edge after user provides label and style
   // Arrow only points to the destination (target) node, not the source
+  // Uses smart handles based on node positions for cleaner visual flow
   const handleCreateEdge = useCallback((connection: Connection, label: string, styleType: EdgeStyleType) => {
     const styleConfig = EDGE_STYLES[styleType];
     const strokeColor = styleConfig.strokeColor;
+
+    // Find node positions for smart handle calculation
+    const sourceNode = nodes.find(n => n.id === connection.source);
+    const targetNode = nodes.find(n => n.id === connection.target);
+
+    // Calculate smart handles based on relative positions
+    let sourceHandle = connection.sourceHandle || undefined;
+    let targetHandle = connection.targetHandle || undefined;
+
+    if (sourceNode && targetNode && (!sourceHandle || !targetHandle)) {
+      const handles = getSmartHandles(sourceNode.position, targetNode.position);
+      sourceHandle = sourceHandle || handles.sourceHandle;
+      targetHandle = targetHandle || handles.targetHandle;
+    }
 
     const newEdge: Edge = {
       id: `e-${connection.source}-${connection.target}-${Date.now()}`,
       source: connection.source!,
       target: connection.target!,
-      sourceHandle: connection.sourceHandle || undefined,
-      targetHandle: connection.targetHandle || undefined,
+      sourceHandle,
+      targetHandle,
       label: label || undefined,
       type: 'smoothstep',
       // Arrow only at the end (destination node)
@@ -1438,7 +1814,7 @@ export default function FlowViewer({
     };
     setEdges((eds) => addEdge(newEdge, eds));
     setHasChanges(true);
-  }, [setEdges]);
+  }, [setEdges, nodes]);
 
   // Handle edge deletion
   const handleEdgesDelete = useCallback((deletedEdges: Edge[]) => {
@@ -1475,16 +1851,58 @@ export default function FlowViewer({
     setHasChanges(true);
   }, [setEdges]);
 
-  // Add onEdit callback to all nodes
+  // Handle creating a new node
+  const handleCreateNode = useCallback((type: NodeTypeOption, lane: string) => {
+    // Generate a unique ID
+    const newId = `node-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+
+    // Find a good position for the new node (offset from existing nodes)
+    const existingPositions = nodes.map(n => n.position);
+    let newX = START_OFFSET_X;
+    let newY = START_OFFSET_Y;
+
+    if (existingPositions.length > 0) {
+      // Find the rightmost node and place new node to its right
+      const maxX = Math.max(...existingPositions.map(p => p.x));
+      const avgY = existingPositions.reduce((sum, p) => sum + p.y, 0) / existingPositions.length;
+      newX = maxX + LEVEL_SPACING_X;
+      newY = avgY;
+    }
+
+    const newNode: Node = {
+      id: newId,
+      type: type,
+      position: { x: newX, y: newY },
+      data: {
+        label: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+        lane: type === 'system' ? 'System' : lane,
+        nodeType: type,
+        inferred: false,
+        onEdit: handleNodeEdit,
+      },
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+    setHasChanges(true);
+
+    // Highlight the new node temporarily
+    setHighlightedNodeId(newId);
+    setTimeout(() => {
+      setHighlightedNodeId(null);
+    }, 3000); // Remove highlight after 3 seconds
+  }, [nodes, setNodes, handleNodeEdit]);
+
+  // Add onEdit callback and highlight state to all nodes
   const nodesWithEditCallback = useMemo(() => {
     return nodes.map((node) => ({
       ...node,
       data: {
         ...node.data,
+        isHighlighted: node.id === highlightedNodeId,
         onEdit: handleNodeEdit,
       },
     }));
-  }, [nodes, handleNodeEdit]);
+  }, [nodes, handleNodeEdit, highlightedNodeId]);
 
   return (
     <div className="w-full h-full relative" style={{ minHeight: '100vh' }}>
@@ -1516,6 +1934,7 @@ export default function FlowViewer({
           nodeId={editingNode.id}
           initialLabel={editingNode.label}
           onSave={handleNodeLabelSave}
+          onDelete={handleNodeDelete}
           onClose={() => setEditingNode(null)}
         />
       )}
@@ -1539,6 +1958,18 @@ export default function FlowViewer({
           onClose={() => setEditingEdge(null)}
         />
       )}
+
+      {/* Node Create Modal */}
+      {showCreateNodeModal && (
+        <NodeCreateModal
+          onCreateNode={handleCreateNode}
+          onClose={() => setShowCreateNodeModal(false)}
+          availableLanes={flowGraph.lanes.length > 0 ? flowGraph.lanes : ['User', 'System']}
+        />
+      )}
+
+      {/* Control Panel */}
+      <ControlPanel onAddNode={() => setShowCreateNodeModal(true)} />
 
       {/* React Flow Canvas */}
       <div style={{ height: '100vh' }}>

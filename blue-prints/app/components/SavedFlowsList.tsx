@@ -61,9 +61,9 @@ export default function SavedFlowsList() {
           className="p-4 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition-colors group"
         >
           <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-white text-sm truncate">{flow.name}</h3>
-              <p className="text-xs text-white/60 mt-1">
+            <div className="flex-1 min-w-0 text-left">
+              <h3 className="font-semibold text-white text-sm truncate text-left">{flow.name}</h3>
+              <p className="text-xs text-white/60 mt-1 text-left">
                 {new Date(flow.savedAt).toLocaleDateString()} at {new Date(flow.savedAt).toLocaleTimeString()}
               </p>
               <div className="flex items-center gap-3 mt-2 text-xs text-white/50">

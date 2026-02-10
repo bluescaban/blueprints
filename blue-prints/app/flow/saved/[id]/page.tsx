@@ -205,14 +205,15 @@ export default function SavedFlowPage() {
             />
           </div>
 
-          {/* Right: Original timestamp */}
+          {/* Right: Last Updated timestamp */}
           <div
             className="px-3 py-1.5 rounded-lg text-xs text-white/80 border border-white/20"
             style={{
               background: 'rgba(255, 255, 255, 0.1)',
             }}
           >
-            Original: {new Date(flowGraph.meta.generatedAt).toLocaleString()}
+            <span className="text-white/60">Last Updated:</span>{' '}
+            {new Date(savedFlow.savedAt).toLocaleString()}
           </div>
         </div>
       </header>

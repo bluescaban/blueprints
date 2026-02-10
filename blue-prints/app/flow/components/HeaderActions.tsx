@@ -35,6 +35,7 @@ export default function HeaderActions({
           background: 'rgba(255, 255, 255, 0.1)',
         }}
       >
+        <span className="text-white/60">Generation Time:</span>{' '}
         {new Date(flowGraph.meta.generatedAt).toLocaleString()}
       </div>
 

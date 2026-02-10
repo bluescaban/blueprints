@@ -25,6 +25,7 @@ interface CustomNodeData {
   nodeType: NodeType;
   description?: string;
   onEdit?: (nodeId: string, label: string) => void;
+  isHighlighted?: boolean;
 }
 
 // ============================================================================
@@ -160,10 +161,13 @@ export const StepNode = memo(function StepNode({ id, data }: NodeProps) {
         width: 300,
         minHeight: 90,
         background: `linear-gradient(135deg, ${colors.bg}ee, ${colors.bg}cc)`,
-        borderColor: '#ffffff',
+        borderColor: nodeData.isHighlighted ? '#fbbf24' : '#ffffff',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
+        boxShadow: nodeData.isHighlighted
+          ? '0 0 0 4px rgba(251, 191, 36, 0.4), 0 0 30px rgba(251, 191, 36, 0.6), 0 10px 30px rgba(0,0,0,0.3)'
+          : '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
+        animation: nodeData.isHighlighted ? 'pulse-highlight 1.5s ease-in-out infinite' : undefined,
       }}
     >
       {/* Bidirectional handles - each position has both source and target */}
@@ -203,7 +207,14 @@ export const DecisionNode = memo(function DecisionNode({ id, data }: NodeProps) 
   const colors = LANE_COLORS[nodeData.lane] || LANE_COLORS.User;
 
   return (
-    <div className="relative group" style={{ width: 260, height: 180 }}>
+    <div
+      className="relative group"
+      style={{
+        width: 260,
+        height: 180,
+        animation: nodeData.isHighlighted ? 'pulse-highlight 1.5s ease-in-out infinite' : undefined,
+      }}
+    >
       <EditButton
         nodeId={id}
         label={nodeData.label}
@@ -220,9 +231,11 @@ export const DecisionNode = memo(function DecisionNode({ id, data }: NodeProps) 
             width: 220,
             height: 160,
             background: `linear-gradient(135deg, ${colors.bg}ee, ${colors.bg}cc)`,
-            borderColor: '#ffffff',
+            borderColor: nodeData.isHighlighted ? '#fbbf24' : '#ffffff',
             clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2)',
+            boxShadow: nodeData.isHighlighted
+              ? '0 0 30px rgba(251, 191, 36, 0.6), 0 10px 30px rgba(0,0,0,0.3)'
+              : '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2)',
           }}
         >
           <div className="flex flex-col items-center gap-1">
@@ -312,10 +325,13 @@ export const SystemNode = memo(function SystemNode({ id, data }: NodeProps) {
         width: 300,
         minHeight: 90,
         background: `linear-gradient(135deg, ${colors.bg}ee, ${colors.bg}cc)`,
-        borderColor: '#ffffff',
+        borderColor: nodeData.isHighlighted ? '#fbbf24' : '#ffffff',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
+        boxShadow: nodeData.isHighlighted
+          ? '0 0 0 4px rgba(251, 191, 36, 0.4), 0 0 30px rgba(251, 191, 36, 0.6), 0 10px 30px rgba(0,0,0,0.3)'
+          : '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
+        animation: nodeData.isHighlighted ? 'pulse-highlight 1.5s ease-in-out infinite' : undefined,
       }}
     >
       {/* Bidirectional handles - each position has both source and target */}
@@ -367,10 +383,13 @@ export const StartNode = memo(function StartNode({ id, data }: NodeProps) {
         width: 220,
         minHeight: 70,
         background: `linear-gradient(135deg, ${colors.bg}ee, ${colors.bg}cc)`,
-        borderColor: '#ffffff',
+        borderColor: nodeData.isHighlighted ? '#fbbf24' : '#ffffff',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
+        boxShadow: nodeData.isHighlighted
+          ? '0 0 0 4px rgba(251, 191, 36, 0.4), 0 0 30px rgba(251, 191, 36, 0.6), 0 10px 30px rgba(0,0,0,0.3)'
+          : '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
+        animation: nodeData.isHighlighted ? 'pulse-highlight 1.5s ease-in-out infinite' : undefined,
       }}
     >
       {/* Bidirectional handles - each position has both source and target */}
@@ -434,10 +453,13 @@ export const EndNode = memo(function EndNode({ id, data }: NodeProps) {
         width: 220,
         minHeight: 70,
         background: `linear-gradient(135deg, ${bgColor}ee, ${bgColor}cc)`,
-        borderColor: '#ffffff',
+        borderColor: nodeData.isHighlighted ? '#fbbf24' : '#ffffff',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
+        boxShadow: nodeData.isHighlighted
+          ? '0 0 0 4px rgba(251, 191, 36, 0.4), 0 0 30px rgba(251, 191, 36, 0.6), 0 10px 30px rgba(0,0,0,0.3)'
+          : '0 10px 30px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
+        animation: nodeData.isHighlighted ? 'pulse-highlight 1.5s ease-in-out infinite' : undefined,
       }}
     >
       {/* Bidirectional handles - each position has both source and target */}
