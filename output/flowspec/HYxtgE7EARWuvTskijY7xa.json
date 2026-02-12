@@ -6805,6 +6805,700 @@
         }
       },
       {
+        "id": "249:206",
+        "name": "BluePrints Flow",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [
+          {
+            "id": "249:207",
+            "name": "FigJam Sticky Notes Context Personas Goals Requirements User Steps Edge Cases Assumptions Questions Risks Sub Flows",
+            "type": "STICKY",
+            "scrollBehavior": "SCROLLS",
+            "blendMode": "PASS_THROUGH",
+            "absoluteBoundingBox": {
+              "x": -624,
+              "y": -80,
+              "width": 240,
+              "height": 530
+            },
+            "absoluteRenderBounds": {
+              "x": -634,
+              "y": -82,
+              "width": 260,
+              "height": 550
+            },
+            "constraints": {
+              "vertical": "TOP",
+              "horizontal": "LEFT"
+            },
+            "effects": [
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.019999999552965164
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 2.5
+                },
+                "radius": 2,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.03999999910593033
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 3
+                },
+                "radius": 5,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.07999999821186066
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "radius": 10,
+                "showShadowBehindNode": true
+              }
+            ],
+            "fills": [
+              {
+                "blendMode": "NORMAL",
+                "type": "SOLID",
+                "color": {
+                  "r": 0.7019608020782471,
+                  "g": 0.9372549057006836,
+                  "b": 0.7411764860153198,
+                  "a": 1
+                }
+              }
+            ],
+            "authorVisible": true,
+            "characters": "FigJam\n\nSticky Notes\n\nContext\nPersonas\nGoals\nRequirements\nUser Steps\nEdge Cases\nAssumptions\nQuestions\nRisks\nSub Flows\n"
+          },
+          {
+            "id": "249:211",
+            "name": "MCP Server An MCP (Model Context Protocol) server is a specialized program that enables AI models (LLMs) to securely access external data, tools, and systems, acting as a standardized bridge.",
+            "type": "STICKY",
+            "scrollBehavior": "SCROLLS",
+            "blendMode": "PASS_THROUGH",
+            "absoluteBoundingBox": {
+              "x": -304,
+              "y": -80,
+              "width": 240,
+              "height": 399
+            },
+            "absoluteRenderBounds": {
+              "x": -314,
+              "y": -82,
+              "width": 260,
+              "height": 419
+            },
+            "constraints": {
+              "vertical": "TOP",
+              "horizontal": "LEFT"
+            },
+            "effects": [
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.019999999552965164
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 2.5
+                },
+                "radius": 2,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.03999999910593033
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 3
+                },
+                "radius": 5,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.07999999821186066
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "radius": 10,
+                "showShadowBehindNode": true
+              }
+            ],
+            "fills": [
+              {
+                "blendMode": "NORMAL",
+                "type": "SOLID",
+                "color": {
+                  "r": 0.7019608020782471,
+                  "g": 0.95686274766922,
+                  "b": 0.9372549057006836,
+                  "a": 1
+                }
+              }
+            ],
+            "authorVisible": true,
+            "characters": "MCP Server\n\nAn MCP (Model Context Protocol) server is a specialized program that enables AI models (LLMs) to securely access external data, tools, and systems, acting as a standardized bridge."
+          },
+          {
+            "id": "249:215",
+            "name": "BLUE PRINTS A React application that generates user flows from",
+            "type": "STICKY",
+            "scrollBehavior": "SCROLLS",
+            "blendMode": "PASS_THROUGH",
+            "absoluteBoundingBox": {
+              "x": -1264,
+              "y": -80,
+              "width": 240,
+              "height": 311
+            },
+            "absoluteRenderBounds": {
+              "x": -1274,
+              "y": -82,
+              "width": 260,
+              "height": 331
+            },
+            "constraints": {
+              "vertical": "TOP",
+              "horizontal": "LEFT"
+            },
+            "effects": [
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.019999999552965164
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 2.5
+                },
+                "radius": 2,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.03999999910593033
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 3
+                },
+                "radius": 5,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.07999999821186066
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "radius": 10,
+                "showShadowBehindNode": true
+              }
+            ],
+            "fills": [
+              {
+                "blendMode": "NORMAL",
+                "type": "SOLID",
+                "color": {
+                  "r": 0.658823549747467,
+                  "g": 0.8549019694328308,
+                  "b": 1,
+                  "a": 1
+                }
+              }
+            ],
+            "authorVisible": true,
+            "characters": "BLUE \nPRINTS\n\nA React application that generates user flows from\n\n"
+          },
+          {
+            "id": "249:223",
+            "name": "VS CODE Next JS React Tailwind Claude Code Copilot",
+            "type": "STICKY",
+            "scrollBehavior": "SCROLLS",
+            "blendMode": "PASS_THROUGH",
+            "absoluteBoundingBox": {
+              "x": 16,
+              "y": -80,
+              "width": 240,
+              "height": 311
+            },
+            "absoluteRenderBounds": {
+              "x": 6,
+              "y": -82,
+              "width": 260,
+              "height": 331
+            },
+            "constraints": {
+              "vertical": "TOP",
+              "horizontal": "LEFT"
+            },
+            "effects": [
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.019999999552965164
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 2.5
+                },
+                "radius": 2,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.03999999910593033
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 3
+                },
+                "radius": 5,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.07999999821186066
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "radius": 10,
+                "showShadowBehindNode": true
+              }
+            ],
+            "fills": [
+              {
+                "blendMode": "NORMAL",
+                "type": "SOLID",
+                "color": {
+                  "r": 1,
+                  "g": 0.658823549747467,
+                  "b": 0.8588235378265381,
+                  "a": 1
+                }
+              }
+            ],
+            "authorVisible": true,
+            "characters": "VS CODE\n\nNext JS\nReact \nTailwind\nClaude Code\nCopilot\n"
+          },
+          {
+            "id": "249:251",
+            "name": "Connector line",
+            "type": "CONNECTOR",
+            "scrollBehavior": "SCROLLS",
+            "blendMode": "PASS_THROUGH",
+            "absoluteBoundingBox": {
+              "x": -378,
+              "y": 119.5,
+              "width": 67.5,
+              "height": 65.5
+            },
+            "absoluteRenderBounds": {
+              "x": -380,
+              "y": 104.77207946777344,
+              "width": 71.5,
+              "height": 82.22792053222656
+            },
+            "constraints": {
+              "vertical": "TOP",
+              "horizontal": "LEFT"
+            },
+            "effects": [],
+            "characters": "",
+            "textBackground": {
+              "cornerRadius": 6,
+              "cornerSmoothing": 0,
+              "fills": []
+            },
+            "connectorStart": {
+              "endpointNodeId": "249:207",
+              "magnet": "RIGHT"
+            },
+            "connectorEnd": {
+              "endpointNodeId": "249:211",
+              "magnet": "LEFT"
+            },
+            "connectorStartStrokeCap": "NONE",
+            "connectorEndStrokeCap": "LINE_ARROW",
+            "connectorLineType": "ELBOWED",
+            "strokes": [
+              {
+                "blendMode": "NORMAL",
+                "type": "SOLID",
+                "color": {
+                  "r": 0.4588235318660736,
+                  "g": 0.4588235318660736,
+                  "b": 0.4588235318660736,
+                  "a": 1
+                }
+              }
+            ],
+            "strokeWeight": 4,
+            "strokeAlign": "CENTER",
+            "strokeJoin": "BEVEL"
+          },
+          {
+            "id": "249:262",
+            "name": "Connector line",
+            "type": "CONNECTOR",
+            "scrollBehavior": "SCROLLS",
+            "blendMode": "PASS_THROUGH",
+            "absoluteBoundingBox": {
+              "x": -58,
+              "y": 75.5,
+              "width": 67.5,
+              "height": 44
+            },
+            "absoluteRenderBounds": {
+              "x": -60,
+              "y": 60.77207946777344,
+              "width": 71.5,
+              "height": 60.72792053222656
+            },
+            "constraints": {
+              "vertical": "TOP",
+              "horizontal": "LEFT"
+            },
+            "effects": [],
+            "characters": "",
+            "textBackground": {
+              "cornerRadius": 6,
+              "cornerSmoothing": 0,
+              "fills": []
+            },
+            "connectorStart": {
+              "endpointNodeId": "249:211",
+              "magnet": "RIGHT"
+            },
+            "connectorEnd": {
+              "endpointNodeId": "249:223",
+              "magnet": "LEFT"
+            },
+            "connectorStartStrokeCap": "NONE",
+            "connectorEndStrokeCap": "LINE_ARROW",
+            "connectorLineType": "ELBOWED",
+            "strokes": [
+              {
+                "blendMode": "NORMAL",
+                "type": "SOLID",
+                "color": {
+                  "r": 0.4588235318660736,
+                  "g": 0.4588235318660736,
+                  "b": 0.4588235318660736,
+                  "a": 1
+                }
+              }
+            ],
+            "strokeWeight": 4,
+            "strokeAlign": "CENTER",
+            "strokeJoin": "BEVEL"
+          },
+          {
+            "id": "253:279",
+            "name": "TEXT BRD (Business Requirement Document) Project Template Chat GPT Prompt Working Sessions",
+            "type": "STICKY",
+            "scrollBehavior": "SCROLLS",
+            "blendMode": "PASS_THROUGH",
+            "absoluteBoundingBox": {
+              "x": -944,
+              "y": -80,
+              "width": 240,
+              "height": 355
+            },
+            "absoluteRenderBounds": {
+              "x": -954,
+              "y": -82,
+              "width": 260,
+              "height": 375
+            },
+            "constraints": {
+              "vertical": "TOP",
+              "horizontal": "LEFT"
+            },
+            "effects": [
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.019999999552965164
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 2.5
+                },
+                "radius": 2,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.03999999910593033
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 3
+                },
+                "radius": 5,
+                "showShadowBehindNode": true
+              },
+              {
+                "type": "DROP_SHADOW",
+                "visible": true,
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0.07999999821186066
+                },
+                "blendMode": "NORMAL",
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "radius": 10,
+                "showShadowBehindNode": true
+              }
+            ],
+            "fills": [
+              {
+                "blendMode": "NORMAL",
+                "type": "SOLID",
+                "color": {
+                  "r": 1,
+                  "g": 0.886274516582489,
+                  "b": 0.6000000238418579,
+                  "a": 1
+                }
+              }
+            ],
+            "authorVisible": true,
+            "characters": "TEXT\n\nBRD (Business Requirement Document)\nProject Template\nChat GPT Prompt\nWorking Sessions\n\n\n"
+          },
+          {
+            "id": "253:286",
+            "name": "Connector line",
+            "type": "CONNECTOR",
+            "scrollBehavior": "SCROLLS",
+            "blendMode": "PASS_THROUGH",
+            "absoluteBoundingBox": {
+              "x": -698,
+              "y": 97.5,
+              "width": 67.5,
+              "height": 87.5
+            },
+            "absoluteRenderBounds": {
+              "x": -700,
+              "y": 95.5,
+              "width": 71.5,
+              "height": 104.22792053222656
+            },
+            "constraints": {
+              "vertical": "TOP",
+              "horizontal": "LEFT"
+            },
+            "effects": [],
+            "characters": "",
+            "textBackground": {
+              "cornerRadius": 6,
+              "cornerSmoothing": 0,
+              "fills": []
+            },
+            "connectorStart": {
+              "endpointNodeId": "253:279",
+              "magnet": "RIGHT"
+            },
+            "connectorEnd": {
+              "endpointNodeId": "249:207",
+              "magnet": "LEFT"
+            },
+            "connectorStartStrokeCap": "NONE",
+            "connectorEndStrokeCap": "LINE_ARROW",
+            "connectorLineType": "ELBOWED",
+            "strokes": [
+              {
+                "blendMode": "NORMAL",
+                "type": "SOLID",
+                "color": {
+                  "r": 0.4588235318660736,
+                  "g": 0.4588235318660736,
+                  "b": 0.4588235318660736,
+                  "a": 1
+                }
+              }
+            ],
+            "strokeWeight": 4,
+            "strokeAlign": "CENTER",
+            "strokeJoin": "BEVEL"
+          },
+          {
+            "id": "253:309",
+            "name": "Connector line",
+            "type": "CONNECTOR",
+            "scrollBehavior": "SCROLLS",
+            "blendMode": "PASS_THROUGH",
+            "absoluteBoundingBox": {
+              "x": -1018,
+              "y": 75.5,
+              "width": 67.5,
+              "height": 22
+            },
+            "absoluteRenderBounds": {
+              "x": -1020,
+              "y": 73.5,
+              "width": 71.5,
+              "height": 38.72792053222656
+            },
+            "constraints": {
+              "vertical": "TOP",
+              "horizontal": "LEFT"
+            },
+            "effects": [],
+            "characters": "",
+            "textBackground": {
+              "cornerRadius": 6,
+              "cornerSmoothing": 0,
+              "fills": []
+            },
+            "connectorStart": {
+              "endpointNodeId": "249:215",
+              "magnet": "RIGHT"
+            },
+            "connectorEnd": {
+              "endpointNodeId": "253:279",
+              "magnet": "LEFT"
+            },
+            "connectorStartStrokeCap": "NONE",
+            "connectorEndStrokeCap": "LINE_ARROW",
+            "connectorLineType": "ELBOWED",
+            "strokes": [
+              {
+                "blendMode": "NORMAL",
+                "type": "SOLID",
+                "color": {
+                  "r": 0.4588235318660736,
+                  "g": 0.4588235318660736,
+                  "b": 0.4588235318660736,
+                  "a": 1
+                }
+              }
+            ],
+            "strokeWeight": 4,
+            "strokeAlign": "CENTER",
+            "strokeJoin": "BEVEL"
+          }
+        ],
+        "backgroundColor": {
+          "r": 0.9607843160629272,
+          "g": 0.9607843160629272,
+          "b": 0.9607843160629272,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
         "id": "189:549",
         "name": "README",
         "type": "CANVAS",
@@ -32327,9 +33021,9 @@
   "schemaVersion": 0,
   "styles": {},
   "name": "BluePrints",
-  "lastModified": "2026-02-10T21:31:23Z",
-  "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/124278d9-ffbf-4586-b88d-64f3ca47548f?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCRJS3YS53%2F20260208%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260208T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=cca7e4bc26badea6ebd9c421c9696182337597b152414c51effba58a1e6eb82f",
-  "version": "2319045984568760289",
+  "lastModified": "2026-02-11T19:56:13Z",
+  "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/4597de4a-f4db-4d99-a2f3-dc5cc697c54b?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCRJS3YS53%2F20260208%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260208T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=ba187f46279dad66dab24630a8d766c555a8e26c1ad427ca810065908faa3096",
+  "version": "2319397184083897341",
   "role": "owner",
   "editorType": "figjam",
   "linkAccess": "view"

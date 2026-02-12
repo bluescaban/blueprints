@@ -40,7 +40,7 @@ import { nodeTypes } from './CustomNodes';
 
 const LEVEL_SPACING_X = 380; // Horizontal spacing between levels
 const NODE_SPACING_Y = 140; // Vertical spacing between nodes at same level
-const ROW_SPACING_Y = 100; // Vertical spacing between rows
+const ROW_SPACING_Y = 100; // Vertical spacing between rows (when wrapping)
 const START_OFFSET_X = 60; // Left margin
 const START_OFFSET_Y = 60; // Top margin
 const LEVELS_PER_ROW = 4; // Number of levels before wrapping to next row

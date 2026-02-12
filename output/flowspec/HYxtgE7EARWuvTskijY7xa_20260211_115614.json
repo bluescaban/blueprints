@@ -1,0 +1,776 @@
+{
+  "meta": {
+    "fileKey": "HYxtgE7EARWuvTskijY7xa",
+    "generatedAt": "2026-02-11T19:56:14.363Z",
+    "grammarVersion": "2.0.0"
+  },
+  "context": [
+    "Project = Spotify Karaoke",
+    "Client = Spotify",
+    "OutputSlug = spotify_karaoke",
+    "Version = v1",
+    "Platform = Mobile (iOS, Android)",
+    "Owner = Blue"
+  ],
+  "goals": [
+    "Let users sing along with synchronized lyrics for any supported song",
+    "Support both Solo Karaoke and With Friends Karaoke",
+    "Minimize time-to-first-lyric (fast entry from a song page)",
+    "Make joining a friend session effortless via link",
+    "Provide a delightful “session” feeling (lobby, ready states, shared experience)",
+    "Keep the feature safe, respectful, and privacy-first",
+    "Enable users to sing along to songs solo or with friends",
+    "Provide a fast, low-friction entry into karaoke from a song",
+    "Preserve privacy and consent around microphone use",
+    "Support imperfect networks with graceful degradation"
+  ],
+  "personas": [
+    {
+      "name": "Casual Listener",
+      "details": "wants a low-pressure, no-judgment karaoke experience"
+    },
+    {
+      "name": "Karaoke Host",
+      "details": "wants to start a session fast and invite friends easily"
+    },
+    {
+      "name": "Friend Participant",
+      "details": "wants to join instantly and understand what to do next"
+    },
+    {
+      "name": "Competitive Singer",
+      "details": "wants scoring and performance feedback (optional)"
+    },
+    {
+      "name": "Social Sharer",
+      "details": "wants results or clips to share after a session"
+    },
+    {
+      "name": "Privacy-Conscious User",
+      "details": "wants control over mic usage and recording"
+    }
+  ],
+  "requirements": {
+    "functional": [
+      "Karaoke mode must display real-time synchronized lyrics with highlighting",
+      "Karaoke mode must support Solo mode",
+      "Karaoke mode must support With Friends mode (real-time session)",
+      "Host can create a karaoke session from a song",
+      "Host can invite friends using a shareable link",
+      "Participant can join session from invite link",
+      "Lobby must show who joined and who is ready",
+      "Session must have a clear Start action controlled by the host",
+      "Users can mute/unmute themselves during the session",
+      "Users can leave session at any time without breaking the session",
+      "App must request microphone permission only when needed and explain why",
+      "Karaoke should be usable even if mic permission is denied (lyrics-only mode)",
+      "App must handle network latency gracefully (allow slight desync + reconnection)",
+      "App must show clear feedback for loading, syncing, and connection issues",
+      "Competitive scoring mode is optional and can be enabled per session"
+    ],
+    "nonFunctional": []
+  },
+  "steps": [
+    {
+      "text": "User opens a song detail page",
+      "id": "S1"
+    },
+    {
+      "text": "User taps a new action called “Karaoke”",
+      "id": "S2"
+    },
+    {
+      "text": "App shows Karaoke setup screen with mode selection (Solo / With Friends)",
+      "id": "S3"
+    },
+    {
+      "text": "If Solo, user starts immediately and sees lyrics sync with playback",
+      "id": "S4"
+    },
+    {
+      "text": "If With Friends, user becomes Host and a lobby is created",
+      "id": "S5"
+    },
+    {
+      "text": "Lobby shows session status and invite button",
+      "id": "S6"
+    },
+    {
+      "text": "Host sends invite link via share sheet",
+      "id": "S7"
+    },
+    {
+      "text": "Friend opens invite link and joins as Participant",
+      "id": "S8"
+    },
+    {
+      "text": "Participants see lobby with song + readiness state",
+      "id": "S9"
+    },
+    {
+      "text": "Host taps Start to begin karaoke session",
+      "id": "S10"
+    },
+    {
+      "text": "During session, lyrics highlight and users can mute/unmute or leave",
+      "id": "S11"
+    },
+    {
+      "text": "At end, users see a summary screen with share / replay / new song options",
+      "id": "S12"
+    },
+    {
+      "text": "User opens a song detail page",
+      "id": "S1",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "User taps “Karaoke”",
+      "id": "S2",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "User selects Solo Karaoke mode",
+      "id": "S3",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "Start Solo Karaoke with live lyrics + mic input",
+      "id": "S4",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "Start Solo Karaoke in lyrics-only mode",
+      "id": "S5",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User"
+    },
+    {
+      "text": "Host taps “Karaoke”",
+      "id": "H1",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host selects “With Friends”",
+      "id": "H2",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host enters lobby with mic enabled",
+      "id": "H3",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host enters lobby in lyrics-only mode",
+      "id": "H4",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host shares invite link",
+      "id": "H5",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host waits in lobby",
+      "id": "H8",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Host starts Karaoke session",
+      "id": "H9",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host"
+    },
+    {
+      "text": "Guest joins lobby",
+      "id": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "Guest joins with mic enabled",
+      "id": "G2",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "Guest joins in lyrics-only mode",
+      "id": "G3",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    },
+    {
+      "text": "Participate in karaoke session",
+      "id": "G4",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest"
+    }
+  ],
+  "systemSteps": [
+    {
+      "text": "Sync lyrics to current playback position",
+      "lane": "System",
+      "id": "SYS1"
+    },
+    {
+      "text": "Attempt resync and show connection status",
+      "lane": "System",
+      "id": "SYS2"
+    },
+    {
+      "text": "Pause session or transfer host",
+      "lane": "System",
+      "id": "SYS3"
+    },
+    {
+      "text": "Allow quick rejoin",
+      "lane": "System",
+      "id": "SYS4"
+    },
+    {
+      "text": "Show recovery message and exit",
+      "lane": "System",
+      "id": "SYS5"
+    },
+    {
+      "text": "Explain limitation and suggest alternatives",
+      "lane": "System",
+      "id": "SYS6"
+    },
+    {
+      "text": "Enforce a session cap and communicate why",
+      "lane": "System",
+      "id": "SYS7"
+    },
+    {
+      "text": "resume experience smoothly",
+      "lane": "System",
+      "id": "SYS8"
+    },
+    {
+      "text": "Allow report + leave + block actions",
+      "lane": "System",
+      "id": "SYS9"
+    },
+    {
+      "text": "Evaluate Karaoke availability for the song",
+      "lane": "System",
+      "flowGroup": "flow_solo_karaoke",
+      "id": "SYS10"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_solo_karaoke",
+      "id": "SYS11"
+    },
+    {
+      "text": "Create karaoke session and lobby",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS12"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS13"
+    },
+    {
+      "text": "Generate invite link",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS14"
+    },
+    {
+      "text": "Display joined participants and readiness state",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS15"
+    },
+    {
+      "text": "Sync lyrics and playback for all participants",
+      "lane": "System",
+      "flowGroup": "flow_host_with_friends",
+      "id": "SYS16"
+    },
+    {
+      "text": "Validate invite link",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS17"
+    },
+    {
+      "text": "Display song, participants, and session status",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS18"
+    },
+    {
+      "text": "Request microphone permission (just-in-time)",
+      "lane": "System",
+      "flowGroup": "flow_join_via_invite_link",
+      "id": "SYS19"
+    }
+  ],
+  "decisions": [
+    {
+      "question": "Is Karaoke supported for this song?",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "D1"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "D2"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "D3"
+    },
+    {
+      "question": "How does host invite friends?",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "D4"
+    },
+    {
+      "question": "Are participants ready?",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "D5"
+    },
+    {
+      "question": "Is invite link valid?",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "D6"
+    },
+    {
+      "question": "Is microphone permission granted?",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "D7"
+    },
+    {
+      "question": "Has host started the session?",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "D8"
+    }
+  ],
+  "choices": [],
+  "edges": [
+    {
+      "from": "D1",
+      "to": "S3",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "Yes"
+    },
+    {
+      "from": "D1",
+      "to": "END_EXIT",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "No"
+    },
+    {
+      "from": "D2",
+      "to": "S4",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "Yes"
+    },
+    {
+      "from": "D2",
+      "to": "S5",
+      "flowGroup": "flow_solo_karaoke",
+      "label": "No"
+    },
+    {
+      "from": "D3",
+      "to": "H3",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Yes"
+    },
+    {
+      "from": "D3",
+      "to": "H4",
+      "flowGroup": "flow_host_with_friends",
+      "label": "No"
+    },
+    {
+      "from": "D4",
+      "to": "H6",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Share Sheet"
+    },
+    {
+      "from": "D4",
+      "to": "H7",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Copy Link"
+    },
+    {
+      "from": "D5",
+      "to": "H9",
+      "flowGroup": "flow_host_with_friends",
+      "label": "Yes"
+    },
+    {
+      "from": "D5",
+      "to": "H8",
+      "flowGroup": "flow_host_with_friends",
+      "label": "No"
+    },
+    {
+      "from": "D6",
+      "to": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "Yes"
+    },
+    {
+      "from": "D6",
+      "to": "END_ERROR",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "No"
+    },
+    {
+      "from": "D7",
+      "to": "G2",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "Yes"
+    },
+    {
+      "from": "D7",
+      "to": "G3",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "No"
+    },
+    {
+      "from": "D8",
+      "to": "G4",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "Yes"
+    },
+    {
+      "from": "D8",
+      "to": "G1",
+      "flowGroup": "flow_join_via_invite_link",
+      "label": "No"
+    }
+  ],
+  "startNodes": [
+    {
+      "label": "User initiates Solo Karaoke from a song",
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "START_1"
+    },
+    {
+      "label": "Host initiates Karaoke with Friends from a song",
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "START_2"
+    },
+    {
+      "label": "Guest opens Karaoke invite link",
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "START_3"
+    }
+  ],
+  "endNodes": [
+    {
+      "label": "Solo Karaoke session completed",
+      "isExit": false,
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "END_1"
+    },
+    {
+      "label": "User exits Solo Karaoke early",
+      "isExit": false,
+      "flowGroup": "flow_solo_karaoke",
+      "lane": "User",
+      "id": "END_2"
+    },
+    {
+      "label": "Group Karaoke session completed",
+      "isExit": false,
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "END_3"
+    },
+    {
+      "label": "Host leaves or ends session",
+      "isExit": false,
+      "flowGroup": "flow_host_with_friends",
+      "lane": "Host",
+      "id": "END_4"
+    },
+    {
+      "label": "Guest leaves session",
+      "isExit": false,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "END_5"
+    },
+    {
+      "label": "Session ends",
+      "isExit": false,
+      "flowGroup": "flow_join_via_invite_link",
+      "lane": "Guest",
+      "id": "END_6"
+    }
+  ],
+  "exitNodes": [
+    {
+      "label": "User joins session mid-song",
+      "isExit": true,
+      "id": "EXIT_1"
+    },
+    {
+      "label": "Network interruption",
+      "isExit": true,
+      "id": "EXIT_2"
+    },
+    {
+      "label": "Host disconnects",
+      "isExit": true,
+      "id": "EXIT_3"
+    },
+    {
+      "label": "Participant disconnects",
+      "isExit": true,
+      "id": "EXIT_4"
+    },
+    {
+      "label": "Invite link expired",
+      "isExit": true,
+      "id": "EXIT_5"
+    },
+    {
+      "label": "Song unavailable in region",
+      "isExit": true,
+      "id": "EXIT_6"
+    },
+    {
+      "label": "Invite link expired or invalid SYS: Show friendly recovery path",
+      "isExit": true,
+      "id": "EXIT_7"
+    },
+    {
+      "label": "Too many participants —",
+      "isExit": true,
+      "id": "EXIT_8"
+    },
+    {
+      "label": "User receives a call/audio interruption",
+      "isExit": true,
+      "id": "EXIT_9"
+    },
+    {
+      "label": "Abusive participant",
+      "isExit": true,
+      "id": "EXIT_10"
+    }
+  ],
+  "flowGroups": [
+    {
+      "id": "flow_solo_karaoke",
+      "name": "Solo Karaoke",
+      "steps": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "decisions": [
+        "D1",
+        "D2"
+      ],
+      "edges": [
+        {
+          "from": "D1",
+          "to": "S3",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "Yes"
+        },
+        {
+          "from": "D1",
+          "to": "END_EXIT",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "No"
+        },
+        {
+          "from": "D2",
+          "to": "S4",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "Yes"
+        },
+        {
+          "from": "D2",
+          "to": "S5",
+          "flowGroup": "flow_solo_karaoke",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_host_with_friends",
+      "name": "Host With Friends",
+      "steps": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H8",
+        "H9"
+      ],
+      "decisions": [
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "edges": [
+        {
+          "from": "D3",
+          "to": "H3",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Yes"
+        },
+        {
+          "from": "D3",
+          "to": "H4",
+          "flowGroup": "flow_host_with_friends",
+          "label": "No"
+        },
+        {
+          "from": "D4",
+          "to": "H6",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Share Sheet"
+        },
+        {
+          "from": "D4",
+          "to": "H7",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Copy Link"
+        },
+        {
+          "from": "D5",
+          "to": "H9",
+          "flowGroup": "flow_host_with_friends",
+          "label": "Yes"
+        },
+        {
+          "from": "D5",
+          "to": "H8",
+          "flowGroup": "flow_host_with_friends",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "flow_join_via_invite_link",
+      "name": "Join via Invite Link",
+      "steps": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "decisions": [
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "edges": [
+        {
+          "from": "D6",
+          "to": "G1",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "Yes"
+        },
+        {
+          "from": "D6",
+          "to": "END_ERROR",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "No"
+        },
+        {
+          "from": "D7",
+          "to": "G2",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "Yes"
+        },
+        {
+          "from": "D7",
+          "to": "G3",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "No"
+        },
+        {
+          "from": "D8",
+          "to": "G4",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "Yes"
+        },
+        {
+          "from": "D8",
+          "to": "G1",
+          "flowGroup": "flow_join_via_invite_link",
+          "label": "No"
+        }
+      ]
+    }
+  ],
+  "actors": [
+    "User",
+    "Host",
+    "Guest"
+  ],
+  "assumptions": [
+    "Lyrics licensing allows karaoke-style display",
+    "Small latency is acceptable in group sessions"
+  ],
+  "acceptanceCriteria": [],
+  "notes": [],
+  "problems": [],
+  "uiElements": [],
+  "dataObjects": [],
+  "rules": [],
+  "risks": [
+    "Audio desync on low-end devices",
+    "Abuse in group sessions",
+    "Privacy concerns around microphone usage"
+  ],
+  "questions": [
+    "Is audio recorded or purely live?",
+    "Is group playback strict-sync or best-effort?",
+    "Is a host required at all times?",
+    "Do we support duets or rotating solos?",
+    "Should sessions support video, or audio-only, or lyrics-only?",
+    "Do we support scoring in v1? If yes, what model and what feedback UI?",
+    "Where does Karaoke live in the Spotify IA (song page, now playing, search)?",
+    "How do we handle explicit lyrics / content controls in group sessions?",
+    "What is the max participant count for a good experience?",
+    "What is the max participant count for a good experience?"
+  ],
+  "outputs": []
+}
