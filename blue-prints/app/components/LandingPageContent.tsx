@@ -35,7 +35,7 @@ export default function LandingPageContent() {
         href="/flow"
         className="mt-2 flex h-12 items-center justify-center gap-2 rounded-full bg-white px-10 text-[#4A85C8] font-semibold transition-all hover:bg-white/90 hover:scale-105 shadow-lg"
       >
-        View Current Flow →
+        Flow Generation Board →
       </Link>
 
       {/* Divider */}
